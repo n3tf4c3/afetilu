@@ -8,7 +8,7 @@ import { cor, espaco, texto } from "../lib/tema";
 
 // Tela de prova técnica do slime 3D. Só existe em builds de desenvolvimento (textos sem tradução).
 
-const REACOES: Reacao[] = ["alimentacao", "enjoo", "desconforto", "sono", "banho", "positivo", "episodio", "neutro"];
+const REACOES: Reacao[] = ["alimentacao", "enjoo", "desconforto", "sono", "banho", "positivo", "episodio", "cutucada", "neutro"];
 const MOVIMENTOS: Movimento[] = ["completo", "reduzido", "nenhum"];
 const ESTILO_CENA = { height: 320, borderRadius: 20, borderWidth: 1, borderColor: cor.borda };
 

@@ -34,7 +34,7 @@ O exportador glTF pode mudar a ordem interna dos vértices: duas gerações não
 | Deformações do corpo (morph targets) | `achatar`, `esticar`, `amassar`, `respirar` |
 | Nós do rosto (mostrar = escala 1, esconder = escala 0) | `olhos_abertos`, `olhos_cansados`, `olhos_sono`, `olhos_alegres`, `sobrancelhas_preocupadas`, `bochechas`, `boca_neutra`, `boca_sorriso`, `boca_ondulada`, `boca_preocupada`, `boca_o` |
 | Objetos de cena | `maca` (dentro do corpo, alimentação), `bolhas_banho` |
-| Clipes (todos terminam no neutro) | `neutro` 0,1 s, `respirar` 3 s (repouso, em laço), `sono` 3 s, `quicar` 1,2 s (positivo), `enjoo` 2,5 s, `desconforto` 2,5 s, `alimentacao` 2,5 s, `banho` 2,5 s |
+| Clipes (todos terminam no neutro) | `neutro` 0,1 s, `respirar` 3 s (repouso, em laço), `sono` 3 s, `quicar` 1,2 s (positivo), `enjoo` 2,5 s, `desconforto` 2,5 s, `alimentacao` 2,5 s, `banho` 2,5 s, `cutucada` 0,8 s (toque no slime) |
 
 Na pose de repouso, só os grupos de partes podem ter escala 0; peças internas nunca (o inspetor confere). O Blender sai com código 0 mesmo se o script falhar: usar sempre `--python-exit-code 1`.
 

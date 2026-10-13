@@ -17,5 +17,6 @@ node ferramentas/sons/gerar_sons.mjs apps/mobile/assets/sons
 | `ronco` | sono | sopro grave que sobe e desce devagar |
 | `bolhas` | banho | estalinhos agudos e curtos |
 | `blop` | calma e momentos positivos | bolha que sobe, com eco menor |
+| `boing` | toque no slime (cutucada) | tom que sobe com balanço de mola que se acalma |
 
 O mapa reação → som fica em `apps/mobile/src/components/slime/reacoes.ts` (`SOM_DA_REACAO`); o teste `reacoes.test.ts` confere que todo som usado existe, dura menos de 1 s e que episódio, enjoo e dor não têm som.

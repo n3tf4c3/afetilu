@@ -1,8 +1,8 @@
 ﻿# Junta as prévias renderizadas numa folha só (para revisão visual).
 param([string]$Pasta, [string]$Saida)
 Add-Type -AssemblyName System.Drawing
-$ordem = "neutro","alimentacao","enjoo","desconforto","sono","banho","positivo"
-$rotulos = @{ neutro="Neutro"; alimentacao="Alimentação"; enjoo="Enjoo"; desconforto="Dor ou desconforto"; sono="Sono"; banho="Banho e higiene"; positivo="Momento positivo" }
+$ordem = "neutro","alimentacao","enjoo","desconforto","sono","banho","positivo","cutucada"
+$rotulos = @{ neutro="Neutro"; alimentacao="Alimentação"; enjoo="Enjoo"; desconforto="Dor ou desconforto"; sono="Sono"; banho="Banho e higiene"; positivo="Momento positivo"; cutucada="Toque (cutucada)" }
 $w = 360; $h = 280; $cols = 4; $linhas = [math]::Ceiling($ordem.Count / $cols)
 $folha = New-Object System.Drawing.Bitmap ($w * $cols), (($h + 34) * $linhas)
 $g = [System.Drawing.Graphics]::FromImage($folha)

@@ -11,7 +11,8 @@ function lerGlb() {
   assert.equal(buf.toString("ascii", 0, 4), "glTF");
   const tamanho = buf.readUInt32LE(12);
   return JSON.parse(buf.toString("utf8", 20, 20 + tamanho)) as {
-    animations: { name: string }[];
+    animations: { name: string; samplers: { input: number }[] }[];
+    accessors: { max?: number[] }[];
     nodes: { name: string }[];
     materials: { name: string; alphaMode?: string; pbrMetallicRoughness?: { baseColorFactor?: number[] } }[];
   };
@@ -40,6 +41,16 @@ test("sem som em episódio, enjoo e dor; todo som usado existe em assets/sons", 
     const segundos = wav.readUInt32LE(40) / wav.readUInt32LE(28);
     assert.ok(segundos < 1, `${som} dura ${segundos} s`);
   }
+});
+
+test("toque no slime: cutucada curta, sem mudar a cor, com boing", () => {
+  const gltf = lerGlb();
+  const clipe = gltf.animations.find((a) => a.name === CLIPE_DA_REACAO.cutucada);
+  assert.ok(clipe, "clipe da cutucada ausente");
+  const duracao = Math.max(...clipe.samplers.map((s) => gltf.accessors[s.input]?.max?.[0] ?? 0));
+  assert.ok(duracao > 0 && duracao <= 1, `cutucada dura ${duracao} s`);
+  assert.equal(COR_DA_REACAO.cutucada, COR_DA_REACAO.neutro);
+  assert.equal(SOM_DA_REACAO.cutucada, "boing");
 });
 
 test("alfa do corpo é o mesmo no modelo e no app", () => {

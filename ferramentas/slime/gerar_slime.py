@@ -305,6 +305,8 @@ EXPRESSOES = {
     "sono": {"partes": ("olhos_sono", "bochechas", "boca_o"), "pesos": {"achatar": 1.0}},
     "banho": {"partes": ("olhos_alegres", "bochechas", "boca_sorriso", "bolhas_banho"), "pesos": {}},
     "positivo": {"partes": ("olhos_abertos", "bochechas", "boca_sorriso"), "pesos": {"esticar": 0.6}},
+    # Toque no slime: olhos apertados e boca em "o" enquanto amassa.
+    "cutucada": {"partes": ("olhos_alegres", "bochechas", "boca_o"), "pesos": {"amassar": 1.0}},
 }
 COR_EXPRESSAO = {
     "neutro": "neutro",
@@ -314,6 +316,7 @@ COR_EXPRESSAO = {
     "sono": "neutro",
     "banho": "claro",
     "positivo": "claro",
+    "cutucada": "neutro",
 }
 
 
@@ -374,6 +377,11 @@ def animar(raiz, corpo, rosto, partes):
         "desconforto": (2.5, [(0, {}, "desconforto"), (2.2, {}, "desconforto"), (2.5, {}, "neutro")]),
         "alimentacao": (2.5, [(0, {}, "alimentacao"), (0.4, {"amassar": 0.3}, "alimentacao"), (0.8, {}, "alimentacao"), (2.2, {}, "alimentacao"), (2.5, {}, "neutro")]),
         "banho": (2.5, [(0, {}, "banho"), (1.2, {"respirar": 1.0}, "banho"), (2.2, {}, "banho"), (2.5, {}, "neutro")]),
+        # Toque no slime: amassa, volta balançando cada vez menos e sorri.
+        "cutucada": (
+            0.8,
+            [(0, {}, "cutucada"), (0.12, {"amassar": 1.0}, "cutucada"), (0.3, {"esticar": 0.6}, "positivo"), (0.46, {"amassar": 0.4}, "positivo"), (0.6, {"esticar": 0.15}, "positivo"), (0.8, {}, "neutro")],
+        ),
     }
 
     objetos_rosto = list(partes.values())

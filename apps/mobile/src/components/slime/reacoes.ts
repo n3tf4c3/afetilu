@@ -1,6 +1,6 @@
 // Reações do mascote (docs/experiencia-avatar.md, seção 3.2). Lógica pura, sem dependência nativa.
 
-export type Reacao = "neutro" | "alimentacao" | "enjoo" | "desconforto" | "sono" | "banho" | "positivo" | "episodio";
+export type Reacao = "neutro" | "alimentacao" | "enjoo" | "desconforto" | "sono" | "banho" | "positivo" | "episodio" | "cutucada";
 
 /** Clipe do slime.glb para cada reação. Episódios difíceis não animam o slime. */
 export const CLIPE_DA_REACAO: Record<Reacao, string | null> = {
@@ -12,6 +12,8 @@ export const CLIPE_DA_REACAO: Record<Reacao, string | null> = {
   banho: "banho",
   positivo: "quicar",
   episodio: null,
+  // Toque no slime (não vem de registro): amassa e volta.
+  cutucada: "cutucada",
 };
 
 /** Cores passageiras (sRGB). Episódio não muda a cor. */
@@ -24,9 +26,10 @@ export const COR_DA_REACAO: Record<Reacao, string> = {
   banho: "#8CC2F0",
   positivo: "#8CC2F0",
   episodio: "#79AEE0",
+  cutucada: "#79AEE0",
 };
 
-export type Som = "nham" | "ronco" | "bolhas" | "blop";
+export type Som = "nham" | "ronco" | "bolhas" | "blop" | "boing";
 
 /**
  * Som de cada reação (assets/sons, gerados por ferramentas/sons/gerar_sons.mjs), tocado só se a pessoa ativou.
@@ -41,6 +44,7 @@ export const SOM_DA_REACAO: Record<Reacao, Som | null> = {
   banho: "bolhas",
   positivo: "blop",
   episodio: null,
+  cutucada: "boing",
 };
 
 /** Transparência do corpo; igual a ALFA_CORPO em ferramentas/slime/gerar_slime.py. */

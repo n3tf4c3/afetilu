@@ -61,6 +61,13 @@ const SONS = {
     tom(b, { inicio: 0, dur: 0.3, freq: deslize(520, 400), subida: 0.03, descida: 0.15, harmonicos: [1, 0.6, 0.35, 0.2] });
     return b;
   },
+  // "Boing" suave (toque no slime): tom que sobe com um balanço de mola que vai se acalmando.
+  boing() {
+    const b = amostras(0.5);
+    const mola = (x) => 480 * 1.5 ** x * (1 + 0.1 * Math.exp(-3 * x) * Math.sin(2 * Math.PI * 6 * x));
+    tom(b, { inicio: 0, dur: 0.45, freq: mola, subida: 0.015, descida: 0.25, harmonicos: [1, 0.4, 0.15] });
+    return b;
+  },
   // Bolhas (banho): estalinhos agudos e curtos em momentos sorteados.
   bolhas() {
     const b = amostras(0.7);

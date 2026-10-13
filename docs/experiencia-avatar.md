@@ -125,7 +125,8 @@ Em comparação com slimes conhecidos:
 ### 3.2 Reações (cores, expressões e sons)
 
 Regras gerais:
-- **Duração:** a reação dura no máximo 3 s, pode ser interrompida com um toque e volta ao azul neutro.
+- **Duração:** a reação dura no máximo 3 s e volta ao azul neutro.
+- **Toque no slime ("cutucada"):** ele amassa e volta balançando (0,8 s), com um "boing" suave se os sons estiverem ligados. Tocar durante uma reação a interrompe (ela não é retomada) e corta o som em curso. Não conta pontos nem dá recompensa. Movimento reduzido: só a troca de pose; sem animação: nada se move. O toque fica na página do cenário, sob o slime, para não atrapalhar o deslize entre cenários; é decorativo e fica fora do leitor de tela.
 - **Sem acúmulo:** só a última reação é mostrada; reações nunca se misturam nem entram em fila.
 - **Cor passageira:** a cor nunca fica no slime depois da reação, para que ele não vire indicador do estado do dia.
 - **Cor nunca sozinha:** sempre vem com expressão, ícone e legenda textual que descreve o registro e o horário do evento, como "Enjoo registrado · 14:20".
@@ -144,6 +145,7 @@ Regras gerais:
 | Conquista | azul mais luminoso | pulinho, sem pontos nem medalhas | "tum-tum" alegre |
 | Emoções e comportamentos difíceis, episódios | **não muda** | **permanece neutro**; aparece só o card "Registro salvo" | **nenhum** |
 | Evacuação | não muda | sem reação; só a confirmação textual | nenhum |
+| Toque no slime (não é registro) | não muda | olhos apertados e boca em "o" ao amassar; volta balançando e sorri | "boing" suave |
 | Suspeita do responsável | igual ao tipo, em tom mais claro | igual | igual |
 
 Na suspeita, a legenda diz, por exemplo, "Suspeita de enjoo registrada".
@@ -242,7 +244,7 @@ Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertido
   - Não há som em episódios difíceis, enjoo, dor ou evacuação.
   - Motivo da cautela: muitas pessoas autistas têm sensibilidade sonora, e o registro pode ser feito com a criança por perto.
   - **Implementado (13/10/2026):**
-    - Sons sintetizados por `ferramentas/sons/gerar_sons.mjs`, próprios e sem licença de terceiros: `nham` (alimentação), `ronco` (sono), `bolhas` (banho) e `blop` (calma e momentos positivos). Bebida e conquista usam, por ora, o som de alimentação e o de momentos positivos.
+    - Sons sintetizados por `ferramentas/sons/gerar_sons.mjs`, próprios e sem licença de terceiros: `nham` (alimentação), `ronco` (sono), `bolhas` (banho), `blop` (calma e momentos positivos) e `boing` (toque no slime). Bebida e conquista usam, por ora, o som de alimentação e o de momentos positivos.
     - A pergunta aparece como cartão na tela de cenário até a pessoa responder ("Ativar sons" ou "Agora não"); depois, só em Ajustes › Aparência › Sons.
     - `expo-audio` sem permissão de microfone; os tocadores só existem com os sons ligados. Não interrompe música de outros apps.
     - Modo silencioso e vibrar respeitados no Android (testado no emulador: toca no normal, não toca no silencioso nem no vibrar). Armadilha: pausar antes do `seekTo(0)`, senão o tocador que já terminou volta a tocar sozinho sem passar pela checagem do modo silencioso.

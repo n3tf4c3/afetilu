@@ -9,7 +9,7 @@ const tamJson = buf.readUInt32LE(12);
 const gltf = JSON.parse(buf.toString("utf8", 20, 20 + tamJson));
 
 const ESPERADO = {
-  animacoes: ["neutro", "respirar", "sono", "quicar", "enjoo", "desconforto", "alimentacao", "banho"],
+  animacoes: ["neutro", "respirar", "sono", "quicar", "enjoo", "desconforto", "alimentacao", "banho", "cutucada"],
   deformacoes: ["achatar", "esticar", "amassar", "respirar"],
   partes: [
     "olhos_abertos", "olhos_cansados", "olhos_sono", "olhos_alegres", "sobrancelhas_preocupadas",

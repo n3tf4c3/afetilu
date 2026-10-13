@@ -67,7 +67,7 @@ function Pilula(props: {
 
 /** Tela inicial com cenário: o lugar onde a pessoa está, as ações daquele momento e o slime. */
 export function InicioCenario() {
-  const { pessoaAtiva, aparencia, definirAparencia, reacaoSlime } = useApp();
+  const { pessoaAtiva, aparencia, definirAparencia, reacaoSlime, reagir } = useApp();
   const { t, d } = useTextos();
   const ti = t.inicio;
   const { hoje, hojeRegistros, emAberto, anotacaoHoje, abrirRegistro, alternarSemCrises } = useHoje();
@@ -122,6 +122,12 @@ export function InicioCenario() {
   const topoPilulas = insets.top + 132;
   const alturaSlime = Math.min(height * 0.36, 340);
   const estiloSlime = useMemo(() => ({ height: alturaSlime, width }), [alturaSlime, width]);
+  // Área do corpo do slime na cena (câmera fixa em cena-slime.tsx): cerca de 0,85 da altura em
+  // largura, entre 0,2 e 0,76 da altura a partir de baixo. Um pouco de folga em volta.
+  const areaToque = useMemo(
+    () => ({ bottom: 72 + alturaSlime * 0.15, height: alturaSlime * 0.65, width: alturaSlime * 0.9, left: (width - alturaSlime * 0.9) / 2 }),
+    [alturaSlime, width],
+  );
 
   if (!pessoaAtiva) return null;
 
@@ -139,6 +145,14 @@ export function InicioCenario() {
         onMomentumScrollEnd={aoTerminarDeslize}
         renderItem={({ item }) => (
           <ImageBackground source={FUNDO[item.local]} resizeMode="cover" style={{ width, height: "100%" }} accessibilityIgnoresInvertColors>
+            {/* Toque no slime: fica na página (sob o slime, que não recebe toques) para o deslize
+                entre cenários continuar funcionando a partir dele. Decorativo, fora do leitor de tela. */}
+            <Pressable
+              onPress={() => reagir("cutucada")}
+              accessible={false}
+              importantForAccessibility="no"
+              style={[estilos.areaToque, areaToque]}
+            />
             <View style={[estilos.colunas, { top: topoPilulas }]}>
               {(["esquerda", "direita"] as const).map((lado) => (
                 <View key={lado} style={estilos.coluna}>
@@ -160,7 +174,7 @@ export function InicioCenario() {
         )}
       />
 
-      {/* Slime por cima do cenário; não intercepta toques (o deslize continua funcionando). */}
+      {/* Slime por cima do cenário; não intercepta toques (o toque nele é tratado na página). */}
       <View pointerEvents="none" style={[estilos.slime, { bottom: 72 }]}>
         <CenaSlime
           reacao={reacaoSlime.reacao}
@@ -199,7 +213,7 @@ export function InicioCenario() {
       </View>
 
       {/* Pontos de posição (decorativos; o leitor de tela usa as setas). */}
-      <View style={[estilos.pontos, { bottom: 80 }]} importantForAccessibility="no-hide-descendants">
+      <View pointerEvents="none" style={[estilos.pontos, { bottom: 80 }]} importantForAccessibility="no-hide-descendants">
         {CENARIOS.map((c, i) => (
           <View key={c.local} style={[estilos.ponto, i === indice && estilos.pontoAtivo]} />
         ))}
@@ -276,6 +290,7 @@ const estilos = StyleSheet.create({
   pilulaMarcada: { backgroundColor: cor.primariaClara, borderWidth: 1, borderColor: cor.primaria },
   pilulaTexto: { fontSize: 14, fontWeight: "600", color: cor.texto, flexShrink: 1 },
   slime: { position: "absolute", left: 0, right: 0, alignItems: "center" },
+  areaToque: { position: "absolute" },
   cabecalho: { position: "absolute", left: espaco.m, right: espaco.m, flexDirection: "row", alignItems: "center", gap: espaco.s },
   seta: { width: ALVO_MINIMO, height: ALVO_MINIMO, borderRadius: ALVO_MINIMO / 2, backgroundColor: VIDRO, alignItems: "center", justifyContent: "center", ...sombra },
   cartaoTopo: { flex: 1, backgroundColor: VIDRO, borderRadius: raio.l, paddingVertical: espaco.s, paddingHorizontal: espaco.l, alignItems: "center", ...sombra },
