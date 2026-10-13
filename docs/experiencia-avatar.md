@@ -241,6 +241,13 @@ Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertido
   - Respeitam o modo silencioso, duram menos de 1 s, tocam em volume baixo e nunca ao abrir o app.
   - Não há som em episódios difíceis, enjoo, dor ou evacuação.
   - Motivo da cautela: muitas pessoas autistas têm sensibilidade sonora, e o registro pode ser feito com a criança por perto.
+  - **Implementado (13/10/2026):**
+    - Sons sintetizados por `ferramentas/sons/gerar_sons.mjs`, próprios e sem licença de terceiros: `nham` (alimentação), `ronco` (sono), `bolhas` (banho) e `blop` (calma e momentos positivos). Bebida e conquista usam, por ora, o som de alimentação e o de momentos positivos.
+    - A pergunta aparece como cartão na tela de cenário até a pessoa responder ("Ativar sons" ou "Agora não"); depois, só em Ajustes › Aparência › Sons.
+    - `expo-audio` sem permissão de microfone; os tocadores só existem com os sons ligados. Não interrompe música de outros apps.
+    - Modo silencioso e vibrar respeitados no Android (testado no emulador: toca no normal, não toca no silencioso nem no vibrar). Armadilha: pausar antes do `seekTo(0)`, senão o tocador que já terminou volta a tocar sozinho sem passar pela checagem do modo silencioso.
+    - O `expo-audio` acrescenta a permissão `MODIFY_AUDIO_SETTINGS` (normal, sem pedido ao usuário).
+    - Ainda não ouvidos num aparelho físico nem testados no iOS.
 - **Modo simples:** grade de ícones e lista de "Hoje", sem slime. É uma tela completa, e **todo o app funciona nela**.
 - **Leitores de tela:** o slime é decorativo; a reação é anunciada pela legenda. Ícones e campos têm rótulo.
 - **Texto e contraste:** WCAG AA, tamanho dinâmico, nenhuma informação transmitida só pela cor. As cores de enjoo e desconforto sempre vêm com legenda, por causa do daltonismo.

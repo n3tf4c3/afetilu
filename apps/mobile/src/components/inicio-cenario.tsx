@@ -26,6 +26,7 @@ import { useHoje } from "../lib/usar-hoje";
 import { useMovimento } from "../lib/usar-movimento";
 import { ICONE_CATEGORIA, ICONE_SEM_CRISES } from "./icones";
 import { CenaSlime } from "./slime/cena-slime";
+import { useSonsDoSlime } from "./slime/usar-sons";
 import type { NomeIcone } from "./ui";
 
 // Fundos gerados por ferramentas/cenarios/gerar_cenarios.py (estáticos, sem animação).
@@ -71,6 +72,7 @@ export function InicioCenario() {
   const ti = t.inicio;
   const { hoje, hojeRegistros, emAberto, anotacaoHoje, abrirRegistro, alternarSemCrises } = useHoje();
   const movimento = useMovimento();
+  useSonsDoSlime(reacaoSlime.reacao, reacaoSlime.disparo, aparencia.som === "ligado");
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const lista = useRef<FlatList<Cenario>>(null);
@@ -203,6 +205,26 @@ export function InicioCenario() {
         ))}
       </View>
 
+      {/* Sons desligados até a escolha: pergunta uma vez, sem bloquear a tela. */}
+      {aparencia.som === "pendente" ? (
+        <View style={[estilos.pergunta, { bottom: 104 }]}>
+          <Text style={estilos.perguntaTitulo}>{ti.somPergunta}</Text>
+          <Text style={estilos.perguntaTexto}>{ti.somPerguntaAjuda}</Text>
+          <View style={estilos.perguntaBotoes}>
+            <Pressable accessibilityRole="button" onPress={() => void definirAparencia({ som: "desligado" })} style={estilos.perguntaBotao}>
+              <Text style={estilos.fecharTexto}>{ti.somAgoraNao}</Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => void definirAparencia({ som: "ligado" })}
+              style={[estilos.perguntaBotao, estilos.perguntaBotaoPrincipal]}
+            >
+              <Text style={[estilos.fecharTexto, { color: cor.sobrePrimaria }]}>{ti.somAtivar}</Text>
+            </Pressable>
+          </View>
+        </View>
+      ) : null}
+
       <Modal visible={todasAbertas} transparent animationType={movimento === "completo" ? "fade" : "none"} onRequestClose={() => setTodasAbertas(false)}>
         <View style={estilos.modalFundo}>
           <View style={estilos.modalCartao}>
@@ -271,4 +293,11 @@ const estilos = StyleSheet.create({
   modalGrade: { flexDirection: "row", flexWrap: "wrap", gap: espaco.s },
   fechar: { minHeight: ALVO_MINIMO, alignItems: "center", justifyContent: "center" },
   fecharTexto: { fontSize: 16, fontWeight: "600", color: cor.primaria },
+  // Opaco: fica sobre o slime e precisa de leitura limpa.
+  pergunta: { position: "absolute", left: espaco.m, right: espaco.m, backgroundColor: cor.fundo, borderRadius: raio.l, padding: espaco.l, gap: espaco.s, ...sombra },
+  perguntaTitulo: { fontSize: 16, fontWeight: "700", color: cor.texto },
+  perguntaTexto: { fontSize: 14, color: cor.textoSuave },
+  perguntaBotoes: { flexDirection: "row", justifyContent: "flex-end", gap: espaco.s },
+  perguntaBotao: { minHeight: ALVO_MINIMO, justifyContent: "center", paddingHorizontal: espaco.l, borderRadius: ALVO_MINIMO / 2 },
+  perguntaBotaoPrincipal: { backgroundColor: cor.primaria },
 });

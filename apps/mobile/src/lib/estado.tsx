@@ -83,6 +83,7 @@ async function abrir(): Promise<Abertura> {
       modoVisual: await lerPreferencia(db, CHAVES_APARENCIA.modoVisual),
       movimento: await lerPreferencia(db, CHAVES_APARENCIA.movimento),
       local: await lerPreferencia(db, CHAVES_APARENCIA.local),
+      som: await lerPreferencia(db, CHAVES_APARENCIA.som),
     });
     return { tipo: "pronto", db, pessoas, ativaId, idioma: ehIdioma(idioma) ? idioma : "auto", aparencia };
   } catch (e) {

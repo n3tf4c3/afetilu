@@ -10,6 +10,9 @@ import { useApp, useTextos } from "../../lib/estado";
 import { criarPessoa, criarRegistro, marcarSemCrises, renomearPessoa } from "../../lib/repositorio";
 import { espaco, texto } from "../../lib/tema";
 
+/** "pendente" aparece como desligado: os sons só tocam depois da escolha. */
+const OPCOES_SOM = ["ligado", "desligado"] as const;
+
 function EditarPessoa(props: { id: string; apelido: string; ativa: boolean }) {
   const { db, recarregarPessoas, escolherPessoa } = useApp();
   const { t } = useTextos();
@@ -89,6 +92,14 @@ export default function Ajustes() {
           onChange={(v) => v && void definirAparencia({ movimento: v })}
         />
         <Text style={texto.suave}>{a.movimentoAjuda}</Text>
+        <Escolha
+          rotulo={a.sons}
+          opcoes={OPCOES_SOM}
+          rotulos={{ ligado: a.somLigado, desligado: a.somDesligado }}
+          valor={aparencia.som === "ligado" ? "ligado" : "desligado"}
+          onChange={(v) => v && void definirAparencia({ som: v })}
+        />
+        <Text style={texto.suave}>{a.sonsAjuda}</Text>
       </Secao>
 
       <Secao titulo={a.idioma}>

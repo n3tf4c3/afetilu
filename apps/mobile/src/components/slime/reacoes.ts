@@ -26,6 +26,23 @@ export const COR_DA_REACAO: Record<Reacao, string> = {
   episodio: "#79AEE0",
 };
 
+export type Som = "nham" | "ronco" | "bolhas" | "blop";
+
+/**
+ * Som de cada reação (assets/sons, gerados por ferramentas/sons/gerar_sons.mjs), tocado só se a pessoa ativou.
+ * Sem som em enjoo, dor, episódios e evacuação (evacuação nem chega a reagir).
+ */
+export const SOM_DA_REACAO: Record<Reacao, Som | null> = {
+  neutro: null,
+  alimentacao: "nham",
+  enjoo: null,
+  desconforto: null,
+  sono: "ronco",
+  banho: "bolhas",
+  positivo: "blop",
+  episodio: null,
+};
+
 /** Transparência do corpo; igual a ALFA_CORPO em ferramentas/slime/gerar_slime.py. */
 export const ALFA_CORPO = 0.8;
 

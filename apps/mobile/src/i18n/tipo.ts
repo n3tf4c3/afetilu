@@ -44,6 +44,10 @@ export interface TextosApp {
     hojeMarcadoSemCrises: string;
     todas: string;
     todasTitulo: string;
+    somPergunta: string;
+    somPerguntaAjuda: string;
+    somAtivar: string;
+    somAgoraNao: string;
     fechar: string;
     cenarioAnterior: string;
     proximoCenario: string;
@@ -206,6 +210,10 @@ export interface TextosApp {
     movCompleto: string;
     movReduzido: string;
     movNenhum: string;
+    sons: string;
+    somLigado: string;
+    somDesligado: string;
+    sonsAjuda: string;
     seusDados: string;
     seusDadosTexto: string;
     backupEmBreve: string;

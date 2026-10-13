@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, corLinear } from "./reacoes";
+import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, corLinear, SOM_DA_REACAO } from "./reacoes";
 
 // Contrato entre o app e o slime.glb versionado (gerado por ferramentas/slime/gerar_slime.py).
 
@@ -26,6 +26,20 @@ test("todo clipe usado pelas reações existe no modelo", () => {
 test("episódio difícil não anima nem muda a cor do slime", () => {
   assert.equal(CLIPE_DA_REACAO.episodio, null);
   assert.equal(COR_DA_REACAO.episodio, COR_DA_REACAO.neutro);
+});
+
+test("sem som em episódio, enjoo e dor; todo som usado existe em assets/sons", () => {
+  assert.equal(SOM_DA_REACAO.episodio, null);
+  assert.equal(SOM_DA_REACAO.enjoo, null);
+  assert.equal(SOM_DA_REACAO.desconforto, null);
+  assert.equal(SOM_DA_REACAO.neutro, null);
+  for (const som of Object.values(SOM_DA_REACAO)) {
+    if (!som) continue;
+    const wav = readFileSync(join(__dirname, `../../../assets/sons/${som}.wav`));
+    assert.equal(wav.toString("ascii", 0, 4), "RIFF");
+    const segundos = wav.readUInt32LE(40) / wav.readUInt32LE(28);
+    assert.ok(segundos < 1, `${som} dura ${segundos} s`);
+  }
 });
 
 test("alfa do corpo é o mesmo no modelo e no app", () => {
