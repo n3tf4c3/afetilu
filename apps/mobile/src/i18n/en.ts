@@ -230,7 +230,7 @@ export const en: TextosApp = {
     seusDados: "Your data",
     seusDadosTexto:
       "Entries stay on this device only, encrypted. The app has no server, sends no data and uses no analytics or advertising tools.",
-    backupEmBreve: "Backup and exporting the summary for appointments are coming in a later stage.",
+    backupEmBreve: "Encrypted backup is coming in a later stage. The summary for appointments is in the Timeline.",
     devTitulo: "Development (this build only)",
     devAjuda: "Tools for testing with fictional data. They don't appear in the store version.",
     devGerar: "Create a fictional person and entries",

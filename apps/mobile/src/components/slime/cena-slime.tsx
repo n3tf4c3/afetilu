@@ -60,11 +60,18 @@ function Cena({ reacao, disparo, suspeita = false, corBase = "azul", movimento, 
   // Renderização sob demanda: liga o laço de render por um tempo e desliga. Além da bateria, reduz
   // a janela da falha observada no emulador (thread FilamentRenderer sem responder à pausa do GC).
   const desligar = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Fim da janela de render já pedida: um pedido mais curto nunca encurta um mais longo
+  // (a troca de cor não pode cortar a primeira exibição do modelo nem uma reação em curso).
+  const renderizarAte = useRef(0);
   const renderizarPor = useCallback(
     (ms: number) => {
       choreographer.start();
+      if (continua) return;
+      const fim = Date.now() + ms;
+      if (fim <= renderizarAte.current) return;
+      renderizarAte.current = fim;
       if (desligar.current) clearTimeout(desligar.current);
-      if (!continua) desligar.current = setTimeout(() => choreographer.stop(), ms);
+      desligar.current = setTimeout(() => choreographer.stop(), ms);
     },
     [choreographer, continua],
   );

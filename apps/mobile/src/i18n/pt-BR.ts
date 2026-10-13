@@ -230,7 +230,7 @@ export const ptBR: TextosApp = {
     seusDados: "Seus dados",
     seusDadosTexto:
       "Os registros ficam só neste aparelho, cifrados. O app não tem servidor, não envia dados e não usa ferramentas de análise ou publicidade.",
-    backupEmBreve: "Backup e exportação do resumo para consulta chegam numa próxima etapa.",
+    backupEmBreve: "O backup cifrado chega numa próxima etapa. O resumo para consulta fica na Linha do tempo.",
     devTitulo: "Desenvolvimento (só nesta build)",
     devAjuda: "Ferramentas para testar com dados fictícios. Não aparecem na versão das lojas.",
     devGerar: "Gerar pessoa e registros fictícios",
