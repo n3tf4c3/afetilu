@@ -2,6 +2,7 @@
   "name": "afetilu",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "packageManager": "pnpm@12.4.2",
   "scripts": {
     "mobile": "pnpm --filter ./apps/mobile start",
