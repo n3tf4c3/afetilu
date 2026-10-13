@@ -1,6 +1,7 @@
 import type {
   Categoria,
   Intensidade,
+  Local,
   OBSERVADOS,
   Origem,
   PeriodoDoDia,
@@ -40,6 +41,8 @@ export type ChaveNome =
  */
 export interface DicionarioDominio {
   categoria: Record<Categoria, string>;
+  /** Rótulo curto para botões compactos (o nome completo continua no leitor de tela). */
+  categoriaCurta: Record<Categoria, string>;
   origem: Record<Origem, string>;
   periodo: Record<PeriodoDoDia, string>;
   periodoCurto: Record<PeriodoDoDia, string>;
@@ -53,6 +56,7 @@ export interface DicionarioDominio {
   lesao: Record<"sim" | "nao" | "nao_sei", string>;
   tipoAlimento: Record<"comida" | "bebida", string>;
   tipoSono: Record<"noturno" | "cochilo", string>;
+  local: Record<Local, string>;
   /** Critérios observáveis, não clínicos (rascunho a validar com profissionais). */
   intensidade: Record<Intensidade, { rotulo: string; criterio: string }>;
   nomeRegistro: Record<ChaveNome, Nome>;

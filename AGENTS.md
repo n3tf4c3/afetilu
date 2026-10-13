@@ -50,6 +50,8 @@ pnpm test           # core + helpers do mobile
 pnpm android        # expo run:android (build de desenvolvimento local)
 ```
 
+O CI do GitHub Actions (`.github/workflows/ci.yml`) só roda manualmente, para evitar gastar minutos a cada push: rodar `lint`, `typecheck` e `test` localmente antes de enviar.
+
 Dentro de `apps/mobile`, instalar dependências com `pnpm exec expo install <pacote> --pnpm` (resolve versões do SDK) e conferir com `npx expo-doctor`.
 
 ## Expo muda a cada SDK
@@ -61,4 +63,5 @@ Antes de usar uma API do Expo/React Native, conferir a documentação da versão
 - Identificador `com.eloazul.app` é provisório: fica permanente no primeiro envio às lojas.
 - EAS (builds na nuvem e updates OTA) ainda não configurado: exige conta e aprovação.
 - Resumo em PDF, backup cifrado escolhido pelo responsável e exclusão total pelo usuário: etapa 5.
-- Mascote slime 3D: o modelo é gerado por `ferramentas/slime/gerar_slime.py` (Blender 4.5 LTS, sem add-ons) e conferido por `ferramentas/slime/inspecionar-glb.mjs`; nunca editar o `.glb` à mão. Integração no app (react-native-filament) e sons: etapa 3, após prova técnica.
+- Mascote slime 3D: componente isolado em `apps/mobile/src/components/slime/` (react-native-filament 1.11.0, versão fixada). Renderização sob demanda (liga só durante a reação). Armadilhas: `useModel` devolve objeto novo a cada render (usar o `asset`); `Skybox`/`DefaultLight` vazam memória a cada render (manter memorizados); sem `KHR_materials_transmission` (corpo por alfa). Contrato com o `.glb` testado em `reacoes.test.ts`.
+- O modelo do slime é gerado por `ferramentas/slime/gerar_slime.py` (Blender 4.5 LTS, sem add-ons) e conferido por `ferramentas/slime/inspecionar-glb.mjs`; nunca editar o `.glb` à mão. Integração na tela inicial e sons: próximos passos da etapa 3. Desempenho em Android de entrada, aquecimento, bateria e iOS ainda não medidos (exigem aparelho físico).

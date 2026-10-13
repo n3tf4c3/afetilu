@@ -32,6 +32,7 @@ export interface TextosApp {
     hoje: (dia: string) => string;
     pessoaAcompanhada: string;
     diaSemCrises: string;
+    semCrisesCurto: string;
     diaSemCrisesMarcado: string;
     emAbertoTitulo: string;
     emAbertoAjuda: string;
@@ -41,6 +42,14 @@ export interface TextosApp {
     episodioHojeTitulo: string;
     episodioHojeTexto: string;
     hojeMarcadoSemCrises: string;
+    todas: string;
+    todasTitulo: string;
+    fechar: string;
+    cenarioAnterior: string;
+    proximoCenario: string;
+    cenarioAtual: (local: string, posicao: number, total: number) => string;
+    hojeResumo: (n: number) => string;
+    emAbertoResumo: (n: number) => string;
   };
   item: { abreDetalhes: string; emAberto: string; corrigido: string };
   desfazer: { botao: string; rotulo: string };
@@ -53,6 +62,7 @@ export interface TextosApp {
     terminoSono: { nao_informado: string; em_aberto: string; horario: string };
     terminoDor: { nao_informado: string; em_aberto: string; horario: string };
     origemTitulo: string;
+    localTitulo: string;
     quemContou: string;
     quemContouDica: string;
     suspeitaAjuda: string;
@@ -149,6 +159,7 @@ export interface TextosApp {
     terminoEmAberto: string;
     origem: string;
     observacao: string;
+    local: string;
   };
   detalhe: {
     titulo: string;
@@ -186,6 +197,15 @@ export interface TextosApp {
     acrescentar: string;
     idioma: string;
     idiomaAutomatico: string;
+    aparencia: string;
+    modoCenario: string;
+    modoSimples: string;
+    movimento: string;
+    movimentoAjuda: string;
+    movAuto: string;
+    movCompleto: string;
+    movReduzido: string;
+    movNenhum: string;
     seusDados: string;
     seusDadosTexto: string;
     backupEmBreve: string;

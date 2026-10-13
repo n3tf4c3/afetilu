@@ -81,3 +81,11 @@ test("abrir para correção reconstrói o formulário com a mesma precisão", ()
     assert.equal(volta.entrada.ocorreuDia, "2026-10-12");
   }
 });
+
+test("local do cenário vai para o registro e pode ser removido", () => {
+  const f = formularioNovo("comportamento", AGORA, "escola");
+  const r = montarEntrada({ ...f, rascunho: { categoria: "comportamento", observado: ["calmo"], ehEpisodio: false } }, "p1", AGORA);
+  assert.ok(r.ok && r.entrada.local === "escola");
+  const sem = montarEntrada({ ...f, local: undefined, rascunho: { categoria: "comportamento", observado: ["calmo"], ehEpisodio: false } }, "p1", AGORA);
+  assert.ok(sem.ok && sem.entrada.local === undefined);
+});

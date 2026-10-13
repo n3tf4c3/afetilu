@@ -28,7 +28,10 @@ const matCorpo = gltf.materials.find((m) => m.name === "corpo");
 for (const a of ESPERADO.animacoes) if (!animacoes.includes(a)) falhas.push(`animação ausente: ${a}`);
 for (const d of ESPERADO.deformacoes) if (!nomesDeformacoes.includes(d)) falhas.push(`deformação ausente: ${d}`);
 for (const p of ESPERADO.partes) if (!nos.has(p)) falhas.push(`parte ausente: ${p}`);
-if (!matCorpo?.extensions?.KHR_materials_transmission) falhas.push("material do corpo sem KHR_materials_transmission");
+// O app usa transparência por alfa (o Filament do RN não implementa KHR_materials_transmission).
+if (matCorpo?.alphaMode !== "BLEND") falhas.push("material do corpo sem alphaMode BLEND");
+const alfa = matCorpo?.pbrMetallicRoughness?.baseColorFactor?.[3];
+if (!(alfa > 0.5 && alfa < 0.95)) falhas.push(`alfa do corpo fora da faixa (${alfa})`);
 if (!nos.has("rosto")) falhas.push("nó 'rosto' ausente");
 
 const duracoes = (gltf.animations ?? []).map((a) => {
@@ -42,6 +45,10 @@ console.log(`deformações do corpo: ${nomesDeformacoes.join(", ")}`);
 console.log(`extensões: ${(gltf.extensionsUsed ?? []).join(", ")}`);
 console.log(`malhas: ${gltf.meshes.length}, nós: ${gltf.nodes.length}, materiais: ${gltf.materials.map((m) => m.name).join(", ")}`);
 if (corpo === undefined) falhas.push("malha do corpo não encontrada");
+// Pose de repouso: só os grupos de partes (liga/desliga) podem ter escala 0; peças internas nunca.
+for (const n of gltf.nodes) {
+  if (!ESPERADO.partes.includes(n.name) && n.scale && n.scale.every((s) => s === 0)) falhas.push(`nó ${n.name} com escala 0 na pose de repouso`);
+}
 // Cada clipe precisa definir o estado inteiro (partes, rosto e deformações) para poder ser interrompido.
 const canaisEsperados = ESPERADO.partes.length + 3;
 for (const a of gltf.animations ?? []) {

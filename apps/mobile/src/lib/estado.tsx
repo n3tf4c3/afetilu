@@ -2,7 +2,9 @@ import { ehIdioma, resolverIdioma, type Idioma, type Pessoa } from "@eloazul/cor
 import { getLocales } from "expo-localization";
 import type { SQLiteDatabase } from "expo-sqlite";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import type { Reacao } from "../components/slime/reacoes";
 import { textos, type Textos } from "../i18n";
+import { aparenciaDosValores, CHAVES_APARENCIA, type Aparencia } from "./aparencia";
 import { abrirBanco, apagarBancoDoAparelho, ErroBanco, type FalhaBanco } from "./db";
 import { gravarPreferencia, lerPreferencia, listarPessoas } from "./repositorio";
 
@@ -32,6 +34,11 @@ interface EstadoApp {
   apagarTudo: () => Promise<void>;
   preferenciaIdioma: PreferenciaIdioma;
   definirIdioma: (p: PreferenciaIdioma) => Promise<void>;
+  aparencia: Aparencia;
+  definirAparencia: (parcial: Partial<Aparencia>) => Promise<void>;
+  /** Última reação pedida ao mascote; `disparo` muda a cada pedido. */
+  reacaoSlime: { reacao: Reacao | null; disparo: number };
+  reagir: (reacao: Reacao | null) => void;
 }
 
 export type Situacao =
@@ -42,7 +49,14 @@ export type Situacao =
 type Abertura =
   | { tipo: "carregando" }
   | { tipo: "erro"; falha: FalhaBanco; causa?: string }
-  | { tipo: "pronto"; db: SQLiteDatabase; pessoas: Pessoa[]; ativaId: string | null; idioma: PreferenciaIdioma };
+  | {
+      tipo: "pronto";
+      db: SQLiteDatabase;
+      pessoas: Pessoa[];
+      ativaId: string | null;
+      idioma: PreferenciaIdioma;
+      aparencia: Aparencia;
+    };
 
 const Contexto = createContext<EstadoApp | null>(null);
 const ContextoTextos = createContext<Textos>(textos("pt-BR"));
@@ -65,7 +79,12 @@ async function abrir(): Promise<Abertura> {
     const preferida = await lerPreferencia(db, PREF_PESSOA_ATIVA);
     const idioma = await lerPreferencia(db, PREF_IDIOMA);
     const ativaId = pessoas.some((p) => p.id === preferida) ? preferida : (pessoas[0]?.id ?? null);
-    return { tipo: "pronto", db, pessoas, ativaId, idioma: ehIdioma(idioma) ? idioma : "auto" };
+    const aparencia = aparenciaDosValores({
+      modoVisual: await lerPreferencia(db, CHAVES_APARENCIA.modoVisual),
+      movimento: await lerPreferencia(db, CHAVES_APARENCIA.movimento),
+      local: await lerPreferencia(db, CHAVES_APARENCIA.local),
+    });
+    return { tipo: "pronto", db, pessoas, ativaId, idioma: ehIdioma(idioma) ? idioma : "auto", aparencia };
   } catch (e) {
     return e instanceof ErroBanco ? { tipo: "erro", falha: e.tipo, causa: e.causa } : { tipo: "erro", falha: "nao_abriu" };
   }
@@ -76,6 +95,7 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
   const [tentativa, setTentativa] = useState(0);
   const [versaoDados, setVersao] = useState(0);
   const [desfazer, setDesfazer] = useState<Desfazer | null>(null);
+  const [reacaoSlime, setReacaoSlime] = useState<{ reacao: Reacao | null; disparo: number }>({ reacao: null, disparo: 0 });
   const [idiomaAparelho] = useState<Idioma>(() => resolverIdioma(getLocales().map((l) => l.languageTag)));
 
   useEffect(() => {
@@ -139,8 +159,17 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
         await gravarPreferencia(banco, PREF_IDIOMA, p);
         setAbertura((a) => (a.tipo === "pronto" ? { ...a, idioma: p } : a));
       },
+      aparencia: abertura.aparencia,
+      definirAparencia: async (parcial) => {
+        for (const [chave, valor] of Object.entries(parcial) as [keyof Aparencia, string][]) {
+          await gravarPreferencia(banco, CHAVES_APARENCIA[chave], valor);
+        }
+        setAbertura((a) => (a.tipo === "pronto" ? { ...a, aparencia: { ...a.aparencia, ...parcial } } : a));
+      },
+      reacaoSlime,
+      reagir: (reacao) => setReacaoSlime((r) => ({ reacao, disparo: r.disparo + 1 })),
     };
-  }, [abertura, versaoDados, desfazer, recomecar]);
+  }, [abertura, versaoDados, desfazer, recomecar, reacaoSlime]);
 
   const idioma = abertura.tipo === "pronto" && abertura.idioma !== "auto" ? abertura.idioma : idiomaAparelho;
   const valorTextos = useMemo(() => textos(idioma), [idioma]);

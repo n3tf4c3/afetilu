@@ -69,6 +69,17 @@ A PWA não é uma forma de contornar a política das lojas, porque não passa po
 - **Sem cobrança antes da aprovação:** nenhuma assinatura ou compra entra antes da aprovação em produção nas duas lojas.
 - **Rota alternativa preservada:** o núcleo continua portável, mantendo a PWA (opção B) disponível.
 
+### 1.4.1 Distribuição internacional (decisão de 13/10/2026)
+
+O app será oferecido também fora do Brasil, em português, inglês e espanhol. Idioma não define país: cada país liberado nas lojas traz regras próprias.
+
+- **Modelo só local ajuda:** sem servidor e sem coleta pelo desenvolvedor, as obrigações típicas de quem guarda dados (contrato de tratamento, transferência internacional, notificação de incidente) tendem a não se aplicar. Isso precisa ser confirmado por jurisdição.
+- **Antes de liberar cada país ou região**, verificar a lei de privacidade e de dados de saúde aplicável. Exemplos: GDPR na União Europeia (Espanha); UK GDPR; leis de privacidade da América Latina (como México, Argentina, Colômbia e Chile); leis estaduais de dados de saúde do consumidor nos EUA. Classificação etária e público adulto em cada loja.
+- **Política de privacidade e textos das lojas** nos três idiomas, descrevendo o funcionamento real.
+- **Liberação gradual:** as lojas permitem escolher os países. Começar por um conjunto pequeno e ampliar depois da revisão de cada um.
+- **Emergência:** fora do pt-BR, o app orienta a ligar para o número de emergência local, sem citar serviços de um país.
+- A exigência de conta de organização (seção 1.3) vale para todas as regiões da mesma conta de desenvolvedor.
+
 ### 1.5 Perguntas para os suportes
 
 **Google Play Developer Support:**

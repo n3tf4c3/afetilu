@@ -5,6 +5,7 @@ import {
   type Categoria,
   type EntradaRegistro,
   type EscolhaDeQuando,
+  type Local,
   type Origem,
   type Registro,
 } from "@eloazul/core";
@@ -21,6 +22,8 @@ export interface Formulario {
   observacao: string;
   termino: Termino;
   terminoEm: Date;
+  /** Onde a pessoa estava; vem do cenário da tela inicial e pode ser removido. */
+  local?: Local;
   rascunho: Rascunho;
 }
 
@@ -40,8 +43,9 @@ export function rascunhoInicial(categoria: Categoria): Rascunho {
   }
 }
 
-export function formularioNovo(categoria: Categoria, agora: Date): Formulario {
+export function formularioNovo(categoria: Categoria, agora: Date, local?: Local): Formulario {
   return {
+    local,
     quando: { tipo: "agora" },
     origem: "vi",
     origemQuem: "",
@@ -66,6 +70,7 @@ export function formularioDoRegistro(r: Registro, agora: Date): Formulario {
     observacao: r.observacao ?? "",
     termino: r.emAberto ? "em_aberto" : r.ocorreuFim ? "horario" : "nao_informado",
     terminoEm: r.ocorreuFim ? new Date(r.ocorreuFim) : agora,
+    local: r.local,
     rascunho: { ...r.detalhe } as Rascunho,
   };
 }
@@ -119,6 +124,7 @@ export function montarEntrada(f: Formulario, pessoaId: string, agora: Date): Res
     origem: f.origem,
     origemQuem: f.origem === "me_contaram" ? f.origemQuem : undefined,
     observacao: f.observacao,
+    local: f.local,
   });
   const r = entradaRegistro.safeParse({ ...bruto, emAberto: comTermino && f.termino === "em_aberto", detalhe });
   if (r.success) return { ok: true, entrada: r.data };

@@ -76,6 +76,7 @@ export function descreverRegistro(
 
   if (r.emAberto) add(t.termino, t.terminoEmAberto);
   else add(t.termino, r.ocorreuFim && dataHora(r.ocorreuFim));
+  add(t.local, r.local && d.local[r.local]);
   add(t.origem, d.origem[r.origem] + (r.origemQuem ? ` (${r.origemQuem})` : ""));
   add(t.observacao, r.observacao);
   return linhas;

@@ -22,6 +22,7 @@ export const en: DicionarioDominio = {
     evacuacao: "Bowel movements",
     positivo: "Activities and achievements",
   },
+  categoriaCurta: { alimentacao: "Food", dor_desconforto: "Pain", comportamento: "Feelings", higiene: "Bath", sono: "Sleep", evacuacao: "Bowel", positivo: "Wins" },
   origem: { vi: "I saw it", me_contaram: "Someone told me", suspeita: "My suspicion" },
   periodo: { madrugada: "overnight", manha: "in the morning", tarde: "in the afternoon", noite: "in the evening" },
   periodoCurto: { madrugada: "Overnight", manha: "Morning", tarde: "Afternoon", noite: "Evening" },
@@ -45,6 +46,7 @@ export const en: DicionarioDominio = {
   lesao: { sim: "Yes", nao: "No", nao_sei: "Not sure" },
   tipoAlimento: { comida: "Food", bebida: "Drink" },
   tipoSono: { noturno: "Night sleep", cochilo: "Nap" },
+  local: { casa: "At home", escola: "At school", parque: "At the park", terapia: "At therapy" },
   intensidade: {
     leve: { rotulo: "Mild", criterio: "No risk of injury; ended on its own or with simple redirection; the activity could continue." },
     moderada: { rotulo: "Moderate", criterio: "Interrupted the activity or routine; required active intervention by the caregiver; no injury." },

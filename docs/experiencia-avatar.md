@@ -73,6 +73,42 @@ Medições num **Android de entrada** e num iPhone:
 
 O slime para de renderizar quando não está animando, para poupar bateria. Se a prova falhar, o app segue com o plano B (2,5D), sem mudar o restante do produto.
 
+### 2.2 Resultado da prova técnica (13/10/2026, emulador Android 15 x86_64, build de desenvolvimento)
+
+Tela de prova: Ajustes › Desenvolvimento › "Prova técnica: slime 3D" (só em `__DEV__`). Componente: `apps/mobile/src/components/slime/cena-slime.tsx`.
+
+| Item | Resultado |
+|---|---|
+| Reações | Todas funcionam no aparelho: cor passageira, troca de expressão, deformações (sono, quique), bolhas, alimento visível dentro do corpo e volta ao neutro. Episódio não anima nem muda a cor. |
+| Fluidez | 59,8–60 quadros/s de média em 60 s de renderização contínua (mínimo 50 ao abrir, depois 60). |
+| Renderização sob demanda | O laço de render liga só durante a reação e congela no neutro (0 quadros/s, slime continua visível). Em uso normal, a GPU fica parada > 95% do tempo. Em repouso o slime é estático; a respiração em laço existe só no modo de medição. |
+| Movimento reduzido / nenhum | Nenhum deslocamento medido durante as reações (comparação de blocos 24×24 entre quadros: 0%; controle no modo completo: 26%). |
+| Memória | Heap nativo ≈ 210 MB sem a cena → ≈ 280–300 MB com a cena (build de desenvolvimento). Estável após 75 reações seguidas (sem vazamento). |
+| Tamanho | `libreact-native-filament.so` 7,9 MB + worklets-core 1,6 MB (x86_64, não comprimidos), luz ambiente 0,5 MB e modelo 0,9 MB. Estimativa de acréscimo no download por arquitetura: ~5–8 MB, a confirmar numa build de release arm64. |
+| Estabilidade | 1 encerramento pelo Android ("SuspendAll timeout" — a thread FilamentRenderer não respondeu à pausa do coletor de lixo) com renderização contínua por muitos minutos e o emulador sobrecarregado por capturas. Com renderização sob demanda: 75 reações sem falha. |
+
+**Problemas encontrados e contornados**
+- `react-native-filament` 1.11 não implementa `KHR_materials_transmission` (o material não tem `transmissionFactor`): o corpo usa transparência por alfa (`ALFA_CORPO = 0.8`). A transmissão fica só nas prévias do Blender.
+- `useModel` devolve objeto novo a cada render: usar o `asset` como dependência (senão o animador é recriado e a reação reinicia sem parar).
+- `Skybox` e `DefaultLight` recriam recursos nativos a cada render e vazam memória (~1,2 MB/s com 1 render por segundo): ficam em componentes memorizados.
+- O liga/desliga do laço usa `choreographer` do contexto (API marcada como privada; a mesma de `FilamentView.pause/resume`). Versão fixada em 1.11.0.
+
+### 2.3 Aparelho real (13/10/2026): Samsung Galaxy A52s 5G, Android 14, Snapdragon 778G, tela de 120 Hz
+
+Celular ligado no USB, bateria em 100% e já morno no início (bateria 39,5 °C, estado térmico 2 de 6).
+
+| Item | Resultado |
+|---|---|
+| Funcionamento | Reações, cores e volta ao neutro iguais ao emulador; idioma pt-BR detectado do aparelho. |
+| Fluidez | Até ~97–120 quadros/s (acompanha a tela de 120 Hz). |
+| Renderização sob demanda | Liga na reação e para depois (0 quadros/s, slime visível). |
+| Renderização contínua por 5 min (teste de estresse) | Processador 44,5 → 56,8 °C, bateria 39,5 → 41,8 °C, estado térmico 2 → 4 (crítico). Teste interrompido; o processador voltou a 44 °C em 3 min com o app fechado. Sem falha do app. |
+| Memória | Heap nativo ≈ 136–157 MB, estável. |
+
+**Conclusões:** renderização contínua não é aceitável (aquece o aparelho); a renderização sob demanda é obrigatória e fica como padrão. Melhoria pendente: limitar a 60 quadros/s durante as reações em telas de 90/120 Hz. O A52s é intermediário; um aparelho de entrada ainda não foi testado, e o consumo de bateria não foi medido (o celular estava carregando).
+
+**Ainda não medido:** Android de entrada, consumo de bateria e iOS.
+
 ---
 
 ## 3. O personagem
@@ -174,6 +210,26 @@ O registro abre imediatamente, sem esperar animação.
 **Duração e término:** episódios e desconfortos podem ficar "em aberto". Um card em "Hoje" (sem notificação) pede o término depois. O slime voltar ao neutro não encerra nada.
 
 ---
+
+### 4.3 Cenários (decisão de 13/10/2026)
+
+Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertidos.png` (ambientes em tela cheia, ações em pílulas translúcidas nas laterais, slime mais gordinho).
+
+- **O cenário é o lugar onde a pessoa está agora:** Casa, Escola, Parque e Terapia. Ele é trocado deslizando para os lados ou pelas setas do cabeçalho, que servem a quem usa leitor de tela.
+- **O local vai para o registro como dado opcional** ("Onde estava?"), já preenchido pelo cenário e removível. É informação literal; nunca é usado para inferir causa.
+- **Ações daquele momento:** pílulas compactas e translúcidas nos cantos superiores, com rótulo curto e nome completo para o leitor de tela. São no máximo 4 por lado, com "Todas" quando alguma categoria fica de fora. Toda categoria continua alcançável em qualquer cenário (`apps/mobile/src/lib/cenarios.ts`, testado).
+
+| Cenário | Esquerda | Direita |
+|---|---|---|
+| Casa | Alimentação, Sono, Banho, Evacuação | Dor, Emoções, Conquistas, Sem crises |
+| Escola | Alimentação, Emoções, Conquistas | Dor, Evacuação, Todas |
+| Parque | Conquistas, Emoções, Alimentação | Dor, Todas |
+| Terapia | Emoções, Conquistas | Dor, Todas |
+
+- **Fundos estáticos** gerados por `ferramentas/cenarios/gerar_cenarios.py` (Blender, modelos CC0 da Kenney, licenças em `ferramentas/cenarios/recursos/kenney`). São calmos, sem luzes fortes e com o centro do chão livre para o slime. Cerca de 80 KB por imagem.
+- **Slime transparente** sobre o fundo (renderização sob demanda continua valendo).
+- **Modo simples** (Ajustes › Aparência): grade de categorias sem slime nem cenário. O nível de movimento é configurável em Ajustes e segue o "reduzir movimento" do aparelho no automático.
+- **Futuro:** Piscina, Teatro e uma Festa em versão calma (sem luzes piscantes, globo ou confete em movimento).
 
 ## 5. Acolhimento, acessibilidade e sons
 

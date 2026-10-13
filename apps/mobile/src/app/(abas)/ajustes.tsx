@@ -1,7 +1,9 @@
 import { IDIOMAS, LIMITES } from "@eloazul/core";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
-import { Aviso, Botao, Campo, Chip, Secao, estilos as ui } from "../../components/ui";
+import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos as ui } from "../../components/ui";
+import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
 import { NOME_DO_IDIOMA } from "../../i18n";
 import { gerarDadosFicticios } from "../../lib/dados-ficticios";
 import { useApp, useTextos } from "../../lib/estado";
@@ -27,8 +29,19 @@ function EditarPessoa(props: { id: string; apelido: string; ativa: boolean }) {
 }
 
 export default function Ajustes() {
-  const { db, pessoas, pessoaAtiva, recarregarPessoas, escolherPessoa, notificarMudanca, apagarTudo, preferenciaIdioma, definirIdioma } =
-    useApp();
+  const {
+    db,
+    pessoas,
+    pessoaAtiva,
+    recarregarPessoas,
+    escolherPessoa,
+    notificarMudanca,
+    apagarTudo,
+    preferenciaIdioma,
+    definirIdioma,
+    aparencia,
+    definirAparencia,
+  } = useApp();
   const { t } = useTextos();
   const a = t.ajustes;
   const [novo, setNovo] = useState("");
@@ -61,6 +74,23 @@ export default function Ajustes() {
         <Botao variante="secundaria" rotulo={a.acrescentar} desabilitado={!novo.trim()} onPress={() => void adicionar()} />
       </Secao>
 
+      <Secao titulo={a.aparencia}>
+        <Escolha
+          opcoes={MODOS_VISUAIS}
+          rotulos={{ cenario: a.modoCenario, simples: a.modoSimples }}
+          valor={aparencia.modoVisual}
+          onChange={(v) => v && void definirAparencia({ modoVisual: v })}
+        />
+        <Escolha
+          rotulo={a.movimento}
+          opcoes={PREFERENCIAS_MOVIMENTO}
+          rotulos={{ auto: a.movAuto, completo: a.movCompleto, reduzido: a.movReduzido, nenhum: a.movNenhum }}
+          valor={aparencia.movimento}
+          onChange={(v) => v && void definirAparencia({ movimento: v })}
+        />
+        <Text style={texto.suave}>{a.movimentoAjuda}</Text>
+      </Secao>
+
       <Secao titulo={a.idioma}>
         <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={a.idioma}>
           <Chip rotulo={a.idiomaAutomatico} selecionado={preferenciaIdioma === "auto"} onPress={() => void definirIdioma("auto")} />
@@ -79,6 +109,7 @@ export default function Ajustes() {
         <Secao titulo={a.devTitulo}>
           <Text style={texto.suave}>{a.devAjuda}</Text>
           <Botao variante="secundaria" rotulo={a.devGerar} onPress={() => void gerarFicticios()} />
+          <Botao variante="secundaria" rotulo="Prova técnica: slime 3D" onPress={() => router.push("/prova-slime")} />
           <Botao
             variante="perigo"
             rotulo={a.devApagar}

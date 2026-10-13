@@ -24,6 +24,7 @@ export const es: DicionarioDominio = {
     evacuacao: "Evacuación",
     positivo: "Actividades y logros",
   },
+  categoriaCurta: { alimentacao: "Comida", dor_desconforto: "Dolor", comportamento: "Emociones", higiene: "Baño", sono: "Sueño", evacuacao: "Evacuación", positivo: "Logros" },
   origem: { vi: "Lo vi", me_contaram: "Me contaron", suspeita: "Sospecha mía" },
   periodo: { madrugada: "de madrugada", manha: "por la mañana", tarde: "por la tarde", noite: "por la noche" },
   periodoCurto: { madrugada: "Madrugada", manha: "Mañana", tarde: "Tarde", noite: "Noche" },
@@ -47,6 +48,7 @@ export const es: DicionarioDominio = {
   lesao: { sim: "Sí", nao: "No", nao_sei: "No sé" },
   tipoAlimento: { comida: "Comida", bebida: "Bebida" },
   tipoSono: { noturno: "Sueño nocturno", cochilo: "Siesta" },
+  local: { casa: "En casa", escola: "En la escuela", parque: "En el parque", terapia: "En la terapia" },
   intensidade: {
     leve: { rotulo: "Leve", criterio: "Sin riesgo de lesión; terminó solo o con una redirección simple; la actividad pudo continuar." },
     moderada: { rotulo: "Moderada", criterio: "Interrumpió la actividad o la rutina; requirió intervención activa del cuidador; sin lesión." },

@@ -4,10 +4,12 @@ import {
   contextoDaUltimaRefeicao,
   legendaDoRegistro,
   LIMITES,
+  LOCAIS,
   ORIGENS,
   resolverQuando,
   somarDias,
   type Categoria,
+  type Local,
   type Registro,
 } from "@eloazul/core";
 import { router, Stack, useLocalSearchParams } from "expo-router";
@@ -15,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CamposCategoria } from "../../components/campos-categoria";
+import { reacaoDoRegistro } from "../../components/slime/reacao-do-registro";
 import { SeletorDataHora } from "../../components/seletor-data";
 import { SeletorQuando } from "../../components/seletor-quando";
 import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos } from "../../components/ui";
@@ -27,15 +30,16 @@ import { cor, espaco, texto } from "../../lib/tema";
 const DIAS_SUGESTOES = 90;
 
 export default function TelaRegistro() {
-  const params = useLocalSearchParams<{ categoria: string; id?: string }>();
+  const params = useLocalSearchParams<{ categoria: string; id?: string; local?: string }>();
+  const localInicial = (LOCAIS as readonly string[]).includes(params.local ?? "") ? (params.local as Local) : undefined;
   const categoria = (CATEGORIAS as readonly string[]).includes(params.categoria) ? (params.categoria as Categoria) : null;
-  const { db, pessoaAtiva, notificarMudanca, oferecerDesfazer } = useApp();
+  const { db, pessoaAtiva, notificarMudanca, oferecerDesfazer, reagir } = useApp();
   const { t, d } = useTextos();
   const tr = t.registro;
   const insets = useSafeAreaInsets();
 
   const [form, setForm] = useState<Formulario | null>(() =>
-    categoria && !params.id ? formularioNovo(categoria, new Date()) : null,
+    categoria && !params.id ? formularioNovo(categoria, new Date(), localInicial) : null,
   );
   const [original, setOriginal] = useState<Registro | null>(null);
   const [recentes, setRecentes] = useState<Registro[]>([]);
@@ -102,6 +106,7 @@ export default function TelaRegistro() {
         const r = await criarRegistro(db, resultado.entrada);
         notificarMudanca();
         oferecerDesfazer(legendaDoRegistro(r, chaveDoDia(agora), d), () => apagarRegistro(db, r.id));
+        reagir(reacaoDoRegistro(r, agora));
       }
       router.back();
     } catch (e) {
@@ -142,6 +147,10 @@ export default function TelaRegistro() {
             ) : null}
           </Secao>
         ) : null}
+
+        <Secao titulo={tr.localTitulo}>
+          <Escolha opcional opcoes={LOCAIS} rotulos={d.local} valor={form.local} onChange={(local) => atualizar({ local })} />
+        </Secao>
 
         <Secao titulo={tr.origemTitulo}>
           <View style={estilos.linhaChips} accessibilityRole="radiogroup">

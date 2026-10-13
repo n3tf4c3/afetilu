@@ -1,8 +1,8 @@
 """Gera o mascote slime do Elo Azul no Blender, sem interface.
 
 Uso (na raiz do repositório):
-  blender -b --factory-startup -P ferramentas/slime/gerar_slime.py -- --saida apps/mobile/assets/slime
-  blender -b --factory-startup -P ferramentas/slime/gerar_slime.py -- --saida apps/mobile/assets/slime --previas docs/slime/previas-3d
+  blender -b --factory-startup --python-exit-code 1 -P ferramentas/slime/gerar_slime.py -- --saida apps/mobile/assets/slime
+  blender -b --factory-startup --python-exit-code 1 -P ferramentas/slime/gerar_slime.py -- --saida apps/mobile/assets/slime --previas docs/slime/previas-3d
 
 O modelo é inteiramente procedural: rodar de novo gera o mesmo modelo. O exportador glTF do Blender
 pode mudar a ordem interna dos vértices, então o .glb não é idêntico byte a byte; a forma, os nós e
@@ -22,9 +22,9 @@ from mathutils import Euler, Vector
 
 # --- Parâmetros do personagem --------------------------------------------------------------
 
-ALTURA = 0.62  # semi-eixo vertical da cúpula (raio horizontal = 1)
+ALTURA = 0.95  # semi-eixo vertical da cúpula (raio horizontal = 1); "gordinho" aprovado em 13/10/2026
 BASE_Z = -0.10  # base achatada, levemente arredondada
-CENTRO_ROSTO_Z = 0.29
+CENTRO_ROSTO_Z = 0.38
 
 CORES = {
     "corpo": "#79AEE0",
@@ -38,6 +38,11 @@ CORES = {
 CORES_REACAO = {"neutro": "#79AEE0", "claro": "#8CC2F0", "enjoo": "#9ACF94", "desconforto": "#F2BE9C"}
 
 FPS = 30
+
+# Transparência real do corpo (alfa, mistura BLEND). O react-native-filament não implementa
+# KHR_materials_transmission (o material carregado não tem "transmissionFactor"); a transmissão
+# fica só para as prévias do Blender. Manter igual a ALFA_CORPO em apps/mobile/src/components/slime/reacoes.ts.
+ALFA_CORPO = 0.8
 
 
 def srgb_para_linear(c: float) -> float:
@@ -198,7 +203,7 @@ def grupo(nome, pai=None):
 
 def montar():
     mats = {
-        "corpo": material("corpo", CORES["corpo"], rugosidade=0.05, transmissao=0.65, ior=1.33, verniz=0.7),
+        "corpo": material("corpo", CORES["corpo"], rugosidade=0.05, transmissao=0.65, ior=1.33, verniz=0.7, alfa=ALFA_CORPO),
         "olho": material("olho", CORES["olho"], rugosidade=0.25),
         "brilho": material("brilho", CORES["brilho"], rugosidade=0.2),
         "bochecha": material("bochecha", CORES["bochecha"], rugosidade=0.7, alfa=0.9),
@@ -217,9 +222,9 @@ def montar():
     # Olhos abertos: ovais escuros com dois brilhos (marca do personagem).
     g = grupo("olhos_abertos", rosto)
     for lado in (-1, 1):
-        elipsoide(f"olho_{lado}", lado * ex, ez, (0.066, 0.026, 0.09), mats["olho"], folga=0.0, pai=g)
-        elipsoide(f"brilho_a_{lado}", lado * ex + 0.022, ez + 0.038, (0.021, 0.012, 0.021), mats["brilho"], folga=0.02, pai=g)
-        elipsoide(f"brilho_b_{lado}", lado * ex - 0.02, ez - 0.038, (0.01, 0.008, 0.01), mats["brilho"], folga=0.02, pai=g)
+        elipsoide(f"olho_{lado}", lado * ex, ez, (0.082, 0.03, 0.11), mats["olho"], folga=0.0, pai=g)
+        elipsoide(f"brilho_a_{lado}", lado * ex + 0.027, ez + 0.047, (0.026, 0.014, 0.026), mats["brilho"], folga=0.02, pai=g)
+        elipsoide(f"brilho_b_{lado}", lado * ex - 0.025, ez - 0.047, (0.012, 0.009, 0.012), mats["brilho"], folga=0.02, pai=g)
     partes["olhos_abertos"] = g
 
     # Olhos do enjoo: pequenos e sem brilho (sem pálpebra, que lia como bravo).
@@ -247,11 +252,11 @@ def montar():
     # Bochechas.
     g = grupo("bochechas", rosto)
     for lado in (-1, 1):
-        elipsoide(f"bochecha_{lado}", lado * (ex + 0.1), ez - 0.1, (0.075, 0.008, 0.04), mats["bochecha"], folga=0.006, pai=g)
+        elipsoide(f"bochecha_{lado}", lado * (ex + 0.11), ez - 0.12, (0.085, 0.008, 0.045), mats["bochecha"], folga=0.006, pai=g)
     partes["bochechas"] = g
 
     # Bocas.
-    bz = ez - 0.135
+    bz = ez - 0.16
     partes["boca_neutra"] = tubo("boca_neutra", arco(0, bz, 0.11, 0.032), mats["olho"], pai=rosto)
     partes["boca_sorriso"] = tubo("boca_sorriso", arco(0, bz + 0.01, 0.13, 0.05), mats["olho"], espessura=0.02, pai=rosto)
     partes["boca_ondulada"] = tubo("boca_ondulada", onda(0, bz, 0.17, 0.018), mats["olho"], espessura=0.015, pai=rosto)
@@ -260,7 +265,7 @@ def montar():
 
     # Objetos que aparecem DENTRO do corpo translúcido (alimento) ou ao redor (bolhas).
     maca = grupo("maca", raiz)
-    maca.location = (0.44, -0.74, 0.07)
+    maca.location = (0.44, -0.76, 0.12)
     bpy.ops.mesh.primitive_uv_sphere_add(segments=32, ring_count=16, radius=0.1)
     m = bpy.context.active_object
     m.name = "maca_fruta"
@@ -406,7 +411,10 @@ def animar(raiz, corpo, rosto, partes):
             acao.name = f"{nome_clipe}__{alvo.name if hasattr(alvo, 'name') else 'formas'}"
             faixa = alvo.animation_data.nla_tracks.new()
             faixa.name = nome_clipe
-            faixa.strips.new(nome_clipe, 1, acao)
+            faixa_clipe = faixa.strips.new(nome_clipe, 1, acao)
+            # Fora do próprio intervalo a faixa não influencia nada: a pose de repouso exportada
+            # é a neutra (com "Hold", o último clipe esconderia partes e degeneraria as filhas).
+            faixa_clipe.extrapolation = "NOTHING"
             alvo.animation_data.action = None
 
     return list(clipes)
@@ -428,6 +436,8 @@ def _curvas(acao):
 
 
 def exportar(caminho):
+    # Quadro 0 fica antes de todas as faixas: nenhuma animação altera a pose de repouso.
+    bpy.context.scene.frame_set(0)
     bpy.ops.export_scene.gltf(
         filepath=caminho,
         export_format="GLB",
@@ -448,10 +458,37 @@ def exportar(caminho):
     )
 
 
-def previas(pasta, corpo, rosto, partes):
+def configurar_dispositivo(forcar_cpu=False):
+    """Renderiza na GPU quando houver (OptiX, depois CUDA); senão, na CPU. Chamar depois de
+    read_factory_settings, que também zera as preferências."""
+    cena = bpy.context.scene
+    if forcar_cpu:
+        cena.cycles.device = "CPU"
+        print("DISPOSITIVO CPU (forçado)")
+        return
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    for tipo in ("OPTIX", "CUDA"):
+        try:
+            prefs.compute_device_type = tipo
+        except TypeError:
+            continue
+        prefs.refresh_devices()
+        gpus = [d for d in prefs.devices if d.type == tipo]
+        if gpus:
+            for d in prefs.devices:
+                d.use = d.type == tipo
+            cena.cycles.device = "GPU"
+            print(f"DISPOSITIVO {tipo}: {', '.join(d.name for d in gpus)}")
+            return
+    cena.cycles.device = "CPU"
+    print("DISPOSITIVO CPU (nenhuma GPU compatível)")
+
+
+def previas(pasta, corpo, rosto, partes, forcar_cpu=False):
     """Imagens renderizadas (Cycles) de cada expressão, para aprovação visual."""
     cena = bpy.context.scene
     cena.render.engine = "CYCLES"
+    configurar_dispositivo(forcar_cpu)
     cena.cycles.samples = 64
     cena.cycles.use_denoising = True
     cena.render.resolution_x = 720
@@ -483,9 +520,9 @@ def previas(pasta, corpo, rosto, partes):
     luz2.data.size = 1.2
     luz2.rotation_euler = Euler((math.radians(-70), 0, math.radians(-55)))
 
-    bpy.ops.object.camera_add(location=(0, -4.3, 1.15))
+    bpy.ops.object.camera_add(location=(0, -5.2, 1.55))
     cam = bpy.context.active_object
-    cam.rotation_euler = Euler((math.radians(80), 0, 0))
+    cam.rotation_euler = Euler((math.radians(80.5), 0, 0))
     cam.data.lens = 56
     cena.camera = cam
 
@@ -506,6 +543,7 @@ def principal():
     p = argparse.ArgumentParser()
     p.add_argument("--saida", required=True)
     p.add_argument("--previas")
+    p.add_argument("--cpu", action="store_true", help="prévias na CPU mesmo havendo GPU")
     p.add_argument("--blend", help="salva também o .blend para edição manual (não versionar)")
     args = p.parse_args(argv)
     # O Blender resolve caminhos relativos a partir do .blend, não do terminal.
@@ -518,7 +556,7 @@ def principal():
     aplicar_expressao("neutro", corpo, rosto, partes)
 
     if args.previas:
-        previas(args.previas, corpo, rosto, partes)
+        previas(args.previas, corpo, rosto, partes, args.cpu)
 
     clipes = animar(raiz, corpo, rosto, partes)
     aplicar_expressao("neutro", corpo, rosto, partes)

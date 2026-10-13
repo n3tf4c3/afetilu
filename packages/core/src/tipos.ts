@@ -63,6 +63,10 @@ export const TIPOS_HIGIENE = ["banho", "escovacao", "troca", "outro"] as const;
 export const TIPOS_POSITIVO = ["comunicacao", "atividade", "conquista", "tranquilo", "estrategia"] as const;
 export const QUANTIDADES = ["pouco", "metade", "tudo", "recusou"] as const;
 
+/** Onde a pessoa estava (cenário da tela inicial). Informação literal, opcional; nunca uma causa. */
+export const LOCAIS = ["casa", "escola", "parque", "terapia"] as const;
+export type Local = (typeof LOCAIS)[number];
+
 const textoCurto = z.string().trim().min(1).max(LIMITES.textoCurto);
 const textoLivre = z.string().trim().max(LIMITES.observacao);
 const instante = z.iso.datetime({ offset: true });
@@ -148,6 +152,7 @@ export const entradaRegistro = z
     emAberto: z.boolean(),
     origem: z.enum(ORIGENS),
     origemQuem: textoCurto.optional(),
+    local: z.enum(LOCAIS).optional(),
     observacao: textoLivre.optional(),
     detalhe,
   })

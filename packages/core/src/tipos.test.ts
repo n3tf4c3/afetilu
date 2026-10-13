@@ -47,3 +47,9 @@ test("limites de texto e apelido", () => {
   assert.equal(entradaPessoa.safeParse({ apelido: "Lia" }).success, true);
   assert.equal(entradaPessoa.safeParse({ apelido: "x".repeat(LIMITES.apelido + 1) }).success, false);
 });
+
+test("local é opcional e só aceita os lugares conhecidos", () => {
+  assert.equal(entradaRegistro.safeParse({ ...base, local: "escola" }).success, true);
+  assert.equal(entradaRegistro.safeParse({ ...base, local: "shopping" }).success, false);
+  assert.equal(entradaRegistro.safeParse(base).success, true);
+});
