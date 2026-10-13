@@ -233,9 +233,25 @@ export const es: TextosApp = {
     devTitulo: "Desarrollo (solo en esta build)",
     devAjuda: "Herramientas para probar con datos ficticios. No aparecen en la versión de las tiendas.",
     devGerar: "Crear persona y registros ficticios",
-    devApagar: "Eliminar todos los datos del dispositivo",
-    devConfirmarTitulo: "¿Eliminar todo?",
-    devConfirmarTexto: "Se eliminarán todos los registros de este dispositivo.",
+    apagarPessoa: (a) => `Eliminar los datos de ${a}`,
+    apagarTudo: "Eliminar todos los datos del dispositivo",
+    apagarAjuda: "La eliminación es definitiva e inmediata. Como no hay servidor, no existe copia en ningún otro lugar.",
     exemploFicticio: "Ejemplo (ficticio)",
+  },
+  apagar: {
+    tituloPessoa: (a) => `Eliminar a ${a}`,
+    tituloTudo: "Eliminar todo",
+    oQueApagaPessoa: (a, r, d) =>
+      `Se eliminarán ${a}, ${r === 0 ? "ningún registro" : r === 1 ? "1 registro" : `${r} registros`} (con el historial de correcciones) y ${
+        d === 0 ? "ningún día marcado sin crisis" : d === 1 ? "1 día marcado sin crisis" : `${d} días marcados sin crisis`
+      }.`,
+    oQueApagaTudo:
+      "Se eliminarán todas las personas, registros, historiales de correcciones, días marcados y preferencias de este dispositivo, junto con la clave de protección de los datos. La app vuelve al primer uso.",
+    semVolta: "No se puede deshacer. Los archivos que ya exportaste o compartiste no se ven afectados.",
+    digite: (p) => `Para confirmar, escribe: ${p}`,
+    palavraTudo: "ELIMINAR",
+    confirmarPessoa: (a) => `Eliminar a ${a} definitivamente`,
+    confirmarTudo: "Eliminar todo definitivamente",
+    falhou: "No se pudo eliminar. No se cambió nada.",
   },
 };

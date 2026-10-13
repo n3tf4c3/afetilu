@@ -220,9 +220,22 @@ export interface TextosApp {
     devTitulo: string;
     devAjuda: string;
     devGerar: string;
-    devApagar: string;
-    devConfirmarTitulo: string;
-    devConfirmarTexto: string;
     exemploFicticio: string;
+    apagarPessoa: (apelido: string) => string;
+    apagarTudo: string;
+    apagarAjuda: string;
+  };
+  /** Tela de exclusão definitiva, com confirmação digitada. */
+  apagar: {
+    tituloPessoa: (apelido: string) => string;
+    tituloTudo: string;
+    oQueApagaPessoa: (apelido: string, registros: number, diasSemCrises: number) => string;
+    oQueApagaTudo: string;
+    semVolta: string;
+    digite: (palavra: string) => string;
+    palavraTudo: string;
+    confirmarPessoa: (apelido: string) => string;
+    confirmarTudo: string;
+    falhou: string;
   };
 }

@@ -1,7 +1,7 @@
 import { IDIOMAS, LIMITES } from "@afetilu/core";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Alert, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos as ui } from "../../components/ui";
 import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
 import { NOME_DO_IDIOMA } from "../../i18n";
@@ -39,7 +39,6 @@ export default function Ajustes() {
     recarregarPessoas,
     escolherPessoa,
     notificarMudanca,
-    apagarTudo,
     preferenciaIdioma,
     definirIdioma,
     aparencia,
@@ -114,6 +113,16 @@ export default function Ajustes() {
       <Secao titulo={a.seusDados}>
         <Text style={texto.corpo}>{a.seusDadosTexto}</Text>
         <Aviso texto={a.backupEmBreve} />
+        <Text style={texto.suave}>{a.apagarAjuda}</Text>
+        {pessoas.map((p) => (
+          <Botao
+            key={p.id}
+            variante="perigo"
+            rotulo={a.apagarPessoa(p.apelido)}
+            onPress={() => router.push({ pathname: "/apagar", params: { pessoa: p.id } })}
+          />
+        ))}
+        <Botao variante="perigo" rotulo={a.apagarTudo} onPress={() => router.push({ pathname: "/apagar", params: { tudo: "1" } })} />
       </Secao>
 
       {__DEV__ ? (
@@ -121,16 +130,6 @@ export default function Ajustes() {
           <Text style={texto.suave}>{a.devAjuda}</Text>
           <Botao variante="secundaria" rotulo={a.devGerar} onPress={() => void gerarFicticios()} />
           <Botao variante="secundaria" rotulo="Prova técnica: slime 3D" onPress={() => router.push("/prova-slime")} />
-          <Botao
-            variante="perigo"
-            rotulo={a.devApagar}
-            onPress={() =>
-              Alert.alert(a.devConfirmarTitulo, a.devConfirmarTexto, [
-                { text: t.geral.cancelar, style: "cancel" },
-                { text: t.geral.apagar, style: "destructive", onPress: () => void apagarTudo() },
-              ])
-            }
-          />
         </Secao>
       ) : null}
     </ScrollView>

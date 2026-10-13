@@ -44,6 +44,21 @@ export async function renomearPessoa(db: SQLiteDatabase, id: string, apelido: st
   await db.runAsync("UPDATE pessoa SET apelido = ? WHERE id = ?", dados.apelido, id);
 }
 
+/** Quanto será apagado junto com a pessoa, para a tela de confirmação. */
+export async function contarDadosDaPessoa(db: SQLiteDatabase, id: string): Promise<{ registros: number; diasSemCrises: number }> {
+  const r = await db.getFirstAsync<{ n: number }>("SELECT count(*) AS n FROM registro WHERE pessoa_id = ?", id);
+  const d = await db.getFirstAsync<{ n: number }>("SELECT count(*) AS n FROM dia_anotado WHERE pessoa_id = ? AND sem_crises = 1", id);
+  return { registros: r?.n ?? 0, diasSemCrises: d?.n ?? 0 };
+}
+
+/**
+ * Exclusão definitiva da pessoa. Registros, revisões e dias anotados vão junto, em cascata
+ * (foreign_keys e secure_delete ligados em abrirBanco), numa única instrução.
+ */
+export async function apagarPessoa(db: SQLiteDatabase, id: string): Promise<void> {
+  await db.runAsync("DELETE FROM pessoa WHERE id = ?", id);
+}
+
 // Registros -----------------------------------------------------------------
 
 async function inserirLinha(db: SQLiteDatabase, l: LinhaRegistro): Promise<void> {

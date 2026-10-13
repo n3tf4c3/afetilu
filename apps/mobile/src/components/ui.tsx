@@ -115,6 +115,8 @@ export function Campo(props: {
   multilinha?: boolean;
   max?: number;
   dica?: string;
+  /** Sem correção automática nem maiúscula inicial (confirmação digitada). */
+  literal?: boolean;
 }) {
   return (
     <View style={{ gap: espaco.xs }}>
@@ -129,6 +131,9 @@ export function Campo(props: {
         multiline={props.multilinha}
         maxLength={props.max}
         placeholder={props.dica}
+        autoCorrect={props.literal ? false : undefined}
+        autoCapitalize={props.literal ? "none" : undefined}
+        spellCheck={props.literal ? false : undefined}
         placeholderTextColor={cor.textoSuave}
         style={[estilos.campo, props.multilinha && { minHeight: 88, textAlignVertical: "top" }]}
       />

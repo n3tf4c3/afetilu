@@ -231,9 +231,25 @@ export const ptBR: TextosApp = {
     devTitulo: "Desenvolvimento (só nesta build)",
     devAjuda: "Ferramentas para testar com dados fictícios. Não aparecem na versão das lojas.",
     devGerar: "Gerar pessoa e registros fictícios",
-    devApagar: "Apagar todos os dados do aparelho",
-    devConfirmarTitulo: "Apagar tudo?",
-    devConfirmarTexto: "Todos os registros deste aparelho serão apagados.",
     exemploFicticio: "Exemplo (fictício)",
+    apagarPessoa: (a) => `Apagar os dados de ${a}`,
+    apagarTudo: "Apagar todos os dados do aparelho",
+    apagarAjuda: "A exclusão é definitiva e imediata. Como não há servidor, não existe cópia em outro lugar.",
+  },
+  apagar: {
+    tituloPessoa: (a) => `Apagar ${a}`,
+    tituloTudo: "Apagar tudo",
+    oQueApagaPessoa: (a, r, d) =>
+      `Serão apagados ${a}, ${r === 0 ? "nenhum registro" : r === 1 ? "1 registro" : `${r} registros`} (com o histórico de correções) e ${
+        d === 0 ? "nenhum dia marcado sem crises" : d === 1 ? "1 dia marcado sem crises" : `${d} dias marcados sem crises`
+      }.`,
+    oQueApagaTudo:
+      "Serão apagados todas as pessoas, registros, históricos de correções, dias marcados e preferências deste aparelho, junto com a chave de proteção dos dados. O app volta ao primeiro uso.",
+    semVolta: "Não dá para desfazer. Arquivos que você já exportou ou compartilhou não são afetados.",
+    digite: (p) => `Para confirmar, digite: ${p}`,
+    palavraTudo: "APAGAR",
+    confirmarPessoa: (a) => `Apagar ${a} definitivamente`,
+    confirmarTudo: "Apagar tudo definitivamente",
+    falhou: "Não foi possível apagar. Nada foi alterado.",
   },
 };

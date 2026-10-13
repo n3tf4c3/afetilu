@@ -231,9 +231,25 @@ export const en: TextosApp = {
     devTitulo: "Development (this build only)",
     devAjuda: "Tools for testing with fictional data. They don't appear in the store version.",
     devGerar: "Create a fictional person and entries",
-    devApagar: "Delete all data on this device",
-    devConfirmarTitulo: "Delete everything?",
-    devConfirmarTexto: "All entries on this device will be deleted.",
+    apagarPessoa: (a) => `Delete ${a}'s data`,
+    apagarTudo: "Delete all data on this device",
+    apagarAjuda: "Deletion is permanent and immediate. There is no server, so no copy exists anywhere else.",
     exemploFicticio: "Example (fictional)",
+  },
+  apagar: {
+    tituloPessoa: (a) => `Delete ${a}`,
+    tituloTudo: "Delete everything",
+    oQueApagaPessoa: (a, r, d) =>
+      `This deletes ${a}, ${r === 0 ? "no entries" : r === 1 ? "1 entry" : `${r} entries`} (with their correction history) and ${
+        d === 0 ? "no marked no-crisis days" : d === 1 ? "1 marked no-crisis day" : `${d} marked no-crisis days`
+      }.`,
+    oQueApagaTudo:
+      "This deletes every person, entry, correction history, marked day and preference on this device, along with the data protection key. The app goes back to first use.",
+    semVolta: "This cannot be undone. Files you have already exported or shared are not affected.",
+    digite: (p) => `To confirm, type: ${p}`,
+    palavraTudo: "DELETE",
+    confirmarPessoa: (a) => `Delete ${a} permanently`,
+    confirmarTudo: "Delete everything permanently",
+    falhou: "Could not delete. Nothing was changed.",
   },
 };
