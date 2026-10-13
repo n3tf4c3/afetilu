@@ -64,6 +64,11 @@ Na Apple, a 5.1.1(ix) cita *healthcare* e também apps que *"require sensitive u
 
 A PWA não é uma forma de contornar a política das lojas, porque não passa por elas. Também não dispensa as obrigações de privacidade da seção 5.
 
+**Decisão (13/10/2026):** não haverá consulta prévia aos suportes. A estratégia diante de uma eventual exigência de conta de organização será definida quando a exigência acontecer. Para que isso não ocorra com usuários ativos:
+- **Revisão cedo, antes de usuários:** a primeira submissão às lojas acontece pelas faixas de teste (teste fechado na Play, TestFlight externo na Apple), com declarações de saúde e privacidade fiéis ao app. A revisão é feita antes de qualquer usuário real.
+- **Sem cobrança antes da aprovação:** nenhuma assinatura ou compra entra antes da aprovação em produção nas duas lojas.
+- **Rota alternativa preservada:** o núcleo continua portável, mantendo a PWA (opção B) disponível.
+
 ### 1.5 Perguntas para os suportes
 
 **Google Play Developer Support:**
@@ -100,7 +105,7 @@ A PWA não é uma forma de contornar a política das lojas, porque não passa po
 10. **Linha do tempo**, com filtros por período, categoria e pessoa.
 11. **Correção com histórico:** cada edição guarda a versão anterior e a linha do tempo indica "corrigido em…".
 12. **Resumo para consulta:** texto descritivo do período, gerado no aparelho e exportado em PDF pela folha de compartilhamento do sistema, por escolha do responsável.
-13. **Dados:** backup exportável protegido por senha, importação e exclusão total (de uma pessoa ou de tudo).
+13. **Dados:** backup cifrado com senha, salvo onde o responsável escolher (seção 5.2), importação e exclusão total (de uma pessoa ou de tudo).
 
 **Fica fora do MVP:** voz, anexos e fotos, múltiplos cuidadores e sincronização, assinatura, lembretes e notificações, gráficos de correlação, qualquer IA, acesso para profissionais e integração com Saúde ou Health Connect.
 
@@ -135,9 +140,9 @@ O texto de cada critério aparece na tela de escolha e no relatório.
 
 ## 5. Privacidade e segurança
 
-### 5.1 Princípio: no MVP, os dados ficam só no aparelho
+### 5.1 Princípio: os dados ficam só no aparelho (decidido em 13/10/2026)
 
-O MVP não tem servidor, conta nem sincronização. Isso traz quatro consequências:
+O app não tem servidor, conta nem sincronização. Isso traz quatro consequências:
 
 - O desenvolvedor não recebe os relatos. As declarações de dados das lojas tendem a "nenhum dado coletado", e isso precisa ser verdade inclusive para os logs de falha.
 - Não existe credencial, banco remoto ou ponto central de vazamento.
@@ -149,6 +154,13 @@ O MVP não tem servidor, conta nem sincronização. Isso traz quatro consequênc
 - **Coleta mínima:** apelido e campos opcionais, sem identificador civil. O campo de texto livre traz uma dica para não incluir nomes de terceiros.
 - **Em repouso:** SQLite cifrado (SQLCipher), com chave no Keychain do iOS ou no Keystore do Android via `expo-secure-store`. Bloqueio opcional do app por biometria ou PIN do sistema. O conteúdo fica oculto no seletor de apps.
 - **Backups do sistema:** o banco fica fora do backup automático do Android e do iCloud (A2, 5.1.3(ii)). Por isso o MVP inclui um backup próprio, cifrado com senha do responsável.
+- **Backup escolhido pelo responsável:**
+  - O app gera um único arquivo cifrado e abre o seletor de arquivos ou a folha de compartilhamento do sistema. O responsável escolhe o destino: o próprio celular, o Google Drive, o OneDrive ou outro app que ele tenha instalado.
+  - O app **não se conecta** a nenhuma conta de nuvem: não usa login, OAuth nem as APIs do Drive ou do OneDrive. Quem grava o arquivo é o sistema ou o app de nuvem do próprio responsável. O desenvolvedor não recebe o arquivo nem tem acesso a ele.
+  - A cifra é obrigatória, porque o arquivo pode ficar num serviço de terceiros. A chave é derivada da senha por um KDF lento (Argon2id ou scrypt), e o conteúdo é protegido com AES-256-GCM. O arquivo guarda o formato e a versão do esquema, para que a importação seja validada.
+  - A senha do backup não é recuperável: sem ela, o backup não abre. O app explica isso antes de criar a senha.
+  - A restauração usa o seletor de arquivos do sistema. Antes de substituir ou mesclar dados, o app mostra uma prévia do conteúdo: pessoas, período e quantidade de registros.
+  - O app mostra "último backup há N dias" na tela de Dados. Como não há notificações, não existe backup automático.
 - **Em trânsito:** o MVP não envia dados pessoais pela rede. Uma futura sincronização usará TLS e, de preferência, cifra de ponta a ponta.
 - **Logs e análise:** nenhum SDK de analytics, anúncios ou rastreamento de falhas. Os crashes ficam por conta dos relatórios nativos das lojas, que não incluem o conteúdo do banco. Nenhum log com dados de registro, verificado por regra de lint e por teste.
 - **Notificações:** nenhuma no MVP. Se forem adicionadas, terão texto genérico, sem nome nem conteúdo.
@@ -180,7 +192,8 @@ O MVP não tem servidor, conta nem sincronização. Isso traz quatro consequênc
 | Domínio | Pacote `core` em TypeScript puro: tipos, validação, cobertura e texto do resumo | Testável sem aparelho e reaproveitável numa PWA (opção B) | Lógica dentro das telas, difícil de testar |
 | PDF | `expo-print` + `expo-sharing`, gerados no aparelho | Sem serviço externo | Biblioteca de PDF em JS |
 | Servidor | **Nenhum no MVP** | Privacidade, custo zero e nenhuma conta de usuário | Backend com banco e autenticação, que só entra com sincronização |
-| Sincronização futura | Avaliar com múltiplos cuidadores: backend que guarde **apenas conteúdo cifrado de ponta a ponta**, ou armazenamento do próprio usuário (Google Drive appData). **iCloud não**, por causa da 5.1.3(ii) | — | — |
+| Backup | Arquivo cifrado pelo seletor ou compartilhamento do sistema (`expo-sharing` / seletor de documentos para restaurar) | O destino é escolhido pelo responsável, sem integração com contas de nuvem nem acesso do desenvolvedor | Integração direta com as APIs do Drive e do OneDrive, que exige OAuth, revisão de escopos pelo Google e dá acesso à conta do usuário |
+| Sincronização futura | Fora de escopo. Se um dia houver múltiplos cuidadores, a escolha será reavaliada sem quebrar o princípio de dados no aparelho. **iCloud não**, por causa da 5.1.3(ii) | — | — |
 
 **Estrutura inicial:** `apps/mobile` + `packages/core`. Web, banco remoto e autenticação só entram quando a sincronização for aprovada.
 
@@ -229,7 +242,8 @@ Regras:
 |---|---|---|
 | Google exigir conta de organização | Sem Play Store | Decidir a distribuição antes do código (seção 1.4); núcleo portável |
 | Apple rejeitar pela 5.1.1(ix) depois do lançamento | Perda do canal com usuários ativos | Consulta prévia; período gratuito ou beta antes de qualquer assinatura; PWA como alternativa |
-| Perda de dados sem servidor | Família perde o histórico | Backup cifrado no MVP; lembrete discreto para exportar |
+| Perda de dados sem servidor | Família perde o histórico | Backup cifrado no destino escolhido pelo responsável; indicação de "último backup há N dias" |
+| Senha do backup esquecida | Backup inutilizável | Aviso explícito antes de criar a senha; o app não guarda cópia da senha |
 | Relatório lido como diagnóstico | Dano clínico | Texto descritivo, cobertura explícita, rodapé fixo e nenhuma correlação |
 | Vazamento por arquivo exportado | Exposição de dados de menor | Aviso antes de compartilhar; PDF só com o apelido; senha no backup |
 | Rejeição da identidade azul e do nome pela comunidade | Reputação | Escuta prévia antes da ficha |
@@ -237,8 +251,9 @@ Regras:
 
 ## 10. Plano após aprovação
 
-1. Responder às consultas às lojas e escolher a distribuição → verificar: resposta por escrito arquivada.
+1. ~~Consulta prévia às lojas~~ → dispensada em 13/10/2026 (ver seção 1.4).
 2. Esqueleto `apps/mobile` + `packages/core` → verificar: typecheck, lint e testes do core passam; o app abre no Android com dados fictícios.
 3. Banco cifrado, perfis e registro rápido → verificar: registro mínimo em até 3 toques; banco ilegível sem a chave.
 4. Linha do tempo, filtros, dia sem crises e correções → verificar: testes de cobertura mostram "sem registro" diferente de "sem crises".
-5. Resumo em PDF, backup, importação e exclusão → verificar: PDF com rodapé e cobertura; restauração idêntica ao original; exclusão total confirmada.
+5. Primeira build de teste nas lojas, com dados fictícios e declarações fiéis, assim que os fluxos 2 a 4 estiverem prontos → verificar: resultado da revisão da Play e da Apple registrado antes de qualquer usuário real.
+6. Resumo em PDF, backup, importação e exclusão → verificar: PDF com rodapé e cobertura; o arquivo de backup não é legível sem a senha; salvar e restaurar pelo armazenamento do aparelho e por um app de nuvem; restauração idêntica ao original; exclusão total confirmada.
