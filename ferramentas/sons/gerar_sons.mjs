@@ -1,6 +1,8 @@
 // Gera os sons do slime por síntese (sem gravações nem bancos de terceiros): sons próprios, sem licença a declarar.
 // Uso: node ferramentas/sons/gerar_sons.mjs <pasta de saída>
 // Regras (docs/experiencia-avatar.md, seção 5): curtos (< 1 s), suaves, sem ataque brusco.
+// Tons acima de ~400 Hz: o alto-falante do celular quase não reproduz graves (um "nham" em 200–260 Hz
+// ficou inaudível no Galaxy A52s).
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
@@ -49,14 +51,14 @@ const SONS = {
   // "Blop" alegre (calma e momentos positivos): bolha que sobe, e um eco menor.
   blop() {
     const b = amostras(0.32);
-    tom(b, { inicio: 0, dur: 0.12, freq: deslize(320, 760), subida: 0.004, descida: 0.08 });
-    tom(b, { inicio: 0.13, dur: 0.1, freq: deslize(420, 900), subida: 0.004, descida: 0.07, ganho: 0.35 });
+    tom(b, { inicio: 0, dur: 0.12, freq: deslize(520, 1100), subida: 0.004, descida: 0.08, harmonicos: [1, 0.3] });
+    tom(b, { inicio: 0.13, dur: 0.1, freq: deslize(650, 1300), subida: 0.004, descida: 0.07, ganho: 0.35, harmonicos: [1, 0.3] });
     return b;
   },
-  // "Nham" curto (alimentação): tom grave e arredondado que cai um pouco, como uma mordida.
+  // "Nham" curto (alimentação): tom arredondado que cai um pouco, como uma mordida.
   nham() {
     const b = amostras(0.34);
-    tom(b, { inicio: 0, dur: 0.3, freq: deslize(260, 200), subida: 0.03, descida: 0.15, harmonicos: [1, 0.45, 0.2, 0.08] });
+    tom(b, { inicio: 0, dur: 0.3, freq: deslize(520, 400), subida: 0.03, descida: 0.15, harmonicos: [1, 0.6, 0.35, 0.2] });
     return b;
   },
   // Bolhas (banho): estalinhos agudos e curtos em momentos sorteados.

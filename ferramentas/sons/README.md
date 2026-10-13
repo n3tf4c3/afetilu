@@ -5,6 +5,7 @@ Sons curtos das reações do slime (`docs/experiencia-avatar.md`, seções 3.2 e
 - Ferramenta: Node puro (sem dependências).
 - Saída: `apps/mobile/assets/sons/<som>.wav`, mono, 22 050 Hz, 16 bits, pico ~ -12 dBFS, menos de 1 s (14–40 KB).
 - O mesmo comando gera arquivos idênticos (sorteios com semente fixa).
+- Tons acima de ~400 Hz: alto-falante de celular quase não reproduz graves (o primeiro `nham`, em 200–260 Hz, não saía no Galaxy A52s).
 
 ```sh
 node ferramentas/sons/gerar_sons.mjs apps/mobile/assets/sons
@@ -12,7 +13,7 @@ node ferramentas/sons/gerar_sons.mjs apps/mobile/assets/sons
 
 | Som | Reação | Descrição |
 |---|---|---|
-| `nham` | alimentação | tom grave e arredondado, curto |
+| `nham` | alimentação | tom arredondado que cai um pouco, curto |
 | `ronco` | sono | sopro grave que sobe e desce devagar |
 | `bolhas` | banho | estalinhos agudos e curtos |
 | `blop` | calma e momentos positivos | bolha que sobe, com eco menor |
