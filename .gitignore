@@ -1,1 +1,38 @@
 .ai-memory.toml
+
+# dependências e builds
+node_modules/
+dist/
+.expo/
+web-build/
+expo-env.d.ts
+*.tsbuildinfo
+.metro-health-check*
+coverage/
+
+# projetos nativos gerados pelo prebuild (o app é configurado pelo app.json)
+apps/mobile/android/
+apps/mobile/ios/
+
+# segredos e locais
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+
+# áreas auxiliares
+relatorios/
+backups/
+
+# sistema
+.DS_Store
+Thumbs.db
+*.log
+
+# arquivos de edição do Blender (o modelo é gerado pelo script)
+*.blend
+*.blend1

@@ -1,0 +1,24 @@
+{
+  "name": "@eloazul/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test \"src/**/*.test.ts\"",
+    "test:cobertura": "tsx --test --experimental-test-coverage --test-coverage-exclude=\"**/*.test.ts\" --test-coverage-lines=95 --test-coverage-branches=90 --test-coverage-functions=100 \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3"
+  }
+}
