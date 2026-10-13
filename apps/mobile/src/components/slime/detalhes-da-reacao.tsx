@@ -73,7 +73,7 @@ export const DetalhesDaReacao = memo(function DetalhesDaReacao({ reacao, disparo
         <Animated.View
           style={[
             estilos.sono,
-            { top: altura * 0.2, left: "50%", marginLeft: altura * 0.26, opacity: opacidade, transform: [{ translateY: deslocamento }] },
+            { top: altura * 0.3, left: "50%", marginLeft: altura * 0.24, opacity: opacidade, transform: [{ translateY: deslocamento }] },
           ]}
         >
           <MaterialCommunityIcons name="sleep" size={30} color={cor.primaria} />

@@ -12,8 +12,9 @@ const ESPERADO = {
   animacoes: ["neutro", "respirar", "sono", "quicar", "enjoo", "desconforto", "alimentacao", "banho", "cutucada"],
   deformacoes: ["achatar", "esticar", "amassar", "respirar"],
   partes: [
-    "olhos_abertos", "olhos_cansados", "olhos_sono", "olhos_alegres", "sobrancelhas_preocupadas",
-    "bochechas", "boca_neutra", "boca_sorriso", "boca_ondulada", "boca_preocupada", "boca_o", "maca", "bolhas_banho",
+    "olhos_abertos", "olhos_apertados", "olhos_piscando", "olhos_cansados", "olhos_barra", "olhos_alegres",
+    "sobrancelhas_preocupadas", "bochechas", "boca_gato", "boca_sorriso", "boca_ondulada", "boca_preocupada", "boca_o",
+    "maca", "bolhas_banho",
   ],
 };
 

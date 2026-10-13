@@ -193,8 +193,9 @@ const Ambiente = memo(function Ambiente({ corDeFundo }: { corDeFundo: string | n
   );
 });
 
-const POSICAO_CAMERA: [number, number, number] = [0, 1.35, 4.6];
-const ALVO_CAMERA: [number, number, number] = [0, 0.3, 0];
+// Enquadra o corpo em gota (base em -0,1 e topo em 1,52; até ~1,9 no quique) com folga.
+const POSICAO_CAMERA: [number, number, number] = [0, 1.75, 5.6];
+const ALVO_CAMERA: [number, number, number] = [0, 0.78, 0];
 const CameraFixa = memo(function CameraFixa() {
   return <Camera cameraPosition={POSICAO_CAMERA} cameraTarget={ALVO_CAMERA} focalLengthInMillimeters={45} />;
 });

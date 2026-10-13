@@ -7,7 +7,7 @@ Uso (na raiz do repositório):
 O modelo é inteiramente procedural: rodar de novo gera o mesmo modelo. O exportador glTF do Blender
 pode mudar a ordem interna dos vértices, então o .glb não é idêntico byte a byte; a forma, os nós e
 as animações são (conferido em 13/10/2026 com o inspecionar-glb.mjs e comparação de vértices).
-Referência visual aprovada: docs/slime/rascunho-expressoes-v0.svg.
+Referência visual aprovada: docs/slime/previas-3d/ (gota sem bico e sem língua; ver docs/experiencia-avatar.md, 3.1).
 
 Personagem original. Não copiar personagens de anime ou jogos (ver docs/experiencia-avatar.md, 3.1).
 """
@@ -22,9 +22,16 @@ from mathutils import Euler, Vector
 
 # --- Parâmetros do personagem --------------------------------------------------------------
 
-ALTURA = 0.95  # semi-eixo vertical da cúpula (raio horizontal = 1); "gordinho" aprovado em 13/10/2026
-BASE_Z = -0.10  # base achatada, levemente arredondada
-CENTRO_ROSTO_Z = 0.38
+# Silhueta em gota (decisão de 13/10/2026, substitui a cúpula baixa): bojuda embaixo, afinando
+# para um topo arredondado, sem bico. Perfil de revolução: raio em função da altura (ver perfil()).
+RAIO = 1.0  # raio no ponto mais largo (o bojo)
+ALTURA_TOTAL = 1.62  # da base ao topo
+BASE_Z = -0.10  # base achatada
+U_BOJO = 0.34  # fração da altura onde fica o bojo
+RAIO_BASE = 0.62  # raio do disco de apoio, em fração de RAIO (borda arredondada até o bojo)
+AFINAR_P, AFINAR_Q = 1.9, 0.6  # forma da parte de cima: (1 - v^P)^Q; Q = 0,5 seria uma cúpula
+TOPO_Z = BASE_Z + ALTURA_TOTAL
+CENTRO_ROSTO_Z = BASE_Z + 0.38 * ALTURA_TOTAL
 
 CORES = {
     "corpo": "#79AEE0",
@@ -88,11 +95,29 @@ def material(nome, cor, *, rugosidade=0.4, transmissao=0.0, alfa=1.0, ior=1.45, 
 # --- Geometria -----------------------------------------------------------------------------
 
 
+def perfil(u: float) -> float:
+    """Raio do corpo na fração de altura u (0 = base, 1 = topo)."""
+    u = min(max(u, 0.0), 1.0)
+    if u <= U_BOJO:
+        # Da borda da base ao bojo: quarto de elipse (tangente horizontal na base, borda arredondada).
+        t = 1 - u / U_BOJO
+        return RAIO * (RAIO_BASE + (1 - RAIO_BASE) * math.sqrt(max(1 - t * t, 0.0)))
+    v = (u - U_BOJO) / (1 - U_BOJO)
+    return RAIO * max(1 - v**AFINAR_P, 0.0) ** AFINAR_Q
+
+
+def raio_em(z: float) -> float:
+    return perfil((z - BASE_Z) / ALTURA_TOTAL)
+
+
 def superficie(x: float, z: float, folga: float = 0.0) -> tuple[Vector, Vector]:
-    """Ponto na frente da cúpula (lado -Y) para coordenadas (x, z) e a normal ali."""
-    y2 = max(1.0 - x * x - (z / ALTURA) ** 2, 1e-6)
-    p = Vector((x, -math.sqrt(y2), z))
-    n = Vector((p.x, p.y, p.z / (ALTURA * ALTURA))).normalized()
+    """Ponto na frente do corpo (lado -Y) para coordenadas (x, z) e a normal ali."""
+    r = raio_em(z)
+    p = Vector((x, -math.sqrt(max(r * r - x * x, 1e-6)), z))
+    h = 1e-3
+    inclinacao = (raio_em(z + h) - raio_em(z - h)) / (2 * h)
+    rho = max(math.hypot(p.x, p.y), 1e-6)
+    n = Vector((p.x / rho, p.y / rho, -inclinacao)).normalized()
     return p + n * folga, n
 
 
@@ -105,18 +130,21 @@ def criar_corpo(mat):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=72, ring_count=36, radius=1.0)
     corpo = bpy.context.active_object
     corpo.name = "corpo"
+    # Cada anel da esfera vira um anel do perfil: a calota de baixo vira o disco de apoio e o
+    # resto sobe pela lateral até o topo (o polo de cima fecha o topo arredondado).
+    angulo_base = 0.3 * math.pi
     for v in corpo.data.vertices:
         x, y, z = v.co
-        if z >= 0:
-            v.co.z = z * ALTURA
+        rho = math.hypot(x, y)
+        dx, dy = (x / rho, y / rho) if rho > 1e-9 else (0.0, 0.0)
+        polar = math.acos(max(-1.0, min(1.0, -z)))  # 0 no polo de baixo, pi no de cima
+        if polar <= angulo_base:
+            raio, altura = RAIO * RAIO_BASE * polar / angulo_base, BASE_Z
         else:
-            # Metade de baixo vira uma base quase plana com borda arredondada.
-            t = -z
-            v.co.z = BASE_Z * math.sin(t * math.pi / 2)
-            raio = math.sqrt(1 - t * t)
-            fator = 0.96 + 0.04 * raio
-            v.co.x = x * fator
-            v.co.y = y * fator
+            u = (polar - angulo_base) / (math.pi - angulo_base)
+            u = 1 - (1 - u) ** 1.15  # mais anéis perto da base, onde a curva é mais fechada
+            raio, altura = perfil(u), BASE_Z + u * ALTURA_TOTAL
+        v.co = Vector((dx * raio, dy * raio, altura))
     bpy.ops.object.shade_smooth()
     corpo.data.materials.append(mat)
 
@@ -137,7 +165,7 @@ def criar_corpo(mat):
 
 
 def tubo(nome, pontos_xz, mat, *, espessura=0.016, folga=0.012, pai=None):
-    """Traço (boca, sobrancelha, olho fechado) desenhado sobre a superfície da cúpula."""
+    """Traço (boca, sobrancelha, olho fechado) desenhado sobre a superfície do corpo."""
     curva = bpy.data.curves.new(nome, "CURVE")
     curva.dimensions = "3D"
     curva.bevel_depth = espessura
@@ -215,57 +243,81 @@ def montar():
     raiz = grupo("slime")
     corpo.parent = raiz
     rosto = grupo("rosto", raiz)
-    ez, ex = CENTRO_ROSTO_Z, 0.24
+    ez, ex = CENTRO_ROSTO_Z, 0.38
 
     partes = {}
 
-    # Olhos abertos: ovais escuros com dois brilhos (marca do personagem).
+    # Olhos abertos: redondos e escuros, com um brilho grande e um pequeno.
+    def olho_redondo(nome, x, pai):
+        elipsoide(f"{nome}", x, ez, (0.125, 0.035, 0.13), mats["olho"], pai=pai)
+        elipsoide(f"{nome}_brilho_a", x + 0.04, ez + 0.045, (0.042, 0.016, 0.042), mats["brilho"], folga=0.025, pai=pai)
+        elipsoide(f"{nome}_brilho_b", x - 0.042, ez - 0.058, (0.017, 0.01, 0.017), mats["brilho"], folga=0.025, pai=pai)
+
+    def olho_apertado(nome, lado, pai):
+        """Olho apertado em ângulo, com a ponta para o centro do rosto ("> <")."""
+        x = lado * ex
+        pontos = [(x + lado * 0.08, ez + 0.07), (x - lado * 0.075, ez), (x + lado * 0.08, ez - 0.07)]
+        return tubo(nome, pontos, mats["olho"], espessura=0.022, pai=pai)
+
     g = grupo("olhos_abertos", rosto)
     for lado in (-1, 1):
-        elipsoide(f"olho_{lado}", lado * ex, ez, (0.082, 0.03, 0.11), mats["olho"], folga=0.0, pai=g)
-        elipsoide(f"brilho_a_{lado}", lado * ex + 0.027, ez + 0.047, (0.026, 0.014, 0.026), mats["brilho"], folga=0.02, pai=g)
-        elipsoide(f"brilho_b_{lado}", lado * ex - 0.025, ez - 0.047, (0.012, 0.009, 0.012), mats["brilho"], folga=0.02, pai=g)
+        olho_redondo(f"olho_{lado}", lado * ex, g)
     partes["olhos_abertos"] = g
+
+    # Olhos apertados "> <" (gostoso, cutucada).
+    g = grupo("olhos_apertados", rosto)
+    for lado in (-1, 1):
+        olho_apertado(f"apertado_{lado}", lado, g)
+    partes["olhos_apertados"] = g
+
+    # Piscadinha: um olho aberto e o outro apertado (momentos positivos).
+    g = grupo("olhos_piscando", rosto)
+    olho_redondo("piscando_aberto", -ex, g)
+    olho_apertado("piscando_fechado", 1, g)
+    partes["olhos_piscando"] = g
 
     # Olhos do enjoo: pequenos e sem brilho (sem pálpebra, que lia como bravo).
     g = grupo("olhos_cansados", rosto)
     for lado in (-1, 1):
-        elipsoide(f"olho_c_{lado}", lado * ex, ez - 0.015, (0.034, 0.016, 0.034), mats["olho"], pai=g)
+        elipsoide(f"olho_c_{lado}", lado * ex, ez - 0.015, (0.045, 0.018, 0.045), mats["olho"], pai=g)
     partes["olhos_cansados"] = g
 
-    # Olhos fechados de sono (arco para baixo) e de alegria (arco para cima).
-    g = grupo("olhos_sono", rosto)
+    # Olhos em barra (sono): traço grosso e reto.
+    g = grupo("olhos_barra", rosto)
     for lado in (-1, 1):
-        tubo(f"sono_{lado}", arco(lado * ex, ez + 0.005, 0.11, 0.035), mats["olho"], espessura=0.013, pai=g)
-    partes["olhos_sono"] = g
+        tubo(f"barra_{lado}", [(lado * ex - 0.11, ez - 0.01), (lado * ex + 0.11, ez - 0.01)], mats["olho"], espessura=0.034, pai=g)
+    partes["olhos_barra"] = g
+
+    # Olhos fechados de alegria (arco para cima, banho).
     g = grupo("olhos_alegres", rosto)
     for lado in (-1, 1):
-        tubo(f"alegre_{lado}", arco(lado * ex, ez - 0.02, 0.11, -0.045), mats["olho"], espessura=0.013, pai=g)
+        tubo(f"alegre_{lado}", arco(lado * ex, ez - 0.02, 0.17, -0.065), mats["olho"], espessura=0.019, pai=g)
     partes["olhos_alegres"] = g
 
     # Sobrancelhas preocupadas (desconforto): extremidades internas mais altas, sem choro.
     g = grupo("sobrancelhas_preocupadas", rosto)
     for lado in (-1, 1):
-        tubo(f"sobrancelha_{lado}", [(lado * (ex + 0.07), ez + 0.1), (lado * (ex - 0.06), ez + 0.135)], mats["olho"], espessura=0.011, pai=g)
+        tubo(f"sobrancelha_{lado}", [(lado * (ex + 0.095), ez + 0.15), (lado * (ex - 0.085), ez + 0.195)], mats["olho"], espessura=0.016, pai=g)
     partes["sobrancelhas_preocupadas"] = g
 
-    # Bochechas.
+    # Bochechas: pontinhos rosados, por fora e abaixo dos olhos.
     g = grupo("bochechas", rosto)
     for lado in (-1, 1):
-        elipsoide(f"bochecha_{lado}", lado * (ex + 0.11), ez - 0.12, (0.085, 0.008, 0.045), mats["bochecha"], folga=0.006, pai=g)
+        elipsoide(f"bochecha_{lado}", lado * (ex + 0.16), ez - 0.12, (0.065, 0.008, 0.042), mats["bochecha"], folga=0.006, pai=g)
     partes["bochechas"] = g
 
-    # Bocas.
-    bz = ez - 0.16
-    partes["boca_neutra"] = tubo("boca_neutra", arco(0, bz, 0.11, 0.032), mats["olho"], pai=rosto)
-    partes["boca_sorriso"] = tubo("boca_sorriso", arco(0, bz + 0.01, 0.13, 0.05), mats["olho"], espessura=0.02, pai=rosto)
-    partes["boca_ondulada"] = tubo("boca_ondulada", onda(0, bz, 0.17, 0.018), mats["olho"], espessura=0.015, pai=rosto)
-    partes["boca_preocupada"] = tubo("boca_preocupada", arco(0, bz - 0.01, 0.08, -0.02), mats["olho"], pai=rosto)
-    partes["boca_o"] = elipsoide("boca_o", 0, bz, (0.022, 0.01, 0.017), mats["olho"], pai=rosto)
+    # Bocas. A de gatinho ("ω") é a do repouso; sem língua de fora (ver docs/experiencia-avatar.md, 3.1).
+    bz = ez - 0.17
+    gato = arco(-0.055, bz, 0.11, 0.04, n=12) + arco(0.055, bz, 0.11, 0.04, n=12)[1:]
+    partes["boca_gato"] = tubo("boca_gato", gato, mats["olho"], espessura=0.017, pai=rosto)
+    partes["boca_sorriso"] = tubo("boca_sorriso", arco(0, bz + 0.01, 0.19, 0.07), mats["olho"], espessura=0.022, pai=rosto)
+    partes["boca_ondulada"] = tubo("boca_ondulada", onda(0, bz, 0.21, 0.022), mats["olho"], espessura=0.018, pai=rosto)
+    partes["boca_preocupada"] = tubo("boca_preocupada", arco(0, bz - 0.01, 0.11, -0.028), mats["olho"], espessura=0.018, pai=rosto)
+    partes["boca_o"] = elipsoide("boca_o", 0, bz - 0.005, (0.034, 0.012, 0.03), mats["olho"], pai=rosto)
 
     # Objetos que aparecem DENTRO do corpo translúcido (alimento) ou ao redor (bolhas).
     maca = grupo("maca", raiz)
-    maca.location = (0.44, -0.76, 0.12)
+    maca.location = (0.38, -0.58, 0.2)
     bpy.ops.mesh.primitive_uv_sphere_add(segments=32, ring_count=16, radius=0.1)
     m = bpy.context.active_object
     m.name = "maca_fruta"
@@ -283,7 +335,7 @@ def montar():
     partes["maca"] = maca
 
     bolhas = grupo("bolhas_banho", raiz)
-    for i, (x, z, r) in enumerate([(-1.05, 0.55, 0.09), (-0.8, 0.85, 0.05), (1.0, 0.7, 0.1), (1.15, 0.3, 0.06), (0.65, 1.0, 0.04), (-1.2, 0.15, 0.045)]):
+    for i, (x, z, r) in enumerate([(-1.12, 0.6, 0.09), (-0.85, 1.15, 0.05), (1.05, 0.85, 0.1), (1.18, 0.3, 0.06), (0.7, 1.35, 0.045), (-1.22, 0.12, 0.045)]):
         bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, radius=r, location=(x, -0.2, z))
         b = bpy.context.active_object
         b.name = f"bolha_{i}"
@@ -298,15 +350,15 @@ def montar():
 # Estado visual de cada expressão: partes visíveis e pesos das deformações.
 VISIVEL_SEMPRE = ()
 EXPRESSOES = {
-    "neutro": {"partes": ("olhos_abertos", "bochechas", "boca_neutra"), "pesos": {}},
-    "alimentacao": {"partes": ("olhos_abertos", "bochechas", "boca_sorriso", "maca"), "pesos": {}},
+    "neutro": {"partes": ("olhos_abertos", "bochechas", "boca_gato"), "pesos": {}},
+    "alimentacao": {"partes": ("olhos_apertados", "bochechas", "boca_gato", "maca"), "pesos": {}},
     "enjoo": {"partes": ("olhos_cansados", "bochechas", "boca_ondulada"), "pesos": {"amassar": 0.3}},
     "desconforto": {"partes": ("olhos_abertos", "sobrancelhas_preocupadas", "bochechas", "boca_preocupada"), "pesos": {}},
-    "sono": {"partes": ("olhos_sono", "bochechas", "boca_o"), "pesos": {"achatar": 1.0}},
-    "banho": {"partes": ("olhos_alegres", "bochechas", "boca_sorriso", "bolhas_banho"), "pesos": {}},
-    "positivo": {"partes": ("olhos_abertos", "bochechas", "boca_sorriso"), "pesos": {"esticar": 0.6}},
-    # Toque no slime: olhos apertados e boca em "o" enquanto amassa.
-    "cutucada": {"partes": ("olhos_alegres", "bochechas", "boca_o"), "pesos": {"amassar": 1.0}},
+    "sono": {"partes": ("olhos_barra", "bochechas", "boca_o"), "pesos": {"achatar": 1.0}},
+    "banho": {"partes": ("olhos_alegres", "bochechas", "boca_gato", "bolhas_banho"), "pesos": {}},
+    "positivo": {"partes": ("olhos_piscando", "bochechas", "boca_sorriso"), "pesos": {"esticar": 0.6}},
+    # Toque no slime: olhos apertados "> <" e boca em "o" enquanto amassa.
+    "cutucada": {"partes": ("olhos_apertados", "bochechas", "boca_o"), "pesos": {"amassar": 1.0}},
 }
 COR_EXPRESSAO = {
     "neutro": "neutro",
@@ -528,10 +580,10 @@ def previas(pasta, corpo, rosto, partes, forcar_cpu=False):
     luz2.data.size = 1.2
     luz2.rotation_euler = Euler((math.radians(-70), 0, math.radians(-55)))
 
-    bpy.ops.object.camera_add(location=(0, -5.2, 1.55))
+    bpy.ops.object.camera_add(location=(0, -5.6, 1.85))
     cam = bpy.context.active_object
-    cam.rotation_euler = Euler((math.radians(80.5), 0, 0))
-    cam.data.lens = 56
+    cam.rotation_euler = Euler((math.radians(80.0), 0, 0))
+    cam.data.lens = 52
     cena.camera = cam
 
     os.makedirs(pasta, exist_ok=True)

@@ -33,6 +33,9 @@ import type { NomeIcone } from "./ui";
 // Fundos gerados por ferramentas/cenarios/gerar_cenarios.py (estáticos, sem animação).
 const FUNDO: Record<Local, number> = { casa, escola, parque, terapia };
 
+/** Maior número de pílulas numa coluna, entre todos os cenários. */
+const MAX_PILULAS = Math.max(...CENARIOS.flatMap((c) => [c.esquerda.length, c.direita.length]));
+
 /** Fundo semi-opaco: o texto mantém contraste AA sobre qualquer cenário. */
 const VIDRO = "rgba(255, 255, 255, 0.84)";
 
@@ -121,12 +124,15 @@ export function InicioCenario() {
     acao === "todas" ? "dots-grid" : acao === "sem_crises" ? ICONE_SEM_CRISES : ICONE_CATEGORIA[acao];
 
   const topoPilulas = insets.top + 132;
-  const alturaSlime = Math.min(height * 0.36, 340);
+  // O corpo começa a 0,17 da altura da área a partir do topo: a área cresce até onde o corpo
+  // não encosta na coluna de pílulas mais longa (telas pequenas).
+  const fimPilulas = topoPilulas + MAX_PILULAS * (ALVO_MINIMO + espaco.s);
+  const alturaSlime = Math.min(height * 0.45, 425, (height - 72 - fimPilulas) / 0.83);
   const estiloSlime = useMemo(() => ({ height: alturaSlime, width }), [alturaSlime, width]);
-  // Área do corpo do slime na cena (câmera fixa em cena-slime.tsx): cerca de 0,85 da altura em
-  // largura, entre 0,2 e 0,76 da altura a partir de baixo. Um pouco de folga em volta.
+  // Área do corpo do slime na cena (câmera fixa em cena-slime.tsx), medida no aparelho: cerca de
+  // 0,74 da altura em largura, entre 0,17 e 0,83 da altura a partir de baixo. Um pouco de folga em volta.
   const areaToque = useMemo(
-    () => ({ bottom: 72 + alturaSlime * 0.15, height: alturaSlime * 0.65, width: alturaSlime * 0.9, left: (width - alturaSlime * 0.9) / 2 }),
+    () => ({ bottom: 72 + alturaSlime * 0.14, height: alturaSlime * 0.72, width: alturaSlime * 0.85, left: (width - alturaSlime * 0.85) / 2 }),
     [alturaSlime, width],
   );
 

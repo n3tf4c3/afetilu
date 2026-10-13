@@ -135,11 +135,11 @@ Celular ligado no USB, bateria em 100% e já morno no início (bateria 39,5 °C,
 ### 3.1 Diretrizes de originalidade
 
 Em comparação com slimes conhecidos:
-- **Silhueta (decisão de 13/10/2026):** cúpula baixa e larga, de base achatada e translúcida. É o formato genérico de slime, como uma gota de gelatina pousada, escolhido pelo usuário. O formato sozinho não identifica um personagem, mas aproxima o visual do Rimuru. Por isso, **rosto, cor, nome e sons precisam ser claramente próprios**, e o desenho final deve ser comparado lado a lado com o personagem antes de ir para as lojas.
-- **Rosto:** olhos em ponto oval, escuros, com brilho branco, e bochechas rosadas suaves. Não usa os olhos de linha fechada nem o rosto característico do Rimuru.
+- **Silhueta (decisão de 13/10/2026, revista no mesmo dia):** gota translúcida, bojuda embaixo, de base achatada, afinando para um topo arredondado. Substitui a cúpula baixa da primeira versão. Escolhida pelo usuário a partir de referências de slimes em gota. **Sem bico no topo e sem língua de fora:** bico + boca "ω" com língua é a marca de um personagem de jogo conhecido, e o formato em gota sozinho é genérico. Por isso, **rosto, cor, nome e sons precisam ser claramente próprios**, e o desenho final deve ser comparado lado a lado com personagens conhecidos antes de ir para as lojas.
+- **Rosto:** olhos redondos, escuros, com brilho branco; boca de gatinho "ω" no repouso; bochechas em pontinhos rosados. As caretas de cada reação usam vocabulário genérico de emoticon: "> <", piscadinha, olhos em barra, "^ ^". Enjoo e dor mantêm expressões sóbrias (olhinhos cansados, sobrancelhas preocupadas), sem careta engraçada nem choro.
 - **Cor:** azul-sereno próprio (`#79AEE0`, com luz `#D3E8FA` e sombra `#4C82BE`). Os tons podem ser ajustados no rascunho.
 - **Nome:** próprio, a definir. Nenhuma referência a anime ou jogo no app, na ficha ou nos materiais.
-- **Rascunho:** `docs/slime/rascunho-expressoes-v0.svg`. É uma versão 0 para discussão, não a arte final.
+- **Referência aprovada:** prévias renderizadas em `docs/slime/previas-3d/` (`folha.png`). O rascunho `docs/slime/rascunho-expressoes-v0.svg` registra a primeira versão (cúpula).
 
 ### 3.2 Reações (cores, expressões e sons)
 
@@ -154,17 +154,17 @@ Regras gerais:
 | Registro | Cor | Expressão e movimento | Som (se ativado) |
 |---|---|---|---|
 | Neutro (repouso) | azul-sereno | respiração lenta, piscar raro | — |
-| Alimentação | não muda | o ícone do alimento flutua dentro do slime e se dissolve; bochechas | "nham" curto |
+| Alimentação | não muda | olhos "> <" de gostoso e boca "ω"; o alimento aparece dentro do slime | "nham" curto |
 | Bebida | não muda | bolhinhas sobem por dentro | borbulho suave |
 | Enjoo | verde-claro suave | boca ondulada, olhar cansado, "braço" na barriga | nenhum |
 | Dor ou desconforto | pêssego suave | sobrancelhas preocupadas, sem choro; balão com a região registrada | nenhum |
-| Sono e descanso | não muda | achata como uma poça, olhos fechados, "z z" | ronco muito suave |
+| Sono e descanso | não muda | achata como uma poça, olhos em barra, "z z" | ronco muito suave |
 | Banho e higiene | brilho extra | bolhas ao redor, olhos fechados contentes | bolhas |
-| Calma e momentos positivos | azul mais luminoso | sorriso aberto, quique leve | "blop" alegre |
+| Calma e momentos positivos | azul mais luminoso | piscadinha e sorriso, quique leve | "blop" alegre |
 | Conquista | azul mais luminoso | pulinho, sem pontos nem medalhas | "tum-tum" alegre |
 | Emoções e comportamentos difíceis, episódios | **não muda** | **permanece neutro**; aparece só o card "Registro salvo" | **nenhum** |
 | Evacuação | não muda | sem reação; só a confirmação textual | nenhum |
-| Toque no slime (não é registro) | não muda | olhos apertados e boca em "o" ao amassar; volta balançando e sorri | "boing" suave |
+| Toque no slime (não é registro) | não muda | olhos "> <" e boca em "o" ao amassar; volta balançando, com piscadinha | "boing" suave |
 | Suspeita do responsável | igual ao tipo, em tom mais claro | igual | igual |
 
 Na suspeita, a legenda diz, por exemplo, "Suspeita de enjoo registrada".
