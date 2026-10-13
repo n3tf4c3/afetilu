@@ -76,6 +76,7 @@ function Navegacao() {
         <Stack.Screen name="registro/[categoria]" options={{ presentation: "modal", title: t.registro.titulo }} />
         <Stack.Screen name="detalhe/[id]" options={{ title: t.detalhe.titulo }} />
         <Stack.Screen name="apagar" />
+        <Stack.Screen name="resumo" />
       </Stack>
       <AvisoDesfazer />
     </View>

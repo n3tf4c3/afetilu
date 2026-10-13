@@ -1,4 +1,5 @@
 import { LOCAIS, type Local } from "@afetilu/core";
+import { CORES_SLIME, type CorSlime } from "../components/slime/reacoes";
 
 // Preferências de aparência, guardadas no banco local (tabela preferencia).
 
@@ -19,15 +20,18 @@ export interface Aparencia {
   /** Cenário atual da tela inicial (onde a pessoa está). */
   local: Local;
   som: PreferenciaSom;
+  /** Cor do corpo do slime (as cores de enjoo e dor não mudam). */
+  corSlime: CorSlime;
 }
 
-export const APARENCIA_PADRAO: Aparencia = { modoVisual: "cenario", movimento: "auto", local: "casa", som: "pendente" };
+export const APARENCIA_PADRAO: Aparencia = { modoVisual: "cenario", movimento: "auto", local: "casa", som: "pendente", corSlime: "azul" };
 
 export const CHAVES_APARENCIA: Record<keyof Aparencia, string> = {
   modoVisual: "modo_visual",
   movimento: "movimento",
   local: "local_atual",
   som: "som",
+  corSlime: "cor_slime",
 };
 
 const em = <T extends string>(lista: readonly T[], valor: string | null, padrao: T): T =>
@@ -40,6 +44,7 @@ export function aparenciaDosValores(v: Record<keyof Aparencia, string | null>): 
     movimento: em(PREFERENCIAS_MOVIMENTO, v.movimento, APARENCIA_PADRAO.movimento),
     local: em(LOCAIS, v.local, APARENCIA_PADRAO.local),
     som: em(PREFERENCIAS_SOM, v.som, APARENCIA_PADRAO.som),
+    corSlime: em(CORES_SLIME, v.corSlime, APARENCIA_PADRAO.corSlime),
   };
 }
 

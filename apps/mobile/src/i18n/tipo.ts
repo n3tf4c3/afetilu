@@ -1,3 +1,5 @@
+import type { Origem } from "@afetilu/core";
+import type { CorSlime } from "../components/slime/reacoes";
 /** Textos das telas. Todos os idiomas implementam este tipo: faltar uma chave é erro de compilação. */
 export interface TextosApp {
   geral: { cancelar: string; apagar: string; marcar: string; abrindoDados: string };
@@ -214,6 +216,9 @@ export interface TextosApp {
     somLigado: string;
     somDesligado: string;
     sonsAjuda: string;
+    corSlime: string;
+    corSlimeAjuda: string;
+    cores: Record<CorSlime, string>;
     seusDados: string;
     seusDadosTexto: string;
     backupEmBreve: string;
@@ -237,5 +242,63 @@ export interface TextosApp {
     confirmarPessoa: (apelido: string) => string;
     confirmarTudo: string;
     falhou: string;
+  };
+  /** Resumo para consulta: tela e documento PDF. */
+  resumo: {
+    titulo: string;
+    abrir: string;
+    periodo: string;
+    ultimosDias: (n: number) => string;
+    categorias: string;
+    todas: string;
+    previa: (comRegistro: number, totalDias: number, registros: number, episodios: number) => string;
+    preVisualizar: string;
+    compartilhar: string;
+    avisoCompartilhar: string;
+    falhou: string;
+    semCompartilhamento: string;
+    dialogo: string;
+    marca: string;
+    docTitulo: string;
+    geradoEm: (data: string) => string;
+    pessoa: string;
+    periodoAnalisado: string;
+    dias: (n: number) => string;
+    data: (dia: number, mes: number, ano: number) => string;
+    diasComRegistro: string;
+    deDias: (x: number, y: number) => string;
+    narrativa: (semCrises: number, semInformacao: number, episodios: number) => string;
+    inconsistentes: (n: number) => string;
+    kpiEpisodios: string;
+    kpiSemCrises: string;
+    kpiSemInformacao: string;
+    kpiRegistros: string;
+    mapaTitulo: string;
+    legendaRegistros: string;
+    legendaSemCrises: string;
+    legendaSemInformacao: string;
+    legendaEpisodio: string;
+    porCategoriaTitulo: string;
+    origensTexto: (vi: number, contaram: number, suspeita: number) => string;
+    corrigidosTexto: (n: number) => string;
+    episodiosTitulo: string;
+    semEpisodios: string;
+    intensidadesTitulo: string;
+    naoInformada: string;
+    ajudouTitulo: string;
+    ajudouAnotado: (n: number, total: number) => string;
+    positivosTitulo: string;
+    semPositivos: string;
+    demaisTitulo: string;
+    colData: string;
+    colHora: string;
+    colRegistro: string;
+    colDetalhes: string;
+    colOrigem: string;
+    corrigido: string;
+    semHorario: string;
+    origem: Record<Origem, string>;
+    vazio: string;
+    rodape: string;
   };
 }

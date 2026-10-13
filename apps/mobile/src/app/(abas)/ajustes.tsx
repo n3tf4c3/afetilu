@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos as ui } from "../../components/ui";
+import { CORES_SLIME } from "../../components/slime/reacoes";
 import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
 import { NOME_DO_IDIOMA } from "../../i18n";
 import { gerarDadosFicticios } from "../../lib/dados-ficticios";
@@ -83,6 +84,14 @@ export default function Ajustes() {
           valor={aparencia.modoVisual}
           onChange={(v) => v && void definirAparencia({ modoVisual: v })}
         />
+        <Escolha
+          rotulo={a.corSlime}
+          opcoes={CORES_SLIME}
+          rotulos={a.cores}
+          valor={aparencia.corSlime}
+          onChange={(v) => v && void definirAparencia({ corSlime: v })}
+        />
+        <Text style={texto.suave}>{a.corSlimeAjuda}</Text>
         <Escolha
           rotulo={a.movimento}
           opcoes={PREFERENCIAS_MOVIMENTO}

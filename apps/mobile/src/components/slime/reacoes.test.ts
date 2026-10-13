@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, corDaReacao, corLinear, SOM_DA_REACAO, type Reacao } from "./reacoes";
+import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, COR_FIXA, CORES_SLIME, corDaReacao, corLinear, PALETA_SLIME, SOM_DA_REACAO, type Reacao } from "./reacoes";
 
 // Contrato entre o app e o slime.glb versionado (gerado por ferramentas/slime/gerar_slime.py).
 
@@ -78,4 +78,35 @@ test("conversão de cor para o espaço linear do material", () => {
   assert.deepEqual(corLinear("#000000", 0.5), [0, 0, 0, 0.5]);
   const [r] = corLinear("#808080");
   assert.ok(Math.abs(r - 0.2158605) < 1e-6);
+});
+
+/** Matiz (0–360°) de uma cor "#RRGGBB". */
+function matiz(hex: string): number {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number];
+  const max = Math.max(r, g, b);
+  const d = max - Math.min(r, g, b);
+  if (d === 0) return 0;
+  const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return (h * 60 + 360) % 360;
+}
+const distancia = (a: number, b: number) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
+
+test("cores de slime escolhíveis ficam longe das cores de enjoo e dor (a reação continua perceptível)", () => {
+  for (const cor of CORES_SLIME) {
+    for (const tom of [PALETA_SLIME[cor].neutro, PALETA_SLIME[cor].claro]) {
+      for (const fixa of Object.values(COR_FIXA)) {
+        assert.ok(distancia(matiz(tom), matiz(fixa!)) >= 40, `${cor} ${tom} perto demais de ${fixa}`);
+      }
+    }
+  }
+});
+
+test("com outra cor de slime: repouso e tom claro mudam, enjoo e dor não", () => {
+  assert.equal(corDaReacao("neutro", false, "rosa"), PALETA_SLIME.rosa.neutro);
+  assert.equal(corDaReacao("sono", false, "lilas"), PALETA_SLIME.lilas.neutro);
+  assert.equal(corDaReacao("banho", false, "turquesa"), PALETA_SLIME.turquesa.claro);
+  assert.equal(corDaReacao("enjoo", false, "rosa"), COR_FIXA.enjoo);
+  assert.equal(corDaReacao("desconforto", true, "lilas"), corDaReacao("desconforto", true, "azul"));
+  assert.equal(corDaReacao("episodio", true, "rosa"), PALETA_SLIME.rosa.neutro);
+  assert.notEqual(corDaReacao("positivo", true, "rosa"), PALETA_SLIME.rosa.claro);
 });

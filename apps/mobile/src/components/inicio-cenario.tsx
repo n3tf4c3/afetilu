@@ -187,6 +187,7 @@ export function InicioCenario() {
           reacao={reacaoSlime.reacao}
           disparo={reacaoSlime.disparo}
           suspeita={reacaoSlime.suspeita}
+          corBase={aparencia.corSlime}
           movimento={movimento}
           corDeFundo={cor.fundo}
           fundoTransparente

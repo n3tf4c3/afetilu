@@ -8,6 +8,7 @@ import {
   type DicionarioDominio,
   type Registro,
 } from "@afetilu/core";
+import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { FlatList, ScrollView, Text, View } from "react-native";
 import { ItemRegistro } from "../../components/item-registro";
@@ -69,6 +70,7 @@ export default function LinhaDoTempo() {
 
   const cabecalho = (
     <View style={{ gap: espaco.m, paddingBottom: espaco.s }}>
+      <Botao variante="secundaria" icone="file-document-outline" rotulo={t.resumo.abrir} onPress={() => router.push("/resumo")} />
       <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={tl.periodo}>
         {PERIODOS.map((p) => (
           <Chip key={p} rotulo={tl.ultimosDias(p)} selecionado={dias === p} onPress={() => setDias(p)} />

@@ -17,7 +17,7 @@ import {
 import { useSharedValue } from "react-native-worklets-core";
 // Modelo gerado por ferramentas/slime/gerar_slime.py (nunca editar o .glb à mão).
 import MODELO from "../../../assets/slime/slime.glb";
-import { ALFA_CORPO, COR_DA_REACAO, CLIPE_DA_REACAO, corDaReacao, corLinear, type Reacao } from "./reacoes";
+import { ALFA_CORPO, CLIPE_DA_REACAO, corDaReacao, corLinear, PALETA_SLIME, type CorSlime, type Reacao } from "./reacoes";
 
 
 export type Movimento = "completo" | "reduzido" | "nenhum";
@@ -28,6 +28,8 @@ export interface CenaSlimeProps {
   disparo: number;
   /** Registro marcado como suspeita: a cor do tipo em tom mais claro. */
   suspeita?: boolean;
+  /** Cor do corpo escolhida em Ajustes (padrão azul). */
+  corBase?: CorSlime;
   movimento: Movimento;
   corDeFundo: string;
   /** Desenha só o slime, sem fundo, sobre o que estiver atrás (cenário da tela inicial). */
@@ -44,7 +46,7 @@ export interface CenaSlimeProps {
 
 const MODO: Record<Movimento, number> = { completo: 0, reduzido: 1, nenhum: 2 };
 
-function Cena({ reacao, disparo, suspeita = false, movimento, corDeFundo, fundoTransparente, aoMedirQps, renderizacao = "sob_demanda" }: CenaSlimeProps) {
+function Cena({ reacao, disparo, suspeita = false, corBase = "azul", movimento, corDeFundo, fundoTransparente, aoMedirQps, renderizacao = "sob_demanda" }: CenaSlimeProps) {
   const modelo = useModel(MODELO);
   // useModel devolve um objeto novo a cada render; o asset é estável. Usar sempre o asset como
   // dependência (senão o animador é recriado e a reação reinicia a cada render).
@@ -109,6 +111,23 @@ function Cena({ reacao, disparo, suspeita = false, movimento, corDeFundo, fundoT
     renderizarPor(800);
   }, [clipes, continua, repouso, duracaoRepouso, neutro, indice, duracao, pendente, renderizarPor]);
 
+  // Cor do corpo: o .glb vem em azul; o app aplica a cor escolhida (e a das reações) no material.
+  const pintar = useCallback(
+    (hex: string) => {
+      const corpo = asset?.getFirstEntityByName("corpo");
+      if (!corpo) return;
+      renderableManager.getMaterialInstanceAt(corpo, 0).setFloat4Parameter("baseColorFactor", corLinear(hex, ALFA_CORPO));
+    },
+    [asset, renderableManager],
+  );
+  // A reação lê a cor atual sem depender dela: trocar a cor em Ajustes não repete a última reação.
+  const corAtual = useRef(corBase);
+  useEffect(() => {
+    corAtual.current = corBase;
+    pintar(PALETA_SLIME[corBase].neutro);
+    renderizarPor(300);
+  }, [corBase, pintar, renderizarPor]);
+
   // Nova reação: troca o clipe (começa no próximo quadro) e a cor, por tempo limitado.
   useEffect(() => {
     if (!reacao || !asset) return;
@@ -119,16 +138,10 @@ function Cena({ reacao, disparo, suspeita = false, movimento, corDeFundo, fundoT
       pendente.value = true;
     }
     renderizarPor((clipe?.duracao ?? 0.3) * 1000 + 400);
-    const corpo = asset.getFirstEntityByName("corpo");
-    if (!corpo) return;
-    const material = renderableManager.getMaterialInstanceAt(corpo, 0);
-    material.setFloat4Parameter("baseColorFactor", corLinear(corDaReacao(reacao, suspeita), ALFA_CORPO));
-    const volta = setTimeout(
-      () => material.setFloat4Parameter("baseColorFactor", corLinear(COR_DA_REACAO.neutro, ALFA_CORPO)),
-      (clipe?.duracao ?? 2.5) * 1000,
-    );
+    pintar(corDaReacao(reacao, suspeita, corAtual.current));
+    const volta = setTimeout(() => pintar(PALETA_SLIME[corAtual.current].neutro), (clipe?.duracao ?? 2.5) * 1000);
     return () => clearTimeout(volta);
-  }, [reacao, disparo, suspeita, asset, clipes, renderableManager, indice, duracao, pendente, renderizarPor]);
+  }, [reacao, disparo, suspeita, asset, clipes, pintar, indice, duracao, pendente, renderizarPor]);
 
   RenderCallbackContext.useRenderCallback(
     ({ passedSeconds }) => {

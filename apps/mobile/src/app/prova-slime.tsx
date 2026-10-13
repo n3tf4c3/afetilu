@@ -5,6 +5,7 @@ import { CenaSlime, type Movimento } from "../components/slime/cena-slime";
 import { DetalhesDaReacao } from "../components/slime/detalhes-da-reacao";
 import type { Reacao } from "../components/slime/reacoes";
 import { Chip, Secao, estilos } from "../components/ui";
+import { useApp } from "../lib/estado";
 import { cor, espaco, texto } from "../lib/tema";
 
 // Tela de prova técnica do slime 3D. Só existe em builds de desenvolvimento (textos sem tradução).
@@ -14,6 +15,7 @@ const MOVIMENTOS: Movimento[] = ["completo", "reduzido", "nenhum"];
 const ESTILO_CENA = { height: 320, borderRadius: 20, borderWidth: 1, borderColor: cor.borda };
 
 export default function ProvaSlime() {
+  const { aparencia } = useApp();
   const [reacao, setReacao] = useState<Reacao | null>(null);
   const [disparo, setDisparo] = useState(0);
   const [movimento, setMovimento] = useState<Movimento>("completo");
@@ -41,6 +43,7 @@ export default function ProvaSlime() {
           reacao={reacao}
           disparo={disparo}
           suspeita={suspeita}
+          corBase={aparencia.corSlime}
           movimento={movimento}
           corDeFundo={cor.fundo}
           aoMedirQps={medir}

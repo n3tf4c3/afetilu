@@ -16,28 +16,45 @@ export const CLIPE_DA_REACAO: Record<Reacao, string | null> = {
   cutucada: "cutucada",
 };
 
-/** Cores passageiras (sRGB). Episódio não muda a cor. */
-export const COR_DA_REACAO: Record<Reacao, string> = {
-  neutro: "#79AEE0",
-  alimentacao: "#79AEE0",
-  enjoo: "#9ACF94",
-  desconforto: "#F2BE9C",
-  sono: "#79AEE0",
-  banho: "#8CC2F0",
-  positivo: "#8CC2F0",
-  episodio: "#79AEE0",
-  cutucada: "#79AEE0",
+/**
+ * Cor do corpo escolhida pela pessoa (Ajustes › Aparência). Nenhuma é verde, pêssego, laranja ou
+ * amarela: são as cores das reações de enjoo e dor, que precisam continuar perceptíveis.
+ */
+export const CORES_SLIME = ["azul", "rosa", "lilas", "turquesa"] as const;
+export type CorSlime = (typeof CORES_SLIME)[number];
+
+/** Repouso e tom mais claro (banho, momentos positivos) de cada cor, em sRGB. */
+export const PALETA_SLIME: Record<CorSlime, { neutro: string; claro: string }> = {
+  azul: { neutro: "#79AEE0", claro: "#8CC2F0" },
+  rosa: { neutro: "#EE9DBB", claro: "#F5B6CD" },
+  lilas: { neutro: "#B3A3E6", claro: "#C6BAF0" },
+  turquesa: { neutro: "#6FC9C6", claro: "#8ADAD6" },
 };
+
+/** Cores de reação que não dependem da cor escolhida. */
+export const COR_FIXA: Partial<Record<Reacao, string>> = { enjoo: "#9ACF94", desconforto: "#F2BE9C" };
+
+/** Cor passageira de cada reação (sRGB). Episódio, alimentação, sono e toque não mudam a cor. */
+export function corBaseDaReacao(reacao: Reacao, cor: CorSlime = "azul"): string {
+  const fixa = COR_FIXA[reacao];
+  if (fixa) return fixa;
+  return reacao === "banho" || reacao === "positivo" ? PALETA_SLIME[cor].claro : PALETA_SLIME[cor].neutro;
+}
+
+/** Cores com o slime azul (padrão). */
+export const COR_DA_REACAO = Object.fromEntries(
+  (Object.keys(CLIPE_DA_REACAO) as Reacao[]).map((r) => [r, corBaseDaReacao(r)]),
+) as Record<Reacao, string>;
 
 /** Quanto a suspeita clareia a cor do tipo (mistura com branco, em sRGB). */
 export const CLAREAMENTO_SUSPEITA = 0.35;
 
 /**
- * Cor da reação. Suspeita do responsável: a mesma cor do tipo, em tom mais claro
- * (docs/experiencia-avatar.md, 3.2). Episódio e toque nunca mudam a cor.
+ * Cor da reação na cor de slime escolhida. Suspeita do responsável: a mesma cor do tipo, em tom
+ * mais claro (docs/experiencia-avatar.md, 3.2). Episódio e toque nunca mudam a cor.
  */
-export function corDaReacao(reacao: Reacao, suspeita = false): string {
-  const base = COR_DA_REACAO[reacao];
+export function corDaReacao(reacao: Reacao, suspeita = false, cor: CorSlime = "azul"): string {
+  const base = corBaseDaReacao(reacao, cor);
   if (!suspeita || reacao === "episodio" || reacao === "cutucada" || reacao === "neutro") return base;
   const h = base.replace("#", "");
   const canal = (i: number) => {

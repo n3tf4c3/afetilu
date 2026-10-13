@@ -6,3 +6,4 @@ export * from "./quando";
 export * from "./cobertura";
 export * from "./contexto";
 export * from "./revisao";
+export * from "./resumo";
