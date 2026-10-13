@@ -249,7 +249,7 @@ Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertido
     - `expo-audio` sem permissão de microfone; os tocadores só existem com os sons ligados. Não interrompe música de outros apps.
     - Modo silencioso e vibrar respeitados no Android (testado no emulador: toca no normal, não toca no silencioso nem no vibrar). Armadilha: pausar antes do `seekTo(0)`, senão o tocador que já terminou volta a tocar sozinho sem passar pela checagem do modo silencioso.
     - O `expo-audio` acrescenta a permissão `MODIFY_AUDIO_SETTINGS` (normal, sem pedido ao usuário).
-    - Ainda não ouvidos num aparelho físico nem testados no iOS.
+    - Ouvidos no Galaxy A52s (13/10/2026): `nham`, `bolhas`, `ronco` e `boing` saem claros no alto-falante. Falta ouvir o `blop` e testar no iOS.
 - **Modo simples:** grade de ícones e lista de "Hoje", sem slime. É uma tela completa, e **todo o app funciona nela**.
 - **Leitores de tela:** o slime é decorativo; a reação é anunciada pela legenda. Ícones e campos têm rótulo.
 - **Texto e contraste:** WCAG AA, tamanho dinâmico, nenhuma informação transmitida só pela cor. As cores de enjoo e desconforto sempre vêm com legenda, por causa do daltonismo.
