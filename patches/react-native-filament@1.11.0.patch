@@ -1,0 +1,35 @@
+diff --git a/src/react/FilamentView.tsx b/src/react/FilamentView.tsx
+index 69e85f3c362fdde8f477b0c9a4c24a6ef2e5469d..13f35774aa1490f6335f30dd216d4b2613a7c5c6 100644
+--- a/src/react/FilamentView.tsx
++++ b/src/react/FilamentView.tsx
+@@ -41,6 +41,8 @@ export class FilamentView extends React.PureComponent<FilamentProps> {
+   // There is a race condition where the surface might be destroyed before the swapchain is created.
+   // For this we keep track of the surface state:
+   private isSurfaceAlive = Worklets.createSharedValue(true)
++  // Afetilu (patch): instante do próximo quadro permitido, para limitar a 60 quadros/s.
++  private nextFrameAt = Worklets.createSharedValue(0)
+   private isComponentMounted = false
+   private viewId: number
+ 
+@@ -76,6 +78,7 @@ export class FilamentView extends React.PureComponent<FilamentProps> {
+   private updateRenderCallback = async (callback: RenderCallback, swapChain: SwapChain) => {
+     const currentToken = ++this.latestToken
+     const { renderer, view, workletContext, choreographer } = this.getContext()
++    const nextFrameAt = this.nextFrameAt
+ 
+     // When requesting to update the render callback we have to assume that the previous one is not valid anymore
+     // ie. its pointing to already released resources from useDisposableResource:
+@@ -103,6 +106,13 @@ export class FilamentView extends React.PureComponent<FilamentProps> {
+             return
+           }
+ 
++          // Afetilu (patch): em telas de 90/120 Hz o Choreographer chama a cada vsync; pula quadros para
++          // ficar em ~60 por segundo (menos GPU e aquecimento). Em 60 Hz nenhum quadro é pulado.
++          const intervalNs = 1e9 / 60
++          const t = frameInfo.timestamp
++          if (t < nextFrameAt.value - 2e6) return
++          nextFrameAt.value = t - nextFrameAt.value > intervalNs ? t + intervalNs : nextFrameAt.value + intervalNs
++
+           try {
+             callback(frameInfo)
+ 

@@ -39,3 +39,6 @@ minimumReleaseAgeExclude:
 # Peer automático escolhia a 0.87 (outra versão do React Native); o RN 0.86 do SDK 57 pede a 0.86.3.
 overrides:
   '@react-native/metro-config': 0.86.3
+
+patchedDependencies:
+  react-native-filament@1.11.0: patches/react-native-filament@1.11.0.patch

@@ -100,14 +100,33 @@ Celular ligado no USB, bateria em 100% e já morno no início (bateria 39,5 °C,
 | Item | Resultado |
 |---|---|
 | Funcionamento | Reações, cores e volta ao neutro iguais ao emulador; idioma pt-BR detectado do aparelho. |
-| Fluidez | Até ~97–120 quadros/s (acompanha a tela de 120 Hz). |
+| Fluidez | Até ~97–120 quadros/s (acompanha a tela de 120 Hz). Com o limite de 60 quadros/s (ver 2.4): 60 por segundo, e o trabalho mediano por quadro cai de 17 para 8 ms. |
 | Renderização sob demanda | Liga na reação e para depois (0 quadros/s, slime visível). |
 | Renderização contínua por 5 min (teste de estresse) | Processador 44,5 → 56,8 °C, bateria 39,5 → 41,8 °C, estado térmico 2 → 4 (crítico). Teste interrompido; o processador voltou a 44 °C em 3 min com o app fechado. Sem falha do app. |
 | Memória | Heap nativo ≈ 136–157 MB, estável. |
 
-**Conclusões:** renderização contínua não é aceitável (aquece o aparelho); a renderização sob demanda é obrigatória e fica como padrão. Melhoria pendente: limitar a 60 quadros/s durante as reações em telas de 90/120 Hz. O A52s é intermediário; um aparelho de entrada ainda não foi testado, e o consumo de bateria não foi medido (o celular estava carregando).
+**Conclusões:** renderização contínua não é aceitável (aquece o aparelho); a renderização sob demanda é obrigatória e fica como padrão. O A52s é intermediário; um aparelho de entrada ainda não foi testado.
 
-**Ainda não medido:** Android de entrada, consumo de bateria e iOS.
+### 2.4 Limite de 60 quadros/s, bateria e aquecimento (13/10/2026, mesmo A52s)
+
+**Limite de 60 quadros/s:** em telas de 90/120 Hz o Choreographer chama o laço de render a cada vsync. A opção `frameRateOptions.interval` do Filament não reduz a taxa (medido: 826 contra 840 quadros em 10 s). O limite fica num patch do pnpm em `patches/react-native-filament@1.11.0.patch`: o laço pula quadros para ficar em ~60 por segundo; em telas de 60 Hz nenhum quadro é pulado. Renderização contínua em 10 s: ~80 quadros/s antes (29% atrasados, mediana de 17 ms por quadro), 60 quadros/s depois (mediana de 8 ms).
+
+**Bateria e aquecimento:** cabo desligado, tela acesa com brilho manual fixo, build de desenvolvimento (mais pesada que a final), amostras a cada 5 s por script no próprio aparelho. A corrente inclui a tela; vale a comparação entre etapas, não o número absoluto.
+
+| Etapa (tela) | Corrente média | Processador | Superfície | Estado térmico |
+|---|---|---|---|---|
+| Repouso, slime parado (inicial, 5 min) | 284 mA | 44,9 → 41,8 °C (ainda esfriando) | 40,5 → 38,9 °C | 3 → 2 |
+| Cutucada a cada 15 s, com som (inicial, 5 min) | 298 mA | 41,8 → 41,3 °C | 38,9 → 38,4 °C | 2 |
+| Parado (prova técnica, 2 min) | 369 mA | 42,5 → 41,9 °C | 39,1 → 38,7 °C | 2 |
+| Renderização contínua a 60 quadros/s (prova técnica, 5 min) | 610 mA | 41,9 → 47,0 °C | 38,7 → 41,2 °C | 2 |
+| Recuperação (prova técnica, 3 min) | 291 mA | 47,2 → 42,8 °C | 41,3 → 39,5 °C | 2 |
+
+**Conclusões:**
+- Uso real (reação a cada registro, ou cutucadas): ~+14 mA (~5%) com um toque a cada 15 s e sem aquecimento. Custo desprezível.
+- Pior caso (renderização contínua, que o app não usa): ~+240 mA. A 60 quadros/s, o processador sobe 5 °C em 5 min e o estado térmico não muda. Antes do limite, a 120 Hz e carregando, tinha subido 12 °C e chegado ao estado crítico (4). As condições não são idênticas (carregamento aquece), mas a diferença é grande.
+- A tela da prova técnica gasta mais em repouso que a inicial (fundo mais claro numa tela AMOLED).
+
+**Ainda não medido:** Android de entrada, build de release e iOS.
 
 ---
 
@@ -247,7 +266,7 @@ Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertido
     - Sons sintetizados por `ferramentas/sons/gerar_sons.mjs`, próprios e sem licença de terceiros: `nham` (alimentação), `ronco` (sono), `bolhas` (banho), `blop` (calma e momentos positivos) e `boing` (toque no slime). Bebida e conquista usam, por ora, o som de alimentação e o de momentos positivos.
     - A pergunta aparece como cartão na tela de cenário até a pessoa responder ("Ativar sons" ou "Agora não"); depois, só em Ajustes › Aparência › Sons.
     - `expo-audio` sem permissão de microfone; os tocadores só existem com os sons ligados. Não interrompe música de outros apps.
-    - Modo silencioso e vibrar respeitados no Android (testado no emulador: toca no normal, não toca no silencioso nem no vibrar). Armadilha: pausar antes do `seekTo(0)`, senão o tocador que já terminou volta a tocar sozinho sem passar pela checagem do modo silencioso.
+    - Modo silencioso e vibrar respeitados no Android (testado no emulador e no Galaxy A52s: toca no normal, não toca no silencioso nem no vibrar). Armadilha: pausar antes do `seekTo(0)`, senão o tocador que já terminou volta a tocar sozinho sem passar pela checagem do modo silencioso.
     - O `expo-audio` acrescenta a permissão `MODIFY_AUDIO_SETTINGS` (normal, sem pedido ao usuário).
     - Ouvidos no Galaxy A52s (13/10/2026): `nham`, `bolhas`, `ronco` e `boing` saem claros no alto-falante. Falta ouvir o `blop` e testar no iOS.
 - **Modo simples:** grade de ícones e lista de "Hoje", sem slime. É uma tela completa, e **todo o app funciona nela**.
