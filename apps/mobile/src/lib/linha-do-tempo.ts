@@ -4,7 +4,7 @@ import {
   type DiaAnotado,
   type Registro,
   type SituacaoDoDia,
-} from "@eloazul/core";
+} from "@afetilu/core";
 import type { TextosApp } from "../i18n/tipo";
 
 export type FiltroCategoria = Categoria | "todas";

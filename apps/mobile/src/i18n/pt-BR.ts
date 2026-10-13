@@ -15,7 +15,7 @@ export const ptBR: TextosApp = {
   },
   abas: { inicio: "Início", linhaDoTempo: "Linha do tempo", ajustes: "Ajustes" },
   primeiroUso: {
-    titulo: "Boas-vindas ao Elo Azul",
+    titulo: "Boas-vindas ao Afetilu",
     introducao:
       "Um caderno de observações do dia a dia para quem cuida de uma pessoa autista, pensado para levar informações claras às consultas.",
     fazTitulo: "O que o app faz",

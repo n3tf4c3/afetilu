@@ -1,4 +1,4 @@
-import { LIMITES } from "@eloazul/core";
+import { LIMITES } from "@afetilu/core";
 
 /**
  * Migrações do banco local, em ordem. Nunca editar uma já publicada:

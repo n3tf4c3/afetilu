@@ -1,4 +1,4 @@
-import { CATEGORIAS, type Categoria, type Local } from "@eloazul/core";
+import { CATEGORIAS, type Categoria, type Local } from "@afetilu/core";
 
 // Cenários da tela inicial: o lugar onde a pessoa está. Cada um mostra só as ações mais
 // prováveis daquele momento, em pílulas nos cantos superiores; "Todas" leva às demais.

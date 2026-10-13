@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { Detalhe, EntradaRegistro } from "@eloazul/core";
+import type { Detalhe, EntradaRegistro } from "@afetilu/core";
 import { reacaoDoRegistro } from "./reacao-do-registro";
 
 const AGORA = new Date(2026, 9, 13, 15, 0);

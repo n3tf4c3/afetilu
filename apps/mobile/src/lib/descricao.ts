@@ -1,4 +1,4 @@
-import { rotuloDoDia, type DicionarioDominio, type EntradaRegistro } from "@eloazul/core";
+import { rotuloDoDia, type DicionarioDominio, type EntradaRegistro } from "@afetilu/core";
 import type { TextosApp } from "../i18n/tipo";
 
 export interface LinhaDescricao {

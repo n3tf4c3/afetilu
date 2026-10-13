@@ -5,7 +5,7 @@ import {
   type Pessoa,
   type Registro,
   type RevisaoRegistro,
-} from "@eloazul/core";
+} from "@afetilu/core";
 
 // Conversão entre linhas do SQLite e objetos do domínio. Todo conteúdo lido
 // passa pela validação do core: um registro corrompido não entra na tela.

@@ -1,4 +1,4 @@
-# Elo Azul — viabilidade nas lojas e proposta de MVP
+# Afetilu — viabilidade nas lojas e proposta de MVP
 
 Proposta de 13/10/2026, ainda em discussão. Nada foi implementado ou publicado nas lojas. A implementação depende da aprovação do escopo e da estratégia de distribuição.
 
@@ -25,9 +25,9 @@ As páginas da Google e da Apple não exibem data de última atualização; a da
 | A4 | [Notícia Apple de 01/02/2021](https://developer.apple.com/news/?id=3ozbk628) | Data em que a 5.1.1(ix) ganhou a redação atual sobre áreas reguladas. |
 | L1 | [Lei 15.211/2025 (ECA Digital) — vigência em 17/03/2026](https://www.gov.br/mj/pt-br/assuntos/noticias/sancionado-projeto-que-fortalece-a-anpd-e-fixa-inicio-da-vigencia-do-eca-digital); [análise da Data Privacy Brasil](https://www.dataprivacybr.org/eca-digital-entra-em-vigor-o-que-a-lei-preve-e-o-que-ainda-falta-regulamentar/) | Deveres para produtos de TI direcionados a crianças e adolescentes ou de acesso provável por eles, com fiscalização da ANPD. O texto oficial precisa ser lido antes de qualquer conclusão. |
 
-### 1.2 Enquadramento do Elo Azul
+### 1.2 Enquadramento do Afetilu
 
-O Elo Azul deve ser declarado conforme o que realmente faz:
+O Afetilu deve ser declarado conforme o que realmente faz:
 
 - registra alimentação e sono → **Health and fitness** (Nutrição; Sono);
 - registra episódios de agitação, agressividade e autoagressão, além de comportamento e comunicação de uma pessoa autista → muito provavelmente **Medical › Mental and Behavioral Health**, com possível leitura como *Diseases and Conditions Management* ou como coordenação de cuidado em *Healthcare Services and Management*;

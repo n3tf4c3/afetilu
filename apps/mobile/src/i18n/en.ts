@@ -15,7 +15,7 @@ export const en: TextosApp = {
   },
   abas: { inicio: "Home", linhaDoTempo: "Timeline", ajustes: "Settings" },
   primeiroUso: {
-    titulo: "Welcome to Elo Azul",
+    titulo: "Welcome to Afetilu",
     introducao:
       "A day-to-day observation journal for people who care for an autistic person, designed to bring clear information to appointments.",
     fazTitulo: "What the app does",

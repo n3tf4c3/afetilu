@@ -1,5 +1,5 @@
 import DateTimePicker, { DateTimePickerAndroid, type DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { chaveDoDia, dataDaChave, diaPorExtenso } from "@eloazul/core";
+import { chaveDoDia, dataDaChave, diaPorExtenso } from "@afetilu/core";
 import { useState } from "react";
 import { Platform, View } from "react-native";
 import { useTextos } from "../lib/estado";

@@ -1,4 +1,4 @@
-# Elo Azul — guia do projeto
+# Afetilu — guia do projeto
 
 App Android/iOS para familiares e cuidadores de pessoas autistas registrarem observações do dia a dia (alimentação, sono, desconfortos, comportamentos, higiene, evacuação e momentos positivos) e levarem um resumo descritivo às consultas.
 
@@ -60,7 +60,7 @@ Antes de usar uma API do Expo/React Native, conferir a documentação da versão
 
 ## Pendências conhecidas
 
-- Identificador `com.eloazul.app` é provisório: fica permanente no primeiro envio às lojas.
+- Identificador `com.afetilu.app` é provisório: fica permanente no primeiro envio às lojas.
 - EAS (builds na nuvem e updates OTA) ainda não configurado: exige conta e aprovação.
 - Resumo em PDF, backup cifrado escolhido pelo responsável e exclusão total pelo usuário: etapa 5.
 - Mascote slime 3D: componente isolado em `apps/mobile/src/components/slime/` (react-native-filament 1.11.0, versão fixada). Renderização sob demanda (liga só durante a reação). Armadilhas: `useModel` devolve objeto novo a cada render (usar o `asset`); `Skybox`/`DefaultLight` vazam memória a cada render (manter memorizados); sem `KHR_materials_transmission` (corpo por alfa). Contrato com o `.glb` testado em `reacoes.test.ts`.

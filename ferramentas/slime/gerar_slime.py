@@ -1,4 +1,4 @@
-"""Gera o mascote slime do Elo Azul no Blender, sem interface.
+"""Gera o mascote slime do Afetilu no Blender, sem interface.
 
 Uso (na raiz do repositório):
   blender -b --factory-startup --python-exit-code 1 -P ferramentas/slime/gerar_slime.py -- --saida apps/mobile/assets/slime

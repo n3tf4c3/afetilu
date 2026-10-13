@@ -1,4 +1,4 @@
-import { LOCAIS, type Local } from "@eloazul/core";
+import { LOCAIS, type Local } from "@afetilu/core";
 
 // Preferências de aparência, guardadas no banco local (tabela preferencia).
 

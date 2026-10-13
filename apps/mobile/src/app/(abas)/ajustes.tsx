@@ -1,4 +1,4 @@
-import { IDIOMAS, LIMITES } from "@eloazul/core";
+import { IDIOMAS, LIMITES } from "@afetilu/core";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";

@@ -1,4 +1,4 @@
-import { LIMITES } from "@eloazul/core";
+import { LIMITES } from "@afetilu/core";
 import { Redirect, router } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";

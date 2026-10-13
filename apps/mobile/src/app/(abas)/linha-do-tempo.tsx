@@ -7,7 +7,7 @@ import {
   type DiaAnotado,
   type DicionarioDominio,
   type Registro,
-} from "@eloazul/core";
+} from "@afetilu/core";
 import { useEffect, useMemo, useState } from "react";
 import { FlatList, ScrollView, Text, View } from "react-native";
 import { ItemRegistro } from "../../components/item-registro";

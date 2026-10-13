@@ -8,7 +8,7 @@ import {
   type Local,
   type Origem,
   type Registro,
-} from "@eloazul/core";
+} from "@afetilu/core";
 
 /** Detalhe ainda em edição: os campos só são exigidos na hora de salvar. */
 export type Rascunho = { categoria: Categoria } & Record<string, unknown>;

@@ -8,7 +8,7 @@ import {
   TIPOS_HIGIENE,
   TIPOS_POSITIVO,
   type Intensidade,
-} from "@eloazul/core";
+} from "@afetilu/core";
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { useTextos } from "../lib/estado";

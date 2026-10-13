@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "Elo Azul",
-    "slug": "eloazul",
-    "scheme": "eloazul",
+    "name": "Afetilu",
+    "slug": "afetilu",
+    "scheme": "afetilu",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.eloazul.app"
+      "bundleIdentifier": "com.afetilu.app"
     },
     "android": {
-      "package": "com.eloazul.app",
+      "package": "com.afetilu.app",
       "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",

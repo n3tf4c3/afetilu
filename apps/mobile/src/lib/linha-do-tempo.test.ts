@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { entradaRegistro, novoRegistro, type Registro } from "@eloazul/core";
+import { entradaRegistro, novoRegistro, type Registro } from "@afetilu/core";
 import { gerarDadosFicticios } from "./dados-ficticios";
 import { textos } from "../i18n";
 import { montarLinhaDoTempo, resumoDoDia } from "./linha-do-tempo";

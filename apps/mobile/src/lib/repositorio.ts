@@ -8,7 +8,7 @@ import {
   type Pessoa,
   type Registro,
   type RevisaoRegistro,
-} from "@eloazul/core";
+} from "@afetilu/core";
 import type { SQLiteDatabase } from "expo-sqlite";
 import { novoId } from "./db";
 import {

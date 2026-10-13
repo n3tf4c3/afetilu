@@ -1,4 +1,4 @@
-import { dominio, type DicionarioDominio, type Idioma } from "@eloazul/core";
+import { dominio, type DicionarioDominio, type Idioma } from "@afetilu/core";
 import { en } from "./en";
 import { es } from "./es";
 import { ptBR } from "./pt-BR";

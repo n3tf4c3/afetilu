@@ -1,4 +1,4 @@
-import type { Categoria } from "@eloazul/core";
+import type { Categoria } from "@afetilu/core";
 import type { NomeIcone } from "./ui";
 
 // Ícones Material Community (licença Apache 2.0, via @expo/vector-icons).

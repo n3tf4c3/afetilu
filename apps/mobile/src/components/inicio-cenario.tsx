@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { CATEGORIAS, diaPorExtenso, type Local } from "@eloazul/core";
+import { CATEGORIAS, diaPorExtenso, type Local } from "@afetilu/core";
 import { router } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {

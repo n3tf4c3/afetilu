@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CATEGORIAS, LOCAIS } from "@eloazul/core";
+import { CATEGORIAS, LOCAIS } from "@afetilu/core";
 import { categoriasVisiveis, CENARIOS, cenarioDoLocal, MAXIMO_POR_LADO } from "./cenarios";
 
 test("há um cenário para cada local, sem repetição", () => {

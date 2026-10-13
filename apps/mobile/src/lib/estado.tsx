@@ -1,4 +1,4 @@
-import { ehIdioma, resolverIdioma, type Idioma, type Pessoa } from "@eloazul/core";
+import { ehIdioma, resolverIdioma, type Idioma, type Pessoa } from "@afetilu/core";
 import { getLocales } from "expo-localization";
 import type { SQLiteDatabase } from "expo-sqlite";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";

@@ -180,7 +180,7 @@ importers:
 
   apps/mobile:
     dependencies:
-      '@eloazul/core':
+      '@afetilu/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@expo/vector-icons':

@@ -1,4 +1,4 @@
-import { chaveDoDia, legendaDoRegistro, rotuloDoDia, type Registro, type RevisaoRegistro } from "@eloazul/core";
+import { chaveDoDia, legendaDoRegistro, rotuloDoDia, type Registro, type RevisaoRegistro } from "@afetilu/core";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";

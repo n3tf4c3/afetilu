@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1220" height="800" viewBox="0 0 1220 800" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
-  <title>Elo Azul — rascunho do mascote slime (v0)</title>
+  <title>Afetilu — rascunho do mascote slime (v0)</title>
   <defs>
     <radialGradient id="gAzul" cx=".42" cy=".3" r=".8">
       <stop offset="0" stop-color="#D3E8FA"/>
@@ -47,7 +47,7 @@
   </defs>
 
   <rect width="1220" height="800" fill="#FAF7F2"/>
-  <text x="20" y="42" font-size="24" font-weight="700" fill="#22324A">Elo Azul — rascunho do mascote slime (v0)</text>
+  <text x="20" y="42" font-size="24" font-weight="700" fill="#22324A">Afetilu — rascunho do mascote slime (v0)</text>
   <text x="20" y="66" font-size="14" fill="#5B6577">Personagem original para discussão. Cores e expressões são passageiras (até 3 s), sempre acompanhadas de legenda; depois voltam ao neutro.</text>
 
   <!-- 1. Neutro -->

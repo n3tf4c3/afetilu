@@ -1,4 +1,4 @@
-import type { EntradaRegistro } from "@eloazul/core";
+import type { EntradaRegistro } from "@afetilu/core";
 import type { Reacao } from "./reacoes";
 
 /** Dor e enjoo registrados há mais tempo que isto não animam o slime (não parecem estar acontecendo agora). */

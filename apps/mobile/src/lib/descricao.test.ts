@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { chaveDoDia, type EntradaRegistro } from "@eloazul/core";
+import { chaveDoDia, type EntradaRegistro } from "@afetilu/core";
 import { textos } from "../i18n";
 import { descreverRegistro } from "./descricao";
 

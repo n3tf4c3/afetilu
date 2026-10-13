@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { Registro } from "@eloazul/core";
+import type { Registro } from "@afetilu/core";
 import { diaAnotadoDaLinha, linhaDoRegistro, registroDaLinha, revisaoDaLinha } from "./linhas";
 
 const r: Registro = {

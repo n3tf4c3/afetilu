@@ -1,4 +1,4 @@
-import { chaveDoDia, ehEpisodio, somarDias, type Categoria, type DiaAnotado, type Local, type Registro } from "@eloazul/core";
+import { chaveDoDia, ehEpisodio, somarDias, type Categoria, type DiaAnotado, type Local, type Registro } from "@afetilu/core";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";

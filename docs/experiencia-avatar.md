@@ -1,4 +1,4 @@
-# Elo Azul — experiência com o mascote slime
+# Afetilu — experiência com o mascote slime
 
 Proposta de 13/10/2026, ainda em discussão. Nada foi implementado ou contratado, e nenhuma foto real foi usada.
 

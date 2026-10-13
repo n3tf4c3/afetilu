@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { CATEGORIAS, diaPorExtenso } from "@eloazul/core";
+import { CATEGORIAS, diaPorExtenso } from "@afetilu/core";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useApp, useTextos } from "../lib/estado";

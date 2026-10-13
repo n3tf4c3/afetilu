@@ -3,8 +3,8 @@ import * as SecureStore from "expo-secure-store";
 import * as SQLite from "expo-sqlite";
 import { MIGRACOES } from "./migracoes";
 
-const NOME_BANCO = "eloazul.db";
-const CHAVE_SEGURA = "eloazul.chave-banco.v1";
+const NOME_BANCO = "afetilu.db";
+const CHAVE_SEGURA = "afetilu.chave-banco.v1";
 
 export type FalhaBanco = "sem_cifra" | "nao_abriu";
 

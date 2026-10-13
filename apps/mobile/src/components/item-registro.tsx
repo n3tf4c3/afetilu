@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { legendaDoRegistro, type Registro } from "@eloazul/core";
+import { legendaDoRegistro, type Registro } from "@afetilu/core";
 import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useTextos } from "../lib/estado";

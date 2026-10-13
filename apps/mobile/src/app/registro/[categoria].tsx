@@ -11,7 +11,7 @@ import {
   type Categoria,
   type Local,
   type Registro,
-} from "@eloazul/core";
+} from "@afetilu/core";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";

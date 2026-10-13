@@ -1,4 +1,4 @@
-import { chaveDoDia, PERIODOS_DO_DIA, type EscolhaDeQuando } from "@eloazul/core";
+import { chaveDoDia, PERIODOS_DO_DIA, type EscolhaDeQuando } from "@afetilu/core";
 import { Text, View } from "react-native";
 import { useTextos } from "../lib/estado";
 import { espaco, texto } from "../lib/tema";

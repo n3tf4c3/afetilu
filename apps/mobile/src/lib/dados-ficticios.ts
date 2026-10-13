@@ -1,4 +1,4 @@
-import { chaveDoDia, somarDias, type Detalhe, type EntradaRegistro } from "@eloazul/core";
+import { chaveDoDia, somarDias, type Detalhe, type EntradaRegistro } from "@afetilu/core";
 
 // Gerador de dados FICTÍCIOS para desenvolvimento e demonstração.
 // Disponível só em builds de desenvolvimento; nunca usar dados reais.

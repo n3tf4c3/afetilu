@@ -17,7 +17,7 @@ export const es: TextosApp = {
   },
   abas: { inicio: "Inicio", linhaDoTempo: "Línea de tiempo", ajustes: "Ajustes" },
   primeiroUso: {
-    titulo: "Te damos la bienvenida a Elo Azul",
+    titulo: "Te damos la bienvenida a Afetilu",
     introducao:
       "Un cuaderno de observaciones del día a día para quienes cuidan a una persona autista, pensado para llevar información clara a las consultas.",
     fazTitulo: "Lo que hace la app",
