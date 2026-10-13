@@ -29,6 +29,26 @@ export const COR_DA_REACAO: Record<Reacao, string> = {
   cutucada: "#79AEE0",
 };
 
+/** Quanto a suspeita clareia a cor do tipo (mistura com branco, em sRGB). */
+export const CLAREAMENTO_SUSPEITA = 0.35;
+
+/**
+ * Cor da reação. Suspeita do responsável: a mesma cor do tipo, em tom mais claro
+ * (docs/experiencia-avatar.md, 3.2). Episódio e toque nunca mudam a cor.
+ */
+export function corDaReacao(reacao: Reacao, suspeita = false): string {
+  const base = COR_DA_REACAO[reacao];
+  if (!suspeita || reacao === "episodio" || reacao === "cutucada" || reacao === "neutro") return base;
+  const h = base.replace("#", "");
+  const canal = (i: number) => {
+    const c = parseInt(h.slice(i, i + 2), 16);
+    return Math.round(c + (255 - c) * CLAREAMENTO_SUSPEITA)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${canal(0)}${canal(2)}${canal(4)}`.toUpperCase();
+}
+
 export type Som = "nham" | "ronco" | "bolhas" | "blop" | "boing";
 
 /**

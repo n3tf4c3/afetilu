@@ -17,7 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CamposCategoria } from "../../components/campos-categoria";
-import { reacaoDoRegistro } from "../../components/slime/reacao-do-registro";
+import { extrasDaReacao, reacaoDoRegistro } from "../../components/slime/reacao-do-registro";
 import { SeletorDataHora } from "../../components/seletor-data";
 import { SeletorQuando } from "../../components/seletor-quando";
 import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos } from "../../components/ui";
@@ -106,7 +106,7 @@ export default function TelaRegistro() {
         const r = await criarRegistro(db, resultado.entrada);
         notificarMudanca();
         oferecerDesfazer(legendaDoRegistro(r, chaveDoDia(agora), d), () => apagarRegistro(db, r.id));
-        reagir(reacaoDoRegistro(r, agora));
+        reagir(reacaoDoRegistro(r, agora), extrasDaReacao(r));
       }
       router.back();
     } catch (e) {

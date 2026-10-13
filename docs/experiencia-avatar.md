@@ -169,6 +169,12 @@ Regras gerais:
 
 Na suspeita, a legenda diz, por exemplo, "Suspeita de enjoo registrada".
 
+**Implementado (13/10/2026):**
+- Suspeita: a cor do tipo clareada em 35% (`corDaReacao` em `components/slime/reacoes.ts`). Episódio e toque nunca mudam a cor.
+- "zzz" (ícone) no sono e balão com a região registrada na dor ou desconforto, em `components/slime/detalhes-da-reacao.tsx`. Não há balão no enjoo nem quando a região é "outra" ou "não sei".
+- Os detalhes 2D são decorativos e ficam fora do leitor de tela, porque a legenda do registro já é anunciada. Conferido no Galaxy A52s: o evento de anúncio "Dor registrada · 15:41" sai ao salvar.
+- Movimento reduzido: os detalhes só aparecem e somem; sem animação: aparecem e somem sem transição.
+
 **Registros retroativos:**
 - Rotina (sono, banho, alimentação): a reação aparece, com a legenda "registrado para ontem, 22:10".
 - Enjoo, dor ou desconforto com evento há mais de 60 min: **sem reação do slime**, só a confirmação textual.

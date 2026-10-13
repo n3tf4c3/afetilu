@@ -2,6 +2,7 @@ import { Redirect, Stack } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { CenaSlime, type Movimento } from "../components/slime/cena-slime";
+import { DetalhesDaReacao } from "../components/slime/detalhes-da-reacao";
 import type { Reacao } from "../components/slime/reacoes";
 import { Chip, Secao, estilos } from "../components/ui";
 import { cor, espaco, texto } from "../lib/tema";
@@ -17,6 +18,7 @@ export default function ProvaSlime() {
   const [disparo, setDisparo] = useState(0);
   const [movimento, setMovimento] = useState<Movimento>("completo");
   const [continua, setContinua] = useState(false);
+  const [suspeita, setSuspeita] = useState(false);
   const [qps, setQps] = useState(0);
   const [amostras, setAmostras] = useState<number[]>([]);
 
@@ -34,15 +36,19 @@ export default function ProvaSlime() {
   return (
     <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }}>
       <Stack.Screen options={{ title: "Prova técnica: slime 3D" }} />
-      <CenaSlime
-        reacao={reacao}
-        disparo={disparo}
-        movimento={movimento}
-        corDeFundo={cor.fundo}
-        aoMedirQps={medir}
-        renderizacao={continua ? "continua" : "sob_demanda"}
-        style={ESTILO_CENA}
-      />
+      <View>
+        <CenaSlime
+          reacao={reacao}
+          disparo={disparo}
+          suspeita={suspeita}
+          movimento={movimento}
+          corDeFundo={cor.fundo}
+          aoMedirQps={medir}
+          renderizacao={continua ? "continua" : "sob_demanda"}
+          style={ESTILO_CENA}
+        />
+        <DetalhesDaReacao reacao={reacao} disparo={disparo} regiao="cabeça (teste)" movimento={movimento} altura={ESTILO_CENA.height} />
+      </View>
       <View accessibilityLiveRegion="polite">
         <Text style={texto.corpo} testID="qps">
           QPS agora {qps.toFixed(0)} · média 60 s {media.toFixed(1)} · mínimo {minimo.toFixed(0)} ({lista.length} amostras)
@@ -61,6 +67,7 @@ export default function ProvaSlime() {
               }}
             />
           ))}
+          <Chip rotulo="suspeita" selecionado={suspeita} onPress={() => setSuspeita((v) => !v)} />
         </View>
       </Secao>
       <Secao titulo="Renderização">

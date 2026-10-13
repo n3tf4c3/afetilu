@@ -2,6 +2,7 @@ import { ehIdioma, resolverIdioma, type Idioma, type Pessoa } from "@afetilu/cor
 import { getLocales } from "expo-localization";
 import type { SQLiteDatabase } from "expo-sqlite";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import type { ExtrasDaReacao } from "../components/slime/reacao-do-registro";
 import type { Reacao } from "../components/slime/reacoes";
 import { textos, type Textos } from "../i18n";
 import { aparenciaDosValores, CHAVES_APARENCIA, type Aparencia } from "./aparencia";
@@ -37,9 +38,12 @@ interface EstadoApp {
   aparencia: Aparencia;
   definirAparencia: (parcial: Partial<Aparencia>) => Promise<void>;
   /** Última reação pedida ao mascote; `disparo` muda a cada pedido. */
-  reacaoSlime: { reacao: Reacao | null; disparo: number };
-  reagir: (reacao: Reacao | null) => void;
+  reacaoSlime: ReacaoSlime;
+  reagir: (reacao: Reacao | null, extras?: ExtrasDaReacao) => void;
 }
+
+/** Última reação pedida ao mascote, com o tom de suspeita e a região da dor. */
+export type ReacaoSlime = { reacao: Reacao | null; disparo: number } & ExtrasDaReacao;
 
 export type Situacao =
   | { tipo: "carregando" }
@@ -96,7 +100,7 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
   const [tentativa, setTentativa] = useState(0);
   const [versaoDados, setVersao] = useState(0);
   const [desfazer, setDesfazer] = useState<Desfazer | null>(null);
-  const [reacaoSlime, setReacaoSlime] = useState<{ reacao: Reacao | null; disparo: number }>({ reacao: null, disparo: 0 });
+  const [reacaoSlime, setReacaoSlime] = useState<ReacaoSlime>({ reacao: null, disparo: 0, suspeita: false });
   const [idiomaAparelho] = useState<Idioma>(() => resolverIdioma(getLocales().map((l) => l.languageTag)));
 
   useEffect(() => {
@@ -168,7 +172,7 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
         setAbertura((a) => (a.tipo === "pronto" ? { ...a, aparencia: { ...a.aparencia, ...parcial } } : a));
       },
       reacaoSlime,
-      reagir: (reacao) => setReacaoSlime((r) => ({ reacao, disparo: r.disparo + 1 })),
+      reagir: (reacao, extras) => setReacaoSlime((r) => ({ reacao, disparo: r.disparo + 1, suspeita: false, ...extras })),
     };
   }, [abertura, versaoDados, desfazer, recomecar, reacaoSlime]);
 

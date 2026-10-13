@@ -17,7 +17,7 @@ import {
 import { useSharedValue } from "react-native-worklets-core";
 // Modelo gerado por ferramentas/slime/gerar_slime.py (nunca editar o .glb à mão).
 import MODELO from "../../../assets/slime/slime.glb";
-import { ALFA_CORPO, COR_DA_REACAO, CLIPE_DA_REACAO, corLinear, type Reacao } from "./reacoes";
+import { ALFA_CORPO, COR_DA_REACAO, CLIPE_DA_REACAO, corDaReacao, corLinear, type Reacao } from "./reacoes";
 
 
 export type Movimento = "completo" | "reduzido" | "nenhum";
@@ -26,6 +26,8 @@ export interface CenaSlimeProps {
   /** Reação a tocar; troque `disparo` para tocar a mesma reação de novo. */
   reacao: Reacao | null;
   disparo: number;
+  /** Registro marcado como suspeita: a cor do tipo em tom mais claro. */
+  suspeita?: boolean;
   movimento: Movimento;
   corDeFundo: string;
   /** Desenha só o slime, sem fundo, sobre o que estiver atrás (cenário da tela inicial). */
@@ -42,7 +44,7 @@ export interface CenaSlimeProps {
 
 const MODO: Record<Movimento, number> = { completo: 0, reduzido: 1, nenhum: 2 };
 
-function Cena({ reacao, disparo, movimento, corDeFundo, fundoTransparente, aoMedirQps, renderizacao = "sob_demanda" }: CenaSlimeProps) {
+function Cena({ reacao, disparo, suspeita = false, movimento, corDeFundo, fundoTransparente, aoMedirQps, renderizacao = "sob_demanda" }: CenaSlimeProps) {
   const modelo = useModel(MODELO);
   // useModel devolve um objeto novo a cada render; o asset é estável. Usar sempre o asset como
   // dependência (senão o animador é recriado e a reação reinicia a cada render).
@@ -120,13 +122,13 @@ function Cena({ reacao, disparo, movimento, corDeFundo, fundoTransparente, aoMed
     const corpo = asset.getFirstEntityByName("corpo");
     if (!corpo) return;
     const material = renderableManager.getMaterialInstanceAt(corpo, 0);
-    material.setFloat4Parameter("baseColorFactor", corLinear(COR_DA_REACAO[reacao], ALFA_CORPO));
+    material.setFloat4Parameter("baseColorFactor", corLinear(corDaReacao(reacao, suspeita), ALFA_CORPO));
     const volta = setTimeout(
       () => material.setFloat4Parameter("baseColorFactor", corLinear(COR_DA_REACAO.neutro, ALFA_CORPO)),
       (clipe?.duracao ?? 2.5) * 1000,
     );
     return () => clearTimeout(volta);
-  }, [reacao, disparo, asset, clipes, renderableManager, indice, duracao, pendente, renderizarPor]);
+  }, [reacao, disparo, suspeita, asset, clipes, renderableManager, indice, duracao, pendente, renderizarPor]);
 
   RenderCallbackContext.useRenderCallback(
     ({ passedSeconds }) => {

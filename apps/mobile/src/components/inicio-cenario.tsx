@@ -26,6 +26,7 @@ import { useHoje } from "../lib/usar-hoje";
 import { useMovimento } from "../lib/usar-movimento";
 import { ICONE_CATEGORIA, ICONE_SEM_CRISES } from "./icones";
 import { CenaSlime } from "./slime/cena-slime";
+import { DetalhesDaReacao } from "./slime/detalhes-da-reacao";
 import { useSonsDoSlime } from "./slime/usar-sons";
 import type { NomeIcone } from "./ui";
 
@@ -179,10 +180,18 @@ export function InicioCenario() {
         <CenaSlime
           reacao={reacaoSlime.reacao}
           disparo={reacaoSlime.disparo}
+          suspeita={reacaoSlime.suspeita}
           movimento={movimento}
           corDeFundo={cor.fundo}
           fundoTransparente
           style={estiloSlime}
+        />
+        <DetalhesDaReacao
+          reacao={reacaoSlime.reacao}
+          disparo={reacaoSlime.disparo}
+          regiao={reacaoSlime.regiao ? d.regiao[reacaoSlime.regiao] : undefined}
+          movimento={movimento}
+          altura={alturaSlime}
         />
       </View>
 

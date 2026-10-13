@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, corLinear, SOM_DA_REACAO } from "./reacoes";
+import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, corDaReacao, corLinear, SOM_DA_REACAO, type Reacao } from "./reacoes";
 
 // Contrato entre o app e o slime.glb versionado (gerado por ferramentas/slime/gerar_slime.py).
 
@@ -58,6 +58,19 @@ test("alfa do corpo é o mesmo no modelo e no app", () => {
   assert.equal(corpo?.alphaMode, "BLEND");
   assert.ok(Math.abs((corpo?.pbrMetallicRoughness?.baseColorFactor?.[3] ?? 0) - ALFA_CORPO) < 1e-3);
   assert.ok(lerGlb().nodes.some((n) => n.name === "corpo"));
+});
+
+test("suspeita: mesma cor do tipo em tom mais claro; episódio e toque nunca mudam", () => {
+  const brilho = (hex: string) => [1, 3, 5].reduce((s, i) => s + parseInt(hex.slice(i, i + 2), 16), 0);
+  for (const reacao of ["enjoo", "desconforto", "banho", "positivo", "sono", "alimentacao"] as Reacao[]) {
+    assert.equal(corDaReacao(reacao), COR_DA_REACAO[reacao]);
+    const clara = corDaReacao(reacao, true);
+    assert.match(clara, /^#[0-9A-F]{6}$/);
+    assert.ok(brilho(clara) > brilho(COR_DA_REACAO[reacao]), `${reacao} não clareou`);
+  }
+  // Tons distintos continuam distintos (enjoo não vira desconforto ao clarear).
+  assert.notEqual(corDaReacao("enjoo", true), corDaReacao("desconforto", true));
+  for (const reacao of ["episodio", "cutucada", "neutro"] as Reacao[]) assert.equal(corDaReacao(reacao, true), COR_DA_REACAO.neutro);
 });
 
 test("conversão de cor para o espaço linear do material", () => {

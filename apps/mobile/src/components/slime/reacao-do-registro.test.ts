@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Detalhe, EntradaRegistro } from "@afetilu/core";
-import { reacaoDoRegistro } from "./reacao-do-registro";
+import { extrasDaReacao, reacaoDoRegistro } from "./reacao-do-registro";
 
 const AGORA = new Date(2026, 9, 13, 15, 0);
 const r = (detalhe: Detalhe, minutosAtras = 0, precisao: EntradaRegistro["precisao"] = "exato") => ({
@@ -34,4 +34,15 @@ test("episódio difícil fica neutro; calma vira momento positivo; outras emoç�
   assert.equal(reacaoDoRegistro(r({ categoria: "comportamento", observado: ["calmo"], ehEpisodio: false }), AGORA), "positivo");
   assert.equal(reacaoDoRegistro(r({ categoria: "comportamento", observado: ["choro"], ehEpisodio: false }), AGORA), null);
   assert.equal(reacaoDoRegistro(r({ categoria: "comportamento", observado: ["calmo", "choro"], ehEpisodio: false }), AGORA), null);
+});
+
+test("extras: suspeita marcada; balão só para dor ou desconforto com região conhecida", () => {
+  const dor: Detalhe = { categoria: "dor_desconforto", tipo: "dor", regiao: "cabeca" };
+  assert.deepEqual(extrasDaReacao({ detalhe: dor, origem: "vi" }), { suspeita: false, regiao: "cabeca" });
+  assert.deepEqual(extrasDaReacao({ detalhe: dor, origem: "suspeita" }), { suspeita: true, regiao: "cabeca" });
+  assert.equal(extrasDaReacao({ detalhe: { ...dor, tipo: "enjoo", regiao: "barriga" }, origem: "vi" }).regiao, undefined);
+  assert.equal(extrasDaReacao({ detalhe: { ...dor, regiao: "nao_sei" }, origem: "vi" }).regiao, undefined);
+  assert.equal(extrasDaReacao({ detalhe: { ...dor, regiao: "outra" }, origem: "vi" }).regiao, undefined);
+  assert.equal(extrasDaReacao({ detalhe: { categoria: "dor_desconforto", tipo: "coceira" }, origem: "vi" }).regiao, undefined);
+  assert.equal(extrasDaReacao({ detalhe: { categoria: "sono", tipo: "noturno" }, origem: "me_contaram" }).suspeita, false);
 });

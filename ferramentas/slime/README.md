@@ -40,4 +40,4 @@ Na pose de repouso, só os grupos de partes podem ter escala 0; peças internas 
 
 Cada clipe contém **todos** os canais (partes, rosto e deformações): tocar qualquer clipe define o estado visual inteiro, e `neutro` restaura o repouso quando uma reação é interrompida. Episódios difíceis e evacuação **não** têm clipe: o slime fica neutro.
 
-Balão de região da dor, "z z" do sono e o card "Registro salvo" ficam por conta da interface (2D), sobre a cena 3D.
+Balão de região da dor, "z z" do sono e o card "Registro salvo" ficam por conta da interface (2D), sobre a cena 3D (`apps/mobile/src/components/slime/detalhes-da-reacao.tsx` e o aviso de desfazer).
