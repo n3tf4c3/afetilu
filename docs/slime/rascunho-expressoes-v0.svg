@@ -1,0 +1,222 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="800" viewBox="0 0 1220 800" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <title>Elo Azul — rascunho do mascote slime (v0)</title>
+  <defs>
+    <radialGradient id="gAzul" cx=".42" cy=".3" r=".8">
+      <stop offset="0" stop-color="#D3E8FA"/>
+      <stop offset=".55" stop-color="#79AEE0"/>
+      <stop offset="1" stop-color="#4C82BE"/>
+    </radialGradient>
+    <radialGradient id="gClaro" cx=".42" cy=".3" r=".8">
+      <stop offset="0" stop-color="#EEF7FF"/>
+      <stop offset=".55" stop-color="#8CC2F0"/>
+      <stop offset="1" stop-color="#5A93CF"/>
+    </radialGradient>
+    <radialGradient id="gVerde" cx=".42" cy=".3" r=".8">
+      <stop offset="0" stop-color="#DFF2DA"/>
+      <stop offset=".55" stop-color="#9ACF94"/>
+      <stop offset="1" stop-color="#5E9F68"/>
+    </radialGradient>
+    <radialGradient id="gPessego" cx=".42" cy=".3" r=".8">
+      <stop offset="0" stop-color="#FDEBDD"/>
+      <stop offset=".55" stop-color="#F2BE9C"/>
+      <stop offset="1" stop-color="#C98763"/>
+    </radialGradient>
+
+    <!-- Cúpula baixa e larga, base achatada (formato genérico de slime) -->
+    <path id="corpo" d="M15,186 C15,122 60,80 120,80 C180,80 225,122 225,186 C225,193 200,195 120,195 C40,195 15,193 15,186 Z"/>
+    <g id="brilho">
+      <ellipse cx="70" cy="114" rx="26" ry="9" transform="rotate(-28 70 114)" fill="#fff" opacity=".6"/>
+      <circle cx="102" cy="95" r="4.5" fill="#fff" opacity=".75"/>
+    </g>
+    <g id="olhos">
+      <ellipse cx="98" cy="140" rx="8" ry="11" fill="#22324A"/>
+      <ellipse cx="142" cy="140" rx="8" ry="11" fill="#22324A"/>
+      <circle cx="101" cy="135" r="3" fill="#fff"/>
+      <circle cx="145" cy="135" r="3" fill="#fff"/>
+      <circle cx="96" cy="145" r="1.4" fill="#fff"/>
+      <circle cx="140" cy="145" r="1.4" fill="#fff"/>
+    </g>
+    <g id="bochechas">
+      <ellipse cx="74" cy="160" rx="13" ry="7" fill="#F4A6B8" opacity=".5"/>
+      <ellipse cx="166" cy="160" rx="13" ry="7" fill="#F4A6B8" opacity=".5"/>
+    </g>
+    <g id="painel">
+      <rect x="0" y="0" width="280" height="330" rx="18" fill="#FFFFFF" stroke="#E6E1D8"/>
+      <ellipse cx="140" cy="237" rx="100" ry="8" fill="#22324A" opacity=".08"/>
+    </g>
+  </defs>
+
+  <rect width="1220" height="800" fill="#FAF7F2"/>
+  <text x="20" y="42" font-size="24" font-weight="700" fill="#22324A">Elo Azul — rascunho do mascote slime (v0)</text>
+  <text x="20" y="66" font-size="14" fill="#5B6577">Personagem original para discussão. Cores e expressões são passageiras (até 3 s), sempre acompanhadas de legenda; depois voltam ao neutro.</text>
+
+  <!-- 1. Neutro -->
+  <g transform="translate(20,80)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <use href="#corpo" fill="url(#gAzul)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#4C82BE" opacity=".35"/>
+      <use href="#brilho"/>
+      <use href="#olhos"/>
+      <use href="#bochechas"/>
+      <path d="M112,162 Q120,169 128,162" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <use href="#corpo" fill="none" stroke="#4C82BE" stroke-width="2" opacity=".5"/>
+    </g>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Neutro</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">repouso, respiração lenta</text>
+  </g>
+
+  <!-- 2. Alimentação -->
+  <g transform="translate(320,80)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <use href="#corpo" fill="url(#gAzul)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#4C82BE" opacity=".35"/>
+      <circle cx="146" cy="182" r="9" fill="#E86B6B" opacity=".8"/>
+      <path d="M146,173 L147,168" stroke="#7A5230" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="152" cy="170" rx="5" ry="2.5" transform="rotate(-25 152 170)" fill="#6BAF6B"/>
+      <use href="#brilho"/>
+      <use href="#olhos"/>
+      <use href="#bochechas"/>
+      <path d="M110,158 Q120,173 130,158 Z" fill="#22324A"/>
+      <use href="#corpo" fill="none" stroke="#4C82BE" stroke-width="2" opacity=".5"/>
+    </g>
+    <text x="214" y="112" font-size="16" font-style="italic" fill="#4C82BE">nham</text>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Alimentação</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">alimento aparece dentro; cor não muda</text>
+  </g>
+
+  <!-- 3. Enjoo -->
+  <g transform="translate(620,80)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <use href="#corpo" fill="url(#gVerde)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#5E9F68" opacity=".35"/>
+      <use href="#brilho"/>
+      <ellipse cx="98" cy="143" rx="7" ry="7" fill="#22324A"/>
+      <ellipse cx="142" cy="143" rx="7" ry="7" fill="#22324A"/>
+      <path d="M88,139 Q97,132 107,134" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M152,139 Q143,132 133,134" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <use href="#bochechas"/>
+      <path d="M104,165 q4,-5 8,0 t8,0 t8,0 t8,0" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="160" cy="180" rx="20" ry="8" fill="#5E9F68" opacity=".55"/>
+      <use href="#corpo" fill="none" stroke="#5E9F68" stroke-width="2" opacity=".5"/>
+    </g>
+    <path d="M214,104 q5,-6 10,0 t10,0" stroke="#5E9F68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M222,118 q5,-6 10,0 t10,0" stroke="#5E9F68" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Enjoo</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">verde passageiro + legenda; sem som</text>
+  </g>
+
+  <!-- 4. Dor / desconforto -->
+  <g transform="translate(920,80)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <use href="#corpo" fill="url(#gPessego)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#C98763" opacity=".35"/>
+      <use href="#brilho"/>
+      <use href="#olhos"/>
+      <path d="M86,126 Q96,120 106,121" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M154,126 Q144,120 134,121" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <use href="#bochechas"/>
+      <path d="M111,167 Q120,162 129,167" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <use href="#corpo" fill="none" stroke="#C98763" stroke-width="2" opacity=".5"/>
+    </g>
+    <rect x="176" y="56" width="92" height="32" rx="14" fill="#FFFFFF" stroke="#C98763"/>
+    <path d="M190,88 L184,100 L200,88 Z" fill="#FFFFFF" stroke="#C98763" stroke-linejoin="round"/>
+    <rect x="189" y="87" width="12" height="3" fill="#FFFFFF"/>
+    <text x="222" y="77" text-anchor="middle" font-size="14" fill="#22324A">barriga</text>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Dor ou desconforto</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">pêssego passageiro; região no balão</text>
+  </g>
+
+  <!-- 5. Sono -->
+  <g transform="translate(20,430)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <g transform="translate(120,195) scale(1.08,0.8) translate(-120,-195)">
+        <use href="#corpo" fill="url(#gAzul)" opacity=".95"/>
+        <ellipse cx="120" cy="184" rx="98" ry="9" fill="#4C82BE" opacity=".35"/>
+        <use href="#brilho"/>
+        <path d="M90,142 Q98,149 106,142" stroke="#22324A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M134,142 Q142,149 150,142" stroke="#22324A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <use href="#bochechas"/>
+        <ellipse cx="120" cy="165" rx="4" ry="3" fill="#22324A"/>
+        <use href="#corpo" fill="none" stroke="#4C82BE" stroke-width="2" opacity=".5"/>
+      </g>
+    </g>
+    <text x="200" y="124" font-size="18" font-weight="600" fill="#4C82BE">z</text>
+    <text x="216" y="106" font-size="24" font-weight="600" fill="#4C82BE">z</text>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Sono e descanso</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">achata e fecha os olhos</text>
+  </g>
+
+  <!-- 6. Banho e higiene -->
+  <g transform="translate(320,430)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <use href="#corpo" fill="url(#gClaro)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#5A93CF" opacity=".35"/>
+      <use href="#brilho"/>
+      <circle cx="158" cy="100" r="4" fill="#fff" opacity=".9"/>
+      <path d="M90,143 Q98,134 106,143" stroke="#22324A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M134,143 Q142,134 150,143" stroke="#22324A" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <use href="#bochechas"/>
+      <path d="M110,159 Q120,172 130,159" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <use href="#corpo" fill="none" stroke="#5A93CF" stroke-width="2" opacity=".5"/>
+    </g>
+    <g fill="#FFFFFF" fill-opacity=".7" stroke="#8CC2F0" stroke-width="2">
+      <circle cx="38" cy="112" r="11"/>
+      <circle cx="66" cy="84" r="6"/>
+      <circle cx="238" cy="100" r="13"/>
+      <circle cx="254" cy="150" r="7"/>
+      <circle cx="26" cy="168" r="6"/>
+      <circle cx="208" cy="70" r="5"/>
+    </g>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Banho e higiene</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">bolhas e brilho</text>
+  </g>
+
+  <!-- 7. Momento positivo -->
+  <g transform="translate(620,430)">
+    <rect x="0" y="0" width="280" height="330" rx="18" fill="#FFFFFF" stroke="#E6E1D8"/>
+    <ellipse cx="140" cy="237" rx="86" ry="7" fill="#22324A" opacity=".07"/>
+    <g transform="translate(20,26)">
+      <use href="#corpo" fill="url(#gClaro)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#5A93CF" opacity=".35"/>
+      <use href="#brilho"/>
+      <use href="#olhos"/>
+      <circle cx="96" cy="134" r="2" fill="#fff"/>
+      <circle cx="140" cy="134" r="2" fill="#fff"/>
+      <use href="#bochechas"/>
+      <path d="M106,158 Q120,178 134,158 Z" fill="#22324A"/>
+      <path d="M113,167 Q120,173 127,167 Q120,171 113,167 Z" fill="#F4A6B8"/>
+      <use href="#corpo" fill="none" stroke="#5A93CF" stroke-width="2" opacity=".5"/>
+    </g>
+    <g fill="#F5C76B">
+      <path d="M44,86 l4,10 l10,4 l-10,4 l-4,10 l-4,-10 l-10,-4 l10,-4 Z"/>
+      <path d="M236,74 l3,7 l7,3 l-7,3 l-3,7 l-3,-7 l-7,-3 l7,-3 Z"/>
+    </g>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Momento positivo</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">quique leve; sem pontos ou prêmios</text>
+  </g>
+
+  <!-- 8. Episódio registrado -->
+  <g transform="translate(920,430)">
+    <use href="#painel"/>
+    <g transform="translate(20,40)">
+      <use href="#corpo" fill="url(#gAzul)" opacity=".95"/>
+      <ellipse cx="120" cy="184" rx="98" ry="9" fill="#4C82BE" opacity=".35"/>
+      <use href="#brilho"/>
+      <use href="#olhos"/>
+      <use href="#bochechas"/>
+      <path d="M112,162 Q120,169 128,162" stroke="#22324A" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <use href="#corpo" fill="none" stroke="#4C82BE" stroke-width="2" opacity=".5"/>
+    </g>
+    <rect x="52" y="78" width="176" height="32" rx="16" fill="#FFFFFF" stroke="#CBD5E1"/>
+    <path d="M66,94 l5,5 l9,-10" stroke="#4C82BE" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="150" y="99" text-anchor="middle" font-size="13" fill="#22324A">Registro salvo · 15:40</text>
+    <text x="140" y="276" text-anchor="middle" font-size="17" font-weight="700" fill="#22324A">Episódio registrado</text>
+    <text x="140" y="298" text-anchor="middle" font-size="13" fill="#5B6577">slime neutro, sem cor e sem som</text>
+  </g>
+</svg>
