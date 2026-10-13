@@ -36,3 +36,6 @@ Thumbs.db
 # arquivos de edição do Blender (o modelo é gerado pelo script)
 *.blend
 *.blend1
+
+# referências visuais de terceiros (só locais, nunca publicar)
+docs/slimes/
