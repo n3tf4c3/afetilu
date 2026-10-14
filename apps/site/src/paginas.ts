@@ -18,6 +18,26 @@ export const SLIME_SVG =
   '<path d="M10.5 16.9q.75.8 1.5 0q.75.8 1.5 0" fill="none" stroke="#1B2A40" stroke-width=".8" stroke-linecap="round"/>' +
   "</svg>";
 
+/** Listras vermelhas da bandeira dos EUA: 13 listras numa altura de 20, as pares em vermelho. */
+const LISTRAS_EUA = Array.from({ length: 7 }, (_, k) => `<rect y="${((k * 2 * 20) / 13).toFixed(2)}" width="30" height="1.54" fill="#B22234"/>`).join("");
+
+/**
+ * Bandeira ao lado do nome de cada idioma no seletor (o nome continua escrito: a bandeira é só
+ * decorativa). SVG embutido em 3:2, porque o Windows não desenha bandeiras em emoji.
+ */
+export const BANDEIRAS: Record<IdiomaSite, string> = {
+  "pt-BR":
+    '<svg class="bandeira" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#009C3B"/>' +
+    '<path d="M15 2.4 27.6 10 15 17.6 2.4 10z" fill="#FFDF00"/><circle cx="15" cy="10" r="5.2" fill="#002776"/>' +
+    '<path d="M10 9.1q5.2-1.4 9.9 1.6" fill="none" stroke="#fff" stroke-width=".9"/></svg>',
+  en:
+    `<svg class="bandeira" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/>${LISTRAS_EUA}` +
+    '<rect width="12" height="10.77" fill="#3C3B6E"/></svg>',
+  es:
+    '<svg class="bandeira" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#AA151B"/>' +
+    '<rect y="5" width="30" height="10" fill="#F1BF00"/></svg>',
+};
+
 const LOGO_APPLE =
   '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>';
 const LOGO_PLAY =
@@ -60,8 +80,8 @@ function documento(o: { idioma: IdiomaSite; pagina: Pagina; titulo: string; desc
   ).join("\n");
   const seletor = IDIOMAS_SITE.map((i) =>
     i === o.idioma
-      ? `<li><span aria-current="true">${esc(textosDoSite(i).nomeDoIdioma)}</span></li>`
-      : `<li><a href="${caminhoDe(o.pagina, i)}" hreflang="${i}" lang="${i}">${esc(textosDoSite(i).nomeDoIdioma)}</a></li>`,
+      ? `<li><span class="atual" aria-current="true">${BANDEIRAS[i]}${esc(textosDoSite(i).nomeDoIdioma)}</span></li>`
+      : `<li><a href="${caminhoDe(o.pagina, i)}" hreflang="${i}" lang="${i}">${BANDEIRAS[i]}${esc(textosDoSite(i).nomeDoIdioma)}</a></li>`,
   ).join("");
   return `<!doctype html>
 <html lang="${o.idioma}">
@@ -109,6 +129,7 @@ ${o.corpo}
       <li><a href="${CAMINHO_POLITICA[o.idioma]}">${esc(t.nav.privacidade)}</a></li>
       <li><a href="${SITE.repositorio}" rel="noopener noreferrer">${esc(t.rodape.codigo)}</a></li>
       ${SITE.contato ? `<li><a href="mailto:${esc(SITE.contato)}">${esc(t.rodape.contato)}</a></li>` : ""}
+      ${SITE.apoio ? `<li><a class="apoio" href="${esc(SITE.apoio)}" rel="noopener noreferrer">${esc(t.rodape.apoiar)}</a></li>` : ""}
     </ul>
   </div>
 </footer>

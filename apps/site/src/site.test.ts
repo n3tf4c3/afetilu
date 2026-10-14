@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { CAMINHO_POLITICA, SITE } from "./config.ts";
-import { esc, nomeDaCaptura, paginaInicial, paginaPolitica } from "./paginas.ts";
+import { BANDEIRAS, esc, nomeDaCaptura, paginaInicial, paginaPolitica } from "./paginas.ts";
 import { textosDoSite } from "./textos/index.ts";
 import { IDIOMAS_SITE } from "./textos/tipo.ts";
 
@@ -21,8 +21,8 @@ test("nenhum script, cookie, fonte ou recurso de terceiros", () => {
     // Recursos carregados pela página (src, stylesheet, ícone) só do próprio site.
     for (const [, url] of p.html.matchAll(/\ssrc="([^"]+)"/g)) assert.ok(url!.startsWith("/"), `${p.nome}: src externo ${url}`);
     for (const [, url] of p.html.matchAll(/<link rel="(?:stylesheet|icon)" href="([^"]+)"/g)) assert.ok(url!.startsWith("/"), `${p.nome}: ${url}`);
-    // Links externos permitidos: o repositório e, depois da publicação, as lojas.
-    const permitidos = [SITE.repositorio, SITE.url, SITE.lojas.googlePlay, SITE.lojas.appStore].filter((x): x is string => !!x);
+    // Links externos permitidos: o repositório, a página de doações e, depois da publicação, as lojas.
+    const permitidos = [SITE.repositorio, SITE.url, SITE.apoio, SITE.lojas.googlePlay, SITE.lojas.appStore].filter((x): x is string => !!x);
     for (const [, url] of p.html.matchAll(/href="(https?:\/\/[^"]+)"/g)) {
       assert.ok(permitidos.some((x) => url!.startsWith(x)), `${p.nome}: link externo ${url}`);
     }
@@ -62,6 +62,23 @@ test("antes da publicação: 'em breve', sem selos nem aviso de marcas", () => {
     assert.ok(html.includes(esc(textosDoSite(idioma).lojas.emBreve)), idioma);
     assert.ok(!html.includes('class="selos"'), idioma);
     assert.ok(!html.includes(esc(textosDoSite(idioma).rodape.marcas)), idioma);
+  }
+});
+
+test("cada idioma do seletor tem bandeira decorativa e o nome escrito", () => {
+  for (const p of paginas) {
+    for (const i of IDIOMAS_SITE) {
+      assert.ok(p.html.includes(`${BANDEIRAS[i]}${esc(textosDoSite(i).nomeDoIdioma)}`), `${p.nome}: ${i}`);
+    }
+  }
+  for (const i of IDIOMAS_SITE) assert.ok(BANDEIRAS[i].includes('aria-hidden="true"'), i);
+});
+
+test("link de doações só no rodapé e só quando configurado", () => {
+  for (const p of paginas) {
+    const vezes = SITE.apoio ? p.html.split(`href="${esc(SITE.apoio)}"`).length - 1 : 0;
+    assert.equal(vezes, SITE.apoio ? 1 : 0, p.nome);
+    if (SITE.apoio) assert.ok(p.html.indexOf(SITE.apoio) > p.html.indexOf('<footer class="rodape">'), p.nome);
   }
 });
 

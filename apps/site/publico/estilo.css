@@ -44,8 +44,10 @@ a:hover { text-decoration-thickness: 2px; }
 .marca svg { width: 34px; height: 34px; }
 .topo-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
 .idiomas { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 15px; }
-.idiomas a, .idiomas span { display: inline-block; min-height: 44px; padding: 10px 10px; }
-.idiomas span { color: var(--suave); font-weight: 600; }
+.idiomas a, .idiomas .atual { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 10px 10px; }
+.idiomas .atual { color: var(--suave); font-weight: 600; }
+/* A bandeira acompanha o nome do idioma, que segue escrito (nada só por imagem). */
+.bandeira { flex: none; width: 21px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(27, 42, 64, 0.15); }
 .botao {
   display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px;
   background: var(--primaria); color: #ffffff; border-radius: 10px; text-decoration: none;
@@ -125,6 +127,8 @@ h1 { margin: 16px 0 0; font-size: clamp(32px, 5vw, 46px); line-height: 1.18; let
 .rodape-base p { margin: 0; }
 .rodape-base ul { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0; padding: 0; list-style: none; }
 .rodape-base a { display: inline-block; min-height: 44px; padding: 10px 0; }
+/* Doação voluntária: discreta, na cor do texto do rodapé e sem destaque. */
+.rodape-base a.apoio { color: var(--escuro-suave); font-weight: 400; }
 
 @media (max-width: 960px) {
   .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }

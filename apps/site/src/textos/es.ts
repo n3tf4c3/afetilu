@@ -79,6 +79,7 @@ export const es: TextosSite = {
     marcas: "Google Play y el logotipo de Google Play son marcas de Google LLC. Apple y el logotipo de Apple son marcas de Apple Inc.",
     contato: "Contacto",
     codigo: "Código fuente",
+    apoiar: "Apoyar el proyecto",
   },
   politica: {
     titulo: "Política de Privacidad",

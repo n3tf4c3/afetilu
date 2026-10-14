@@ -33,7 +33,7 @@ export interface TextosSite {
   privacidade: { titulo: string; itens: string[]; link: string };
   limites: { titulo: string; texto: string; emergencia: string };
   codigoAberto: { titulo: string; texto: string; link: string };
-  rodape: { descricao: string; licenca: string; marcas: string; codigo: string; contato: string };
+  rodape: { descricao: string; licenca: string; marcas: string; codigo: string; contato: string; apoiar: string };
   politica: {
     titulo: string;
     atualizadaEm: string;
