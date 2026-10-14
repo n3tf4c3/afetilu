@@ -1,4 +1,4 @@
-import { chaveDoDia, somarDias, type Detalhe, type EntradaRegistro } from "@afetilu/core";
+import { chaveDoDia, somarDias, type Detalhe, type EntradaRegistro, type Idioma } from "@afetilu/core";
 
 // Gerador de dados FICTÍCIOS para desenvolvimento e demonstração.
 // Disponível só em builds de desenvolvimento; nunca usar dados reais.
@@ -15,14 +15,49 @@ function sorteador(semente: number) {
   };
 }
 
-const ALIMENTOS = ["arroz e feijão", "banana", "pão", "macarrão", "iogurte", "frango", "maçã"];
+/** Textos livres dos dados fictícios no idioma do app, para demonstrações e capturas sem mistura de idiomas. */
+const TEXTOS_FICTICIOS: Record<
+  Idioma,
+  { alimentos: string[]; contexto: string; ajudou: string; observacao: string; positivo: string; mudanca: string; pergunta: string }
+> = {
+  "pt-BR": {
+    alimentos: ["arroz e feijão", "banana", "pão", "macarrão", "iogurte", "frango", "maçã"],
+    contexto: "Mudança de rotina (fictício)",
+    ajudou: "Ambiente silencioso",
+    observacao: "Registro fictício para demonstração.",
+    positivo: "Pediu água apontando (fictício)",
+    mudanca: "Começaram as férias escolares (fictício)",
+    pergunta: "Pergunta fictícia: como lidar com o barulho na escola?",
+  },
+  en: {
+    alimentos: ["rice and beans", "banana", "bread", "pasta", "yogurt", "chicken", "apple"],
+    contexto: "Change in routine (fictional)",
+    ajudou: "Quiet room",
+    observacao: "Fictional log for demonstration.",
+    positivo: "Asked for water by pointing (fictional)",
+    mudanca: "School holidays started (fictional)",
+    pergunta: "Fictional question: how to deal with noise at school?",
+  },
+  es: {
+    alimentos: ["arroz con frijoles", "plátano", "pan", "pasta", "yogur", "pollo", "manzana"],
+    contexto: "Cambio de rutina (ficticio)",
+    ajudou: "Ambiente tranquilo",
+    observacao: "Registro ficticio para demostración.",
+    positivo: "Pidió agua señalando (ficticio)",
+    mudanca: "Empezaron las vacaciones escolares (ficticio)",
+    pergunta: "Pregunta ficticia: ¿cómo manejar el ruido en la escuela?",
+  },
+};
 
 export function gerarDadosFicticios(
   pessoaId: string,
   hoje: Date,
   dias = 14,
+  idioma: Idioma = "pt-BR",
 ): { registros: EntradaRegistro[]; diasSemCrises: string[]; mudancas: { dia: string; texto: string }[]; perguntas: string[] } {
   const sortear = sorteador(20261013);
+  const tx = TEXTOS_FICTICIOS[idioma];
+  const ALIMENTOS = tx.alimentos;
   const hojeChave = chaveDoDia(hoje);
   const registros: EntradaRegistro[] = [];
   const diasSemCrises: string[] = [];
@@ -66,21 +101,21 @@ export function gerarDadosFicticios(
           categoria: "comportamento",
           observado: ["agitacao", "choro"],
           ehEpisodio: true,
-          episodio: { duracaoMin: 15, intensidade: "moderada", contextoAntes: "Mudança de rotina (fictício)", ajudou: ["Ambiente silencioso"] },
+          episodio: { duracaoMin: 15, intensidade: "moderada", contextoAntes: tx.contexto, ajudou: [tx.ajudou] },
         },
-        { observacao: "Registro fictício para demonstração." },
+        { observacao: tx.observacao },
       );
     } else if (sortear() < 0.6) {
       diasSemCrises.push(dia);
     }
     if (sortear() < 0.4) {
-      em(dia, 10, 0, { categoria: "positivo", tipo: "comunicacao", descricao: "Pediu água apontando (fictício)" });
+      em(dia, 10, 0, { categoria: "positivo", tipo: "comunicacao", descricao: tx.positivo });
     }
   }
   return {
     registros,
     diasSemCrises,
-    mudancas: [{ dia: somarDias(hojeChave, -Math.min(5, dias - 1)), texto: "Começaram as férias escolares (fictício)" }],
-    perguntas: ["Pergunta fictícia: como lidar com o barulho na escola?"],
+    mudancas: [{ dia: somarDias(hojeChave, -Math.min(5, dias - 1)), texto: tx.mudanca }],
+    perguntas: [tx.pergunta],
   };
 }

@@ -46,7 +46,7 @@ export default function Ajustes() {
     aparencia,
     definirAparencia,
   } = useApp();
-  const { t } = useTextos();
+  const { t, idioma } = useTextos();
   const a = t.ajustes;
   const [novo, setNovo] = useState("");
   const [ultimoBackup, setUltimoBackup] = useState<string | null>(null);
@@ -74,7 +74,7 @@ export default function Ajustes() {
 
   const gerarFicticios = async () => {
     const p = await criarPessoa(db, a.exemploFicticio);
-    const { registros, diasSemCrises, mudancas, perguntas } = gerarDadosFicticios(p.id, new Date());
+    const { registros, diasSemCrises, mudancas, perguntas } = gerarDadosFicticios(p.id, new Date(), 14, idioma);
     for (const e of registros) await criarRegistro(db, e);
     for (const dia of diasSemCrises) await marcarSemCrises(db, p.id, dia);
     for (const m of mudancas) await criarMudanca(db, p.id, m.dia, m.texto);
