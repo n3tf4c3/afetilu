@@ -166,8 +166,8 @@ O app não tem servidor, conta nem sincronização. Isso traz quatro consequênc
 ### 5.2 Medidas
 
 - **Coleta mínima:** apelido e campos opcionais, sem identificador civil. O campo de texto livre traz uma dica para não incluir nomes de terceiros.
-- **Em repouso:** SQLite cifrado (SQLCipher), com chave no Keychain do iOS ou no Keystore do Android via `expo-secure-store`. Bloqueio opcional do app por biometria ou PIN do sistema. O conteúdo fica oculto no seletor de apps.
-- **Backups do sistema:** o banco fica fora do backup automático do Android e do iCloud (A2, 5.1.3(ii)). Por isso o MVP inclui um backup próprio, cifrado com senha do responsável.
+- **Em repouso:** SQLite cifrado (SQLCipher), com chave no Keychain do iOS ou no Keystore do Android via `expo-secure-store`. Bloqueio por biometria ou PIN e conteúdo oculto no seletor de apps: planejados, ainda não implementados.
+- **Backups do sistema:** no Android o backup automático fica desligado (`allowBackup: false`); no iOS o arquivo do banco pode ir para o backup do sistema, mas só cifrado e sem a chave (que fica no Keychain, `THIS_DEVICE_ONLY`). Por isso o MVP inclui um backup próprio, cifrado com senha do responsável.
 - **Backup escolhido pelo responsável:**
   - O app gera um único arquivo cifrado e abre o seletor de arquivos ou a folha de compartilhamento do sistema. O responsável escolhe o destino: o próprio celular, o Google Drive, o OneDrive ou outro app que ele tenha instalado.
   - O app **não se conecta** a nenhuma conta de nuvem: não usa login, OAuth nem as APIs do Drive ou do OneDrive. Quem grava o arquivo é o sistema ou o app de nuvem do próprio responsável. O desenvolvedor não recebe o arquivo nem tem acesso a ele.
@@ -177,6 +177,8 @@ O app não tem servidor, conta nem sincronização. Isso traz quatro consequênc
   - O app mostra "último backup há N dias" na tela de Dados. Como não há notificações, não existe backup automático.
 - **Em trânsito:** o MVP não envia dados pessoais pela rede. Uma futura sincronização usará TLS e, de preferência, cifra de ponta a ponta.
 - **Logs e análise:** nenhum SDK de analytics, anúncios ou rastreamento de falhas. Os crashes ficam por conta dos relatórios nativos das lojas, que não incluem o conteúdo do banco. Nenhum log com dados de registro, verificado por regra de lint e por teste.
+- **Trilha de acesso (decisão de 14/10/2026):** sem trilha de leitura. O app é local, de um único usuário, sem servidor nem acesso de terceiros; não há leitura por outras pessoas a registrar. Alterações ficam no histórico de correções (`registro_revisao`). Rever se houver sincronização, múltiplos cuidadores ou acesso de profissionais.
+- **Links externos:** `afetilu://…` nunca abre telas internas; ao abrir o app por um link, ele vai para o início, sem interpretar path nem query (`src/app/+native-intent.tsx`).
 - **Notificações:** nenhuma no MVP. Se forem adicionadas, terão texto genérico, sem nome nem conteúdo.
 - **IA:** nenhuma, nem serviço externo para gerar o PDF.
 - **Exportação:** só por ação explícita, com aviso de que o arquivo deixa o controle do app.
