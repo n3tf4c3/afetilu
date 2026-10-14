@@ -1,5 +1,6 @@
 import type { Origem } from "@afetilu/core";
 import type { CorSlime } from "../components/slime/reacoes";
+import type { FalhaBackup } from "../lib/backup";
 /** Textos das telas. Todos os idiomas implementam este tipo: faltar uma chave é erro de compilação. */
 export interface TextosApp {
   geral: { cancelar: string; apagar: string; marcar: string; abrindoDados: string };
@@ -29,6 +30,7 @@ export interface TextosApp {
     erroApelido: string;
     erroSalvar: string;
     comecar: string;
+    jaTenhoBackup: string;
   };
   inicio: {
     hoje: (dia: string) => string;
@@ -221,7 +223,10 @@ export interface TextosApp {
     cores: Record<CorSlime, string>;
     seusDados: string;
     seusDadosTexto: string;
-    backupEmBreve: string;
+    backupTexto: string;
+    ultimoBackup: (dias: number | null) => string;
+    fazerBackup: string;
+    restaurarBackup: string;
     devTitulo: string;
     devAjuda: string;
     devGerar: string;
@@ -241,6 +246,50 @@ export interface TextosApp {
     palavraTudo: string;
     confirmarPessoa: (apelido: string) => string;
     confirmarTudo: string;
+    falhou: string;
+  };
+  /** Backup cifrado com senha, salvo onde o responsável escolher. */
+  backup: {
+    titulo: string;
+    explicacao: string;
+    semRecuperacao: string;
+    arquivoSai: string;
+    senha: string;
+    repetirSenha: string;
+    senhaAjuda: (min: number) => string;
+    senhaCurta: (min: number) => string;
+    senhaDiferente: string;
+    salvarNoAparelho: string;
+    enviarParaApp: string;
+    protegendo: (pct: number) => string;
+    salvo: string;
+    enviado: string;
+    ignorados: (n: number) => string;
+    falhou: string;
+    semCompartilhamento: string;
+    dialogo: string;
+  };
+  /** Restauração de um backup: substitui todos os dados do aparelho. */
+  restaurar: {
+    titulo: string;
+    explicacao: string;
+    escolher: string;
+    escolherOutro: string;
+    falhouLer: string;
+    senha: string;
+    abrir: string;
+    abrindo: (pct: number) => string;
+    erros: Record<FalhaBackup, string>;
+    previaTitulo: string;
+    feitoEm: (data: string) => string;
+    pessoa: (apelido: string, registros: number) => string;
+    periodo: (inicio: string, fim: string) => string;
+    totais: (registros: number, diasSemCrises: number) => string;
+    substitui: (pessoas: number, registros: number) => string;
+    digite: (palavra: string) => string;
+    palavra: string;
+    confirmar: string;
+    restaurando: string;
     falhou: string;
   };
   /** Resumo para consulta: tela e documento PDF. */

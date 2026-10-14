@@ -168,7 +168,7 @@ O app não tem servidor, conta nem sincronização. Isso traz quatro consequênc
 - **Backup escolhido pelo responsável:**
   - O app gera um único arquivo cifrado e abre o seletor de arquivos ou a folha de compartilhamento do sistema. O responsável escolhe o destino: o próprio celular, o Google Drive, o OneDrive ou outro app que ele tenha instalado.
   - O app **não se conecta** a nenhuma conta de nuvem: não usa login, OAuth nem as APIs do Drive ou do OneDrive. Quem grava o arquivo é o sistema ou o app de nuvem do próprio responsável. O desenvolvedor não recebe o arquivo nem tem acesso a ele.
-  - A cifra é obrigatória, porque o arquivo pode ficar num serviço de terceiros. A chave é derivada da senha por um KDF lento (Argon2id ou scrypt), e o conteúdo é protegido com AES-256-GCM. O arquivo guarda o formato e a versão do esquema, para que a importação seja validada.
+  - A cifra é obrigatória, porque o arquivo pode ficar num serviço de terceiros. A chave é derivada da senha por um KDF lento (Argon2id ou scrypt), e o conteúdo é protegido com AES-256-GCM. O arquivo guarda o formato e a versão do esquema, para que a importação seja validada. Implementado com scrypt (N = 2^15, r = 8, p = 1, parâmetros gravados no cabeçalho) e senha de pelo menos 10 caracteres; o cabeçalho entra como dado autenticado do GCM.
   - A senha do backup não é recuperável: sem ela, o backup não abre. O app explica isso antes de criar a senha.
   - A restauração usa o seletor de arquivos do sistema. Antes de substituir ou mesclar dados, o app mostra uma prévia do conteúdo: pessoas, período e quantidade de registros.
   - O app mostra "último backup há N dias" na tela de Dados. Como não há notificações, não existe backup automático.

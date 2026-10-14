@@ -37,6 +37,7 @@ export const ptBR: TextosApp = {
     erroApelido: "Escreva um apelido para começar.",
     erroSalvar: "Não foi possível salvar. Tente de novo.",
     comecar: "Começar",
+    jaTenhoBackup: "Já tenho um backup",
   },
   inicio: {
     hoje: (dia) => `Hoje, ${dia}`,
@@ -230,7 +231,12 @@ export const ptBR: TextosApp = {
     seusDados: "Seus dados",
     seusDadosTexto:
       "Os registros ficam só neste aparelho, cifrados. O app não tem servidor, não envia dados e não usa ferramentas de análise ou publicidade.",
-    backupEmBreve: "O backup cifrado chega numa próxima etapa. O resumo para consulta fica na Linha do tempo.",
+    backupTexto:
+      "Como não há servidor, um celular perdido ou trocado leva os dados junto. Um backup protegido por senha permite trazê-los de volta.",
+    ultimoBackup: (d) =>
+      d === null ? "Nenhum backup feito neste aparelho." : d === 0 ? "Último backup: hoje." : d === 1 ? "Último backup: ontem." : `Último backup: há ${d} dias.`,
+    fazerBackup: "Fazer backup",
+    restaurarBackup: "Restaurar um backup",
     devTitulo: "Desenvolvimento (só nesta build)",
     devAjuda: "Ferramentas para testar com dados fictícios. Não aparecem na versão das lojas.",
     devGerar: "Gerar pessoa e registros fictícios",
@@ -254,6 +260,61 @@ export const ptBR: TextosApp = {
     confirmarPessoa: (a) => `Apagar ${a} definitivamente`,
     confirmarTudo: "Apagar tudo definitivamente",
     falhou: "Não foi possível apagar. Nada foi alterado.",
+  },
+  backup: {
+    titulo: "Fazer backup",
+    explicacao:
+      "O backup junta todas as pessoas, registros e históricos de correção num único arquivo, protegido por uma senha. Você escolhe onde guardar: no próprio celular, no Google Drive, no OneDrive ou em outro app. O Afetilu não envia o arquivo a lugar nenhum.",
+    semRecuperacao: "Guarde a senha em lugar seguro. Ela não fica salva no app e não pode ser recuperada: sem ela, o backup não abre.",
+    arquivoSai: "Depois de salvo, o arquivo fica com quem o guardou. Apagar dados no app não apaga os backups já feitos.",
+    senha: "Senha do backup",
+    repetirSenha: "Repita a senha",
+    senhaAjuda: (m) => `Pelo menos ${m} caracteres. Uma frase fácil de lembrar funciona bem.`,
+    senhaCurta: (m) => `A senha precisa ter pelo menos ${m} caracteres.`,
+    senhaDiferente: "As duas senhas não são iguais.",
+    salvarNoAparelho: "Salvar no aparelho",
+    enviarParaApp: "Enviar para outro app (Drive, OneDrive…)",
+    protegendo: (p) => `Protegendo os dados… ${p}%`,
+    salvo: "Backup salvo na pasta escolhida.",
+    enviado: "Backup gerado e entregue ao app escolhido. Confira se ele foi salvo lá.",
+    ignorados: (n) =>
+      n === 1 ? "1 registro danificado não pôde entrar no backup." : `${n} registros danificados não puderam entrar no backup.`,
+    falhou: "Não foi possível gerar o backup. Nada foi enviado.",
+    semCompartilhamento: "Compartilhamento indisponível neste aparelho.",
+    dialogo: "Guardar o backup",
+  },
+  restaurar: {
+    titulo: "Restaurar backup",
+    explicacao: "Escolha um arquivo de backup do Afetilu e digite a senha dele. Antes de qualquer mudança, o app mostra o que tem no backup.",
+    escolher: "Escolher arquivo",
+    escolherOutro: "Escolher outro arquivo",
+    falhouLer: "Não foi possível ler o arquivo escolhido.",
+    senha: "Senha do backup",
+    abrir: "Abrir backup",
+    abrindo: (p) => `Abrindo o backup… ${p}%`,
+    erros: {
+      nao_e_backup: "Este arquivo não é um backup do Afetilu.",
+      versao_nova: "Este backup foi feito por uma versão mais nova do app. Atualize o Afetilu e tente de novo.",
+      senha_ou_arquivo: "Não foi possível abrir: a senha está errada ou o arquivo foi alterado.",
+      conteudo_invalido: "O backup abriu, mas o conteúdo está danificado e não pode ser restaurado.",
+    },
+    previaTitulo: "O que tem no backup",
+    feitoEm: (d) => `Feito em ${d}.`,
+    pessoa: (a, r) => `${a}: ${r === 0 ? "nenhum registro" : r === 1 ? "1 registro" : `${r} registros`}`,
+    periodo: (i, f) => `Período: de ${i} a ${f}.`,
+    totais: (r, d) =>
+      `${r === 0 ? "Nenhum registro" : r === 1 ? "1 registro" : `${r} registros`} e ${
+        d === 0 ? "nenhum dia marcado sem crises" : d === 1 ? "1 dia marcado sem crises" : `${d} dias marcados sem crises`
+      }.`,
+    substitui: (p, r) =>
+      `Todos os dados deste aparelho (${p === 1 ? "1 pessoa" : `${p} pessoas`}, ${
+        r === 0 ? "nenhum registro" : r === 1 ? "1 registro" : `${r} registros`
+      }) serão apagados e trocados pelos do backup. Não dá para desfazer.`,
+    digite: (p) => `Para confirmar, digite: ${p}`,
+    palavra: "SUBSTITUIR",
+    confirmar: "Restaurar este backup",
+    restaurando: "Restaurando…",
+    falhou: "Não foi possível restaurar. Os dados do aparelho continuam como estavam.",
   },
   resumo: {
     titulo: "Resumo para consulta",

@@ -37,6 +37,7 @@ export const en: TextosApp = {
     erroApelido: "Enter a nickname to get started.",
     erroSalvar: "Couldn't save. Please try again.",
     comecar: "Get started",
+    jaTenhoBackup: "I already have a backup",
   },
   inicio: {
     hoje: (dia) => `Today, ${dia}`,
@@ -230,7 +231,12 @@ export const en: TextosApp = {
     seusDados: "Your data",
     seusDadosTexto:
       "Entries stay on this device only, encrypted. The app has no server, sends no data and uses no analytics or advertising tools.",
-    backupEmBreve: "Encrypted backup is coming in a later stage. The summary for appointments is in the Timeline.",
+    backupTexto:
+      "There is no server, so a lost or replaced phone takes the data with it. A password-protected backup lets you bring it back.",
+    ultimoBackup: (d) =>
+      d === null ? "No backup made on this device yet." : d === 0 ? "Last backup: today." : d === 1 ? "Last backup: yesterday." : `Last backup: ${d} days ago.`,
+    fazerBackup: "Make a backup",
+    restaurarBackup: "Restore a backup",
     devTitulo: "Development (this build only)",
     devAjuda: "Tools for testing with fictional data. They don't appear in the store version.",
     devGerar: "Create a fictional person and entries",
@@ -254,6 +260,61 @@ export const en: TextosApp = {
     confirmarPessoa: (a) => `Delete ${a} permanently`,
     confirmarTudo: "Delete everything permanently",
     falhou: "Could not delete. Nothing was changed.",
+  },
+  backup: {
+    titulo: "Make a backup",
+    explicacao:
+      "The backup puts every person, entry and correction history into a single file, protected by a password. You choose where to keep it: on this phone, in Google Drive, in OneDrive or in another app. Afetilu does not send the file anywhere.",
+    semRecuperacao: "Keep the password somewhere safe. It is not stored in the app and cannot be recovered: without it, the backup will not open.",
+    arquivoSai: "Once saved, the file stays with whoever keeps it. Deleting data in the app does not delete backups already made.",
+    senha: "Backup password",
+    repetirSenha: "Repeat the password",
+    senhaAjuda: (m) => `At least ${m} characters. An easy-to-remember phrase works well.`,
+    senhaCurta: (m) => `The password needs at least ${m} characters.`,
+    senhaDiferente: "The two passwords do not match.",
+    salvarNoAparelho: "Save on this device",
+    enviarParaApp: "Send to another app (Drive, OneDrive…)",
+    protegendo: (p) => `Protecting the data… ${p}%`,
+    salvo: "Backup saved in the chosen folder.",
+    enviado: "Backup created and handed to the chosen app. Check that it was saved there.",
+    ignorados: (n) =>
+      n === 1 ? "1 damaged entry could not be included in the backup." : `${n} damaged entries could not be included in the backup.`,
+    falhou: "Could not create the backup. Nothing was sent.",
+    semCompartilhamento: "Sharing is not available on this device.",
+    dialogo: "Keep the backup",
+  },
+  restaurar: {
+    titulo: "Restore backup",
+    explicacao: "Choose an Afetilu backup file and type its password. Before changing anything, the app shows what the backup contains.",
+    escolher: "Choose file",
+    escolherOutro: "Choose another file",
+    falhouLer: "Could not read the chosen file.",
+    senha: "Backup password",
+    abrir: "Open backup",
+    abrindo: (p) => `Opening the backup… ${p}%`,
+    erros: {
+      nao_e_backup: "This file is not an Afetilu backup.",
+      versao_nova: "This backup was made by a newer version of the app. Update Afetilu and try again.",
+      senha_ou_arquivo: "Could not open it: the password is wrong or the file was changed.",
+      conteudo_invalido: "The backup opened, but its content is damaged and cannot be restored.",
+    },
+    previaTitulo: "What the backup contains",
+    feitoEm: (d) => `Made on ${d}.`,
+    pessoa: (a, r) => `${a}: ${r === 0 ? "no entries" : r === 1 ? "1 entry" : `${r} entries`}`,
+    periodo: (i, f) => `Period: ${i} to ${f}.`,
+    totais: (r, d) =>
+      `${r === 0 ? "No entries" : r === 1 ? "1 entry" : `${r} entries`} and ${
+        d === 0 ? "no marked no-crisis days" : d === 1 ? "1 marked no-crisis day" : `${d} marked no-crisis days`
+      }.`,
+    substitui: (p, r) =>
+      `All data on this device (${p === 1 ? "1 person" : `${p} people`}, ${
+        r === 0 ? "no entries" : r === 1 ? "1 entry" : `${r} entries`
+      }) will be deleted and replaced by the backup. This cannot be undone.`,
+    digite: (p) => `To confirm, type: ${p}`,
+    palavra: "REPLACE",
+    confirmar: "Restore this backup",
+    restaurando: "Restoring…",
+    falhou: "Could not restore. The data on this device is unchanged.",
   },
   resumo: {
     titulo: "Summary for appointments",

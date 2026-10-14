@@ -1,14 +1,15 @@
 import { IDIOMAS, LIMITES } from "@afetilu/core";
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos as ui } from "../../components/ui";
+import { Botao, Campo, Chip, Escolha, Secao, estilos as ui } from "../../components/ui";
 import { CORES_SLIME } from "../../components/slime/reacoes";
 import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
+import { diasDesde, PREF_ULTIMO_BACKUP } from "../../lib/backup";
 import { NOME_DO_IDIOMA } from "../../i18n";
 import { gerarDadosFicticios } from "../../lib/dados-ficticios";
 import { useApp, useTextos } from "../../lib/estado";
-import { criarPessoa, criarRegistro, marcarSemCrises, renomearPessoa } from "../../lib/repositorio";
+import { criarPessoa, criarRegistro, lerPreferencia, marcarSemCrises, renomearPessoa } from "../../lib/repositorio";
 import { espaco, texto } from "../../lib/tema";
 
 /** "pendente" aparece como desligado: os sons só tocam depois da escolha. */
@@ -48,6 +49,20 @@ export default function Ajustes() {
   const { t } = useTextos();
   const a = t.ajustes;
   const [novo, setNovo] = useState("");
+  const [ultimoBackup, setUltimoBackup] = useState<string | null>(null);
+
+  // Relido ao voltar para a aba (depois de fazer ou restaurar um backup).
+  useFocusEffect(
+    useCallback(() => {
+      let ativo = true;
+      void lerPreferencia(db, PREF_ULTIMO_BACKUP).then((v) => {
+        if (ativo) setUltimoBackup(v);
+      });
+      return () => {
+        ativo = false;
+      };
+    }, [db]),
+  );
 
   const adicionar = async () => {
     if (!novo.trim()) return;
@@ -121,7 +136,10 @@ export default function Ajustes() {
 
       <Secao titulo={a.seusDados}>
         <Text style={texto.corpo}>{a.seusDadosTexto}</Text>
-        <Aviso texto={a.backupEmBreve} />
+        <Text style={texto.corpo}>{a.backupTexto}</Text>
+        <Text style={texto.subtitulo}>{a.ultimoBackup(diasDesde(ultimoBackup, new Date()))}</Text>
+        <Botao rotulo={a.fazerBackup} onPress={() => router.push("/backup")} />
+        <Botao variante="secundaria" rotulo={a.restaurarBackup} onPress={() => router.push("/restaurar")} />
         <Text style={texto.suave}>{a.apagarAjuda}</Text>
         {pessoas.map((p) => (
           <Botao

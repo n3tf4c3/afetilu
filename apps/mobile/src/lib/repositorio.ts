@@ -3,6 +3,8 @@ import {
   entradaPessoa,
   entradaRegistro,
   novoRegistro,
+  VERSAO_CONTEUDO_BACKUP,
+  type ConteudoBackup,
   type DiaAnotado,
   type EntradaRegistro,
   type Pessoa,
@@ -160,6 +162,61 @@ export async function marcarSemCrises(db: SQLiteDatabase, pessoaId: string, dia:
 
 export async function desmarcarSemCrises(db: SQLiteDatabase, pessoaId: string, dia: string): Promise<void> {
   await db.runAsync("DELETE FROM dia_anotado WHERE pessoa_id = ? AND dia = ?", pessoaId, dia);
+}
+
+// Backup --------------------------------------------------------------------
+
+/**
+ * Tudo o que vai para o backup, já no formato do core. Linhas que não passam na validação
+ * (não aparecem nas telas) ficam de fora e são contadas, para a tela avisar.
+ */
+export async function lerConteudoParaBackup(db: SQLiteDatabase, criadoEm: string): Promise<{ conteudo: ConteudoBackup; ignorados: number }> {
+  const pessoas = (await db.getAllAsync<LinhaPessoa>("SELECT * FROM pessoa ORDER BY criada_em")).map(pessoaDaLinha);
+  const linhas = await db.getAllAsync<LinhaRegistro>("SELECT * FROM registro ORDER BY ocorreu_em, lancado_em");
+  const registros = linhas.map(registroDaLinha).filter((r): r is Registro => r !== null);
+  const validos = new Map(registros.map((r) => [r.id, r.versao]));
+  const linhasRevisao = await db.getAllAsync<LinhaRevisao>("SELECT * FROM registro_revisao ORDER BY registro_id, versao");
+  const revisoes = linhasRevisao
+    .filter((l) => validos.has(l.registro_id))
+    .map(revisaoDaLinha)
+    .filter((r): r is RevisaoRegistro => r !== null);
+  const diasAnotados = (await db.getAllAsync<LinhaDiaAnotado>("SELECT * FROM dia_anotado ORDER BY pessoa_id, dia")).map(diaAnotadoDaLinha);
+  return {
+    conteudo: { versao: VERSAO_CONTEUDO_BACKUP, criadoEm, pessoas, registros, revisoes, diasAnotados },
+    ignorados: linhas.length - registros.length + linhasRevisao.length - revisoes.length,
+  };
+}
+
+export async function contarTudo(db: SQLiteDatabase): Promise<{ pessoas: number; registros: number }> {
+  const p = await db.getFirstAsync<{ n: number }>("SELECT count(*) AS n FROM pessoa");
+  const r = await db.getFirstAsync<{ n: number }>("SELECT count(*) AS n FROM registro");
+  return { pessoas: p?.n ?? 0, registros: r?.n ?? 0 };
+}
+
+/**
+ * Restauração: apaga todos os dados (cascata, com secure_delete) e grava os do backup, numa
+ * transação só. Se qualquer passo falhar, o aparelho fica como estava. Preferências não mudam.
+ */
+export async function substituirPorBackup(db: SQLiteDatabase, c: ConteudoBackup): Promise<void> {
+  await db.withTransactionAsync(async () => {
+    await db.runAsync("DELETE FROM pessoa");
+    for (const p of c.pessoas) {
+      await db.runAsync("INSERT INTO pessoa (id, apelido, criada_em) VALUES (?, ?, ?)", p.id, p.apelido, p.criadaEm);
+    }
+    for (const r of c.registros) await inserirLinha(db, linhaDoRegistro(r));
+    for (const r of c.revisoes) {
+      await db.runAsync(
+        "INSERT INTO registro_revisao (registro_id, versao, conteudo_anterior, alterado_em) VALUES (?, ?, ?, ?)",
+        r.registroId, r.versao, JSON.stringify(r.conteudoAnterior), r.alteradoEm,
+      );
+    }
+    for (const d of c.diasAnotados) {
+      await db.runAsync(
+        "INSERT INTO dia_anotado (pessoa_id, dia, sem_crises, observacao, lancado_em) VALUES (?, ?, ?, ?, ?)",
+        d.pessoaId, d.dia, d.semCrises ? 1 : 0, d.observacao ?? null, d.lancadoEm,
+      );
+    }
+  });
 }
 
 // Preferências --------------------------------------------------------------

@@ -7,3 +7,4 @@ export * from "./cobertura";
 export * from "./contexto";
 export * from "./revisao";
 export * from "./resumo";
+export * from "./backup";

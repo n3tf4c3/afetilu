@@ -71,6 +71,7 @@ export default function PrimeiroUso() {
             <View>
               <Botao rotulo={p.comecar} onPress={() => void continuar()} desabilitado={salvando} />
             </View>
+            <Botao variante="texto" rotulo={p.jaTenhoBackup} onPress={() => router.push("/restaurar")} />
           </Secao>
         </ScrollView>
       </KeyboardAvoidingView>

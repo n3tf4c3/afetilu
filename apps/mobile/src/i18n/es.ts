@@ -39,6 +39,7 @@ export const es: TextosApp = {
     erroApelido: "Escribe un apodo para comenzar.",
     erroSalvar: "No fue posible guardar. Inténtalo de nuevo.",
     comecar: "Comenzar",
+    jaTenhoBackup: "Ya tengo una copia de seguridad",
   },
   inicio: {
     hoje: (dia) => `Hoy, ${dia}`,
@@ -232,7 +233,18 @@ export const es: TextosApp = {
     seusDados: "Tus datos",
     seusDadosTexto:
       "Los registros quedan solo en este dispositivo, cifrados. La app no tiene servidor, no envía datos y no usa herramientas de análisis ni publicidad.",
-    backupEmBreve: "La copia de seguridad cifrada llegará en una próxima etapa. El resumen para la consulta está en la Línea de tiempo.",
+    backupTexto:
+      "Como no hay servidor, un celular perdido o cambiado se lleva los datos. Una copia de seguridad protegida con contraseña permite recuperarlos.",
+    ultimoBackup: (d) =>
+      d === null
+        ? "Todavía no se hizo ninguna copia de seguridad en este dispositivo."
+        : d === 0
+          ? "Última copia de seguridad: hoy."
+          : d === 1
+            ? "Última copia de seguridad: ayer."
+            : `Última copia de seguridad: hace ${d} días.`,
+    fazerBackup: "Hacer una copia de seguridad",
+    restaurarBackup: "Restaurar una copia de seguridad",
     devTitulo: "Desarrollo (solo en esta build)",
     devAjuda: "Herramientas para probar con datos ficticios. No aparecen en la versión de las tiendas.",
     devGerar: "Crear persona y registros ficticios",
@@ -256,6 +268,61 @@ export const es: TextosApp = {
     confirmarPessoa: (a) => `Eliminar a ${a} definitivamente`,
     confirmarTudo: "Eliminar todo definitivamente",
     falhou: "No se pudo eliminar. No se cambió nada.",
+  },
+  backup: {
+    titulo: "Copia de seguridad",
+    explicacao:
+      "La copia de seguridad reúne todas las personas, registros e historiales de correcciones en un solo archivo, protegido con una contraseña. Tú eliges dónde guardarlo: en el propio celular, en Google Drive, en OneDrive o en otra app. Afetilu no envía el archivo a ningún lugar.",
+    semRecuperacao: "Guarda la contraseña en un lugar seguro. No queda guardada en la app y no se puede recuperar: sin ella, la copia no se abre.",
+    arquivoSai: "Una vez guardado, el archivo queda con quien lo guardó. Eliminar datos en la app no elimina las copias ya hechas.",
+    senha: "Contraseña de la copia",
+    repetirSenha: "Repite la contraseña",
+    senhaAjuda: (m) => `Al menos ${m} caracteres. Una frase fácil de recordar funciona bien.`,
+    senhaCurta: (m) => `La contraseña necesita al menos ${m} caracteres.`,
+    senhaDiferente: "Las dos contraseñas no coinciden.",
+    salvarNoAparelho: "Guardar en el dispositivo",
+    enviarParaApp: "Enviar a otra app (Drive, OneDrive…)",
+    protegendo: (p) => `Protegiendo los datos… ${p}%`,
+    salvo: "Copia guardada en la carpeta elegida.",
+    enviado: "Copia creada y entregada a la app elegida. Revisa que se haya guardado allí.",
+    ignorados: (n) => (n === 1 ? "1 registro dañado no pudo entrar en la copia." : `${n} registros dañados no pudieron entrar en la copia.`),
+    falhou: "No se pudo crear la copia. No se envió nada.",
+    semCompartilhamento: "No se puede compartir en este dispositivo.",
+    dialogo: "Guardar la copia de seguridad",
+  },
+  restaurar: {
+    titulo: "Restaurar copia",
+    explicacao:
+      "Elige un archivo de copia de seguridad de Afetilu y escribe su contraseña. Antes de cambiar nada, la app muestra lo que contiene la copia.",
+    escolher: "Elegir archivo",
+    escolherOutro: "Elegir otro archivo",
+    falhouLer: "No se pudo leer el archivo elegido.",
+    senha: "Contraseña de la copia",
+    abrir: "Abrir copia",
+    abrindo: (p) => `Abriendo la copia… ${p}%`,
+    erros: {
+      nao_e_backup: "Este archivo no es una copia de seguridad de Afetilu.",
+      versao_nova: "Esta copia fue hecha con una versión más nueva de la app. Actualiza Afetilu e inténtalo de nuevo.",
+      senha_ou_arquivo: "No se pudo abrir: la contraseña es incorrecta o el archivo fue modificado.",
+      conteudo_invalido: "La copia se abrió, pero su contenido está dañado y no se puede restaurar.",
+    },
+    previaTitulo: "Qué contiene la copia",
+    feitoEm: (d) => `Hecha el ${d}.`,
+    pessoa: (a, r) => `${a}: ${r === 0 ? "ningún registro" : r === 1 ? "1 registro" : `${r} registros`}`,
+    periodo: (i, f) => `Período: del ${i} al ${f}.`,
+    totais: (r, d) =>
+      `${r === 0 ? "Ningún registro" : r === 1 ? "1 registro" : `${r} registros`} y ${
+        d === 0 ? "ningún día marcado sin crisis" : d === 1 ? "1 día marcado sin crisis" : `${d} días marcados sin crisis`
+      }.`,
+    substitui: (p, r) =>
+      `Todos los datos de este dispositivo (${p === 1 ? "1 persona" : `${p} personas`}, ${
+        r === 0 ? "ningún registro" : r === 1 ? "1 registro" : `${r} registros`
+      }) se eliminarán y se reemplazarán por los de la copia. No se puede deshacer.`,
+    digite: (p) => `Para confirmar, escribe: ${p}`,
+    palavra: "REEMPLAZAR",
+    confirmar: "Restaurar esta copia",
+    restaurando: "Restaurando…",
+    falhou: "No se pudo restaurar. Los datos del dispositivo siguen como estaban.",
   },
   resumo: {
     titulo: "Resumen para la consulta",

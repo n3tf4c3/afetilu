@@ -117,7 +117,10 @@ export function Campo(props: {
   dica?: string;
   /** Sem correção automática nem maiúscula inicial (confirmação digitada). */
   literal?: boolean;
+  /** Texto oculto (senha do backup), também sem correção automática. */
+  senha?: boolean;
 }) {
+  const literal = props.literal || props.senha;
   return (
     <View style={{ gap: espaco.xs }}>
       <Text style={estilos.rotulo} nativeID={`rotulo-${props.rotulo}`}>
@@ -131,9 +134,10 @@ export function Campo(props: {
         multiline={props.multilinha}
         maxLength={props.max}
         placeholder={props.dica}
-        autoCorrect={props.literal ? false : undefined}
-        autoCapitalize={props.literal ? "none" : undefined}
-        spellCheck={props.literal ? false : undefined}
+        autoCorrect={literal ? false : undefined}
+        autoCapitalize={literal ? "none" : undefined}
+        spellCheck={literal ? false : undefined}
+        secureTextEntry={props.senha}
         placeholderTextColor={cor.textoSuave}
         style={[estilos.campo, props.multilinha && { minHeight: 88, textAlignVertical: "top" }]}
       />

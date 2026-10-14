@@ -68,9 +68,9 @@ export const LOCAIS = ["casa", "escola", "parque", "terapia"] as const;
 export type Local = (typeof LOCAIS)[number];
 
 const textoCurto = z.string().trim().min(1).max(LIMITES.textoCurto);
-const textoLivre = z.string().trim().max(LIMITES.observacao);
-const instante = z.iso.datetime({ offset: true });
-const dia = z.iso.date();
+export const textoLivre = z.string().trim().max(LIMITES.observacao);
+export const instante = z.iso.datetime({ offset: true });
+export const dia = z.iso.date();
 
 export const detalheAlimentacao = z.object({
   categoria: z.literal("alimentacao"),
