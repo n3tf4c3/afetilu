@@ -3,17 +3,19 @@
 // Uso (na raiz, Windows com Microsoft Edge):
 //   node ferramentas/icone/gerar_icone.mjs
 //
-// Grava os SVGs em ferramentas/icone/ (fonte versionada) e os PNGs em apps/mobile/assets/,
+// Grava os SVGs em ferramentas/icone/ (fonte versionada) e os PNGs em apps/mobile/assets/ (app) e
+// apps/mobile/store-assets/ (ícone 512 e imagem de destaque da Google Play),
 // rasterizados pelo Edge sem interface. Não editar os PNGs à mão: mudar aqui e gerar de novo.
 
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const ASSETS = resolve(AQUI, "../../apps/mobile/assets");
+const LOJA = resolve(AQUI, "../../apps/mobile/store-assets");
 
 // Cores do app (apps/mobile/src/lib/tema.ts) e do mascote.
 const COR = {
@@ -80,13 +82,36 @@ function svg({ fundo, escala, monocromatico = false }) {
   );
 }
 
+/** Imagem de destaque da Google Play (1024 × 500): só a marca, sem texto traduzível. */
+function destaque() {
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">` +
+    `<defs><linearGradient id="f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${COR.fundoClaro}"/><stop offset="1" stop-color="${COR.fundoEscuro}"/></linearGradient></defs>` +
+    `<rect width="1024" height="500" fill="url(#f)"/>` +
+    `<g transform="translate(150 70) scale(3.6)">${desenho()}</g>` +
+    `<text x="560" y="285" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="128" font-weight="700" letter-spacing="-3" fill="${COR.tinta}">Afetilu</text>` +
+    `<rect x="566" y="318" width="120" height="10" rx="5" fill="${COR.rosa}"/>` +
+    `</svg>`
+  );
+}
+
+/** Cada saída: SVG, tamanho em px, pasta de destino e se deve sair sem canal alfa. */
 const SAIDAS = {
   // iOS e ícone padrão: sem transparência.
-  icon: svg({ fundo: true, escala: 700 }),
+  icon: { svg: svg({ fundo: true, escala: 700 }), largura: 1024, altura: 1024, pasta: ASSETS, opaco: true },
   // Android adaptativo: o fundo e o primeiro plano são camadas separadas.
-  "android-icon-background": svg({ fundo: true, escala: 0 }),
-  "android-icon-foreground": svg({ fundo: false, escala: 500 }),
-  "android-icon-monochrome": svg({ fundo: false, escala: 500, monocromatico: true }),
+  "android-icon-background": { svg: svg({ fundo: true, escala: 0 }), largura: 1024, altura: 1024, pasta: ASSETS },
+  "android-icon-foreground": { svg: svg({ fundo: false, escala: 500 }), largura: 1024, altura: 1024, pasta: ASSETS },
+  "android-icon-monochrome": { svg: svg({ fundo: false, escala: 500, monocromatico: true }), largura: 1024, altura: 1024, pasta: ASSETS },
+  // Ficha da Google Play.
+  "icone-512": {
+    svg: svg({ fundo: true, escala: 700 }).replace('width="1024" height="1024"', 'width="512" height="512"'),
+    largura: 512,
+    altura: 512,
+    pasta: LOJA,
+    opaco: true,
+  },
+  "destaque-1024x500": { svg: destaque(), largura: 1024, altura: 500, pasta: LOJA, opaco: true },
 };
 
 /** Regrava o PNG em RGB de 24 bits: a App Store recusa ícone com canal alfa, mesmo opaco. */
@@ -113,8 +138,9 @@ function edge() {
 const temp = mkdtempSync(join(tmpdir(), "afetilu-icone-"));
 try {
   const navegador = edge();
-  for (const [nome, conteudo] of Object.entries(SAIDAS)) {
+  for (const [nome, { svg: conteudo, largura, altura, pasta, opaco }] of Object.entries(SAIDAS)) {
     writeFileSync(join(AQUI, `${nome}.svg`), conteudo);
+    mkdirSync(pasta, { recursive: true });
     const html = join(temp, `${nome}.html`);
     writeFileSync(html, `<!doctype html><html><body style="margin:0;background:transparent">${conteudo}</body></html>`);
     execFileSync(navegador, [
@@ -123,11 +149,11 @@ try {
       "--hide-scrollbars",
       `--user-data-dir=${join(temp, "perfil")}`,
       "--default-background-color=00000000",
-      "--window-size=1024,1024",
-      `--screenshot=${join(ASSETS, `${nome}.png`)}`,
+      `--window-size=${largura},${altura}`,
+      `--screenshot=${join(pasta, `${nome}.png`)}`,
       pathToFileURL(html).href,
     ], { stdio: "ignore" });
-    if (nome === "icon") semAlfa(join(ASSETS, `${nome}.png`));
+    if (opaco) semAlfa(join(pasta, `${nome}.png`));
     process.stdout.write(`${nome}.png\n`);
   }
 } finally {
