@@ -77,6 +77,7 @@ export const en: TextosSite = {
     descricao: "Day-to-day notes about autistic people, logged by the family and brought to appointments.",
     licenca: "Open source under the MIT license.",
     marcas: "Google Play and the Google Play logo are trademarks of Google LLC. Apple and the Apple logo are trademarks of Apple Inc.",
+    contato: "Contact",
     codigo: "Source code",
   },
   politica: {
@@ -143,5 +144,6 @@ export const en: TextosSite = {
         ],
       },
     ],
+    contatoEmail: "Or write to:",
   },
 };

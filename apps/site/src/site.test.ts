@@ -68,3 +68,11 @@ test("antes da publicação: 'em breve', sem selos nem aviso de marcas", () => {
 test("texto é escapado", () => {
   assert.equal(esc(`<a href="x">'&'</a>`), "&lt;a href=&quot;x&quot;&gt;&#39;&amp;&#39;&lt;/a&gt;");
 });
+
+test("e-mail de contato só aparece quando configurado", () => {
+  for (const idioma of IDIOMAS_SITE) {
+    const html = paginaPolitica(idioma);
+    if (SITE.contato) assert.ok(html.includes(`href="mailto:${esc(SITE.contato)}"`), idioma);
+    else assert.ok(!html.includes("mailto:"), idioma);
+  }
+});

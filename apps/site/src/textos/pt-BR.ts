@@ -77,6 +77,7 @@ export const ptBR: TextosSite = {
     descricao: "Observações do dia a dia de pessoas autistas, registradas pela família e levadas à consulta.",
     licenca: "Código aberto sob a licença MIT.",
     marcas: "Google Play e o logotipo do Google Play são marcas da Google LLC. Apple e o logotipo da Apple são marcas da Apple Inc.",
+    contato: "Contato",
     codigo: "Código-fonte",
   },
   politica: {
@@ -143,5 +144,6 @@ export const ptBR: TextosSite = {
         ],
       },
     ],
+    contatoEmail: "Ou escreva para:",
   },
 };

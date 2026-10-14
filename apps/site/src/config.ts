@@ -3,6 +3,8 @@ import type { IdiomaSite } from "./textos/tipo.ts";
 export const SITE = {
   url: "https://afetilu.vercel.app",
   repositorio: "https://github.com/n3tf4c3/afetilu",
+  /** E-mail do projeto (caixa dedicada, nunca pessoal). null: o contato fica só pelo GitHub. */
+  contato: null as string | null,
   /**
    * Fichas nas lojas: null até a publicação. Com o link preenchido, a página troca o "em breve"
    * pelo selo da loja e passa a mostrar o aviso de marcas no rodapé.

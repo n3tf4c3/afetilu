@@ -33,6 +33,13 @@ export interface TextosSite {
   privacidade: { titulo: string; itens: string[]; link: string };
   limites: { titulo: string; texto: string; emergencia: string };
   codigoAberto: { titulo: string; texto: string; link: string };
-  rodape: { descricao: string; licenca: string; marcas: string; codigo: string };
-  politica: { titulo: string; atualizadaEm: string; introducao: string; secoes: SecaoPolitica[] };
+  rodape: { descricao: string; licenca: string; marcas: string; codigo: string; contato: string };
+  politica: {
+    titulo: string;
+    atualizadaEm: string;
+    introducao: string;
+    secoes: SecaoPolitica[];
+    /** Linha final da seção de contato quando há e-mail do projeto. */
+    contatoEmail: string;
+  };
 }

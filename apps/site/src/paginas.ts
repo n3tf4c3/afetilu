@@ -108,6 +108,7 @@ ${o.corpo}
       <li><a href="${caminhoInicial(o.idioma)}">${esc(t.nav.inicio)}</a></li>
       <li><a href="${CAMINHO_POLITICA[o.idioma]}">${esc(t.nav.privacidade)}</a></li>
       <li><a href="${SITE.repositorio}" rel="noopener noreferrer">${esc(t.rodape.codigo)}</a></li>
+      ${SITE.contato ? `<li><a href="mailto:${esc(SITE.contato)}">${esc(t.rodape.contato)}</a></li>` : ""}
     </ul>
   </div>
 </footer>
@@ -168,7 +169,9 @@ export function paginaPolitica(idioma: IdiomaSite): string {
   const secoes = p.secoes
     .map((s) => `<section><h2>${esc(s.titulo)}</h2>${s.paragrafos.map((x) => `<p>${esc(x)}</p>`).join("")}</section>`)
     .join("\n");
-  const contato = `<p><a href="${SITE.repositorio}/issues" rel="noopener noreferrer">${esc(SITE.repositorio.replace("https://", ""))}</a></p>`;
+  const contato =
+    `<p><a href="${SITE.repositorio}/issues" rel="noopener noreferrer">${esc(SITE.repositorio.replace("https://", ""))}</a></p>` +
+    (SITE.contato ? `<p>${esc(p.contatoEmail)} <a href="mailto:${esc(SITE.contato)}">${esc(SITE.contato)}</a></p>` : "");
   const corpo = `
 <article class="politica">
   <h1>${esc(p.titulo)}</h1>
