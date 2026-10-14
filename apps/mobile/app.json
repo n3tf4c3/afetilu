@@ -9,10 +9,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.afetilu.app",
-      "config": {
-        "usesNonExemptEncryption": true
-      }
+      "bundleIdentifier": "com.afetilu.app"
     },
     "android": {
       "package": "com.afetilu.app",
