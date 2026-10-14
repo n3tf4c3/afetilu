@@ -7,6 +7,8 @@ export const LIMITES = {
   observacao: 1000,
   itensAjudou: 10,
   duracaoMaxMin: 24 * 60,
+  /** Mudança na rotina e pergunta para a consulta. */
+  anotacao: 300,
 } as const;
 
 export const CATEGORIAS = [
@@ -60,7 +62,7 @@ export const OBSERVADOS = [
   "outro",
 ] as const;
 export const TIPOS_HIGIENE = ["banho", "escovacao", "troca", "outro"] as const;
-export const TIPOS_POSITIVO = ["comunicacao", "atividade", "conquista", "tranquilo", "estrategia"] as const;
+export const TIPOS_POSITIVO = ["comunicacao", "atividade", "conquista", "tranquilo", "estrategia", "sem_ajuda", "interacao"] as const;
 export const QUANTIDADES = ["pouco", "metade", "tudo", "recusou"] as const;
 
 /** Onde a pessoa estava (cenário da tela inicial). Informação literal, opcional; nunca uma causa. */
@@ -205,4 +207,34 @@ export interface DiaAnotado {
   semCrises: boolean;
   observacao?: string;
   lancadoEm: string;
+}
+
+const textoAnotacao = z.string().trim().min(1).max(LIMITES.anotacao);
+
+/**
+ * Mudança na rotina anotada pelo responsável (mudou de escola, viagem, férias). É contexto, não
+ * observação da pessoa: não conta como dia com registro e nunca aparece como causa de nada.
+ */
+export const entradaMudanca = z.object({
+  pessoaId: z.string().min(1),
+  dia,
+  texto: textoAnotacao,
+});
+export type EntradaMudanca = z.infer<typeof entradaMudanca>;
+
+export interface MudancaRotina extends EntradaMudanca {
+  id: string;
+  lancadoEm: string;
+}
+
+/** Pergunta que o responsável quer levar à consulta. Sai no fim do resumo, sem data nem período. */
+export const entradaPergunta = z.object({
+  pessoaId: z.string().min(1),
+  texto: textoAnotacao,
+});
+export type EntradaPergunta = z.infer<typeof entradaPergunta>;
+
+export interface PerguntaConsulta extends EntradaPergunta {
+  id: string;
+  criadaEm: string;
 }

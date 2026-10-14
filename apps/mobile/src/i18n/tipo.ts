@@ -194,6 +194,20 @@ export interface TextosApp {
     desmarcarSemCrises: string;
     hojeDia: (dia: string) => string;
     ontemDia: (dia: string) => string;
+    anotarMudanca: string;
+    mudancaRotulo: string;
+    apagarMudanca: (texto: string) => string;
+    apagarMudancaTitulo: string;
+    apagarMudancaTexto: string;
+  };
+  mudanca: {
+    titulo: string;
+    explicacao: string;
+    texto: string;
+    textoDica: string;
+    salvar: string;
+    erroVazio: string;
+    erroSalvar: string;
   };
   ajustes: {
     pessoas: string;
@@ -350,5 +364,14 @@ export interface TextosApp {
     origem: Record<Origem, string>;
     vazio: string;
     rodape: string;
+    perguntasTitulo: string;
+    perguntasAjuda: string;
+    novaPergunta: string;
+    novaPerguntaDica: string;
+    acrescentarPergunta: string;
+    apagarPergunta: (texto: string) => string;
+    mudancasTitulo: string;
+    mudancasNota: string;
+    colMudanca: string;
   };
 }

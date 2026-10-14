@@ -201,6 +201,21 @@ export const en: TextosApp = {
     desmarcarSemCrises: "Unmark no-crisis day",
     hojeDia: (d) => `Today, ${d}`,
     ontemDia: (d) => `Yesterday, ${d}`,
+    anotarMudanca: "Note a change in routine",
+    mudancaRotulo: "Change in routine",
+    apagarMudanca: (texto) => `Delete change in routine: ${texto}`,
+    apagarMudancaTitulo: "Delete this change in routine?",
+    apagarMudancaTexto: "It will be removed from the timeline and from future summaries.",
+  },
+  mudanca: {
+    titulo: "Change in routine",
+    explicacao:
+      "Note something that changed in the routine, such as a new school, a trip, school holidays or a different caregiver. It shows on the timeline and in the summary as context: it does not count as a log for the day.",
+    texto: "What changed",
+    textoDica: "E.g.: school holidays started",
+    salvar: "Save",
+    erroVazio: "Write what changed.",
+    erroSalvar: "Could not save. Please try again.",
   },
   ajustes: {
     pessoas: "People you care for",
@@ -251,9 +266,9 @@ export const en: TextosApp = {
     oQueApagaPessoa: (a, r, d) =>
       `This deletes ${a}, ${r === 0 ? "no entries" : r === 1 ? "1 entry" : `${r} entries`} (with their correction history) and ${
         d === 0 ? "no marked no-crisis days" : d === 1 ? "1 marked no-crisis day" : `${d} marked no-crisis days`
-      }.`,
+      }, plus the noted changes in routine and questions.`,
     oQueApagaTudo:
-      "This deletes every person, entry, correction history, marked day and preference on this device, along with the data protection key. The app goes back to first use.",
+      "This deletes every person, entry, correction history, marked day, change in routine, question and preference on this device, along with the data protection key. The app goes back to first use.",
     semVolta: "This cannot be undone. Files you have already exported or shared are not affected.",
     digite: (p) => `To confirm, type: ${p}`,
     palavraTudo: "DELETE",
@@ -380,5 +395,14 @@ export const en: TextosApp = {
     vazio: "No entries from the chosen categories in this period.",
     rodape:
       "This summary reflects only what was logged. Events close in time do not indicate a cause. It does not replace professional assessment.",
+    perguntasTitulo: "Questions for the appointment",
+    perguntasAjuda: "They appear at the end of the PDF. After the appointment, delete the ones that were answered.",
+    novaPergunta: "New question",
+    novaPerguntaDica: "E.g.: how to deal with noise at school?",
+    acrescentarPergunta: "Add question",
+    apagarPergunta: (texto) => `Delete question: ${texto}`,
+    mudancasTitulo: "Changes in routine",
+    mudancasNota: "Noted by the caregiver as context for the period; they do not indicate a cause.",
+    colMudanca: "What changed",
   },
 };

@@ -111,12 +111,13 @@ O app será oferecido também fora do Brasil, em português, inglês e espanhol.
 5. **Bem-estar:** dor ou desconforto percebido (local aproximado e sinais observados), evacuação e outros sinais, todos opcionais.
 6. **Episódios:** descrição objetiva, início e duração, intensidade com critérios descritos, contexto anterior, o que o cuidador fez, desfecho, se houve lesão (sim, não, não sei) e o que ajudou.
 7. **Origem da informação**, em todo registro: **vi acontecer**, **me contaram** (escola, terapeuta, outro cuidador) ou **suspeita minha**.
-8. **Registros positivos:** comunicação, atividade, conquista, período tranquilo e estratégia que funcionou.
+8. **Registros positivos:** comunicação, atividade, conquista, período tranquilo, estratégia que funcionou, fez sem ajuda e interagiu ou compartilhou.
 9. **Dia anotado:** marcar explicitamente "dia sem crises", com observação opcional. A falta de registro aparece como "sem registro", nunca como "nenhum episódio".
 10. **Linha do tempo**, com filtros por período, categoria e pessoa.
 11. **Correção com histórico:** cada edição guarda a versão anterior e a linha do tempo indica "corrigido em…".
-12. **Resumo para consulta:** texto descritivo do período, gerado no aparelho e exportado em PDF pela folha de compartilhamento do sistema, por escolha do responsável.
-13. **Dados:** backup cifrado com senha, salvo onde o responsável escolher (seção 5.2), importação e exclusão total (de uma pessoa ou de tudo).
+12. **Resumo para consulta:** texto descritivo do período, gerado no aparelho e exportado em PDF pela folha de compartilhamento do sistema, por escolha do responsável. Leva também as **perguntas para a consulta** que o responsável anotar (lista por pessoa, no fim do PDF).
+13. **Mudanças na rotina:** anotação com data e texto livre (troca de escola, viagem, férias, outro cuidador), lançada pela linha do tempo. É contexto: aparece no dia e numa seção própria do resumo, não conta como dia com registro e nunca é ligada a outro registro. Medicação fica de fora.
+14. **Dados:** backup cifrado com senha, salvo onde o responsável escolher (seção 5.2), importação e exclusão total (de uma pessoa ou de tudo).
 
 **Fica fora do MVP:** voz, anexos e fotos, múltiplos cuidadores e sincronização, assinatura, lembretes e notificações, gráficos de correlação, qualquer IA, acesso para profissionais e integração com Saúde ou Health Connect.
 
@@ -139,6 +140,8 @@ O texto de cada critério aparece na tela de escolha e no relatório.
 - Indica a origem de cada informação e se houve correções.
 - Rodapé fixo: *"Este resumo reflete apenas o que foi registrado. Acontecimentos próximos no tempo não indicam causa. Não substitui avaliação profissional."*
 - Os momentos positivos ficam numa seção própria, não num apêndice.
+- Mudanças na rotina do período aparecem numa seção própria, com data e texto do responsável e a nota de que não indicam causa. Independem das categorias escolhidas.
+- Perguntas para a consulta fecham o documento, na ordem em que foram anotadas.
 
 ## 4. Fluxos principais
 

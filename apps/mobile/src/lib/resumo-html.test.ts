@@ -33,8 +33,14 @@ const episodio: Detalhe = {
   episodio: { intensidade: "moderada", duracaoMin: 15, contextoAntes: "Barulho <alto> no corredor", ajudou: ["Fone abafador"] },
 };
 
-function gerar(registros: Registro[], idioma: "pt-BR" | "en" | "es" = "pt-BR", diasSemCrises: string[] = []) {
+function gerar(
+  registros: Registro[],
+  idioma: "pt-BR" | "en" | "es" = "pt-BR",
+  diasSemCrises: string[] = [],
+  extras: Pick<Parameters<typeof montarResumo>[0], "mudancas" | "perguntas"> = {},
+) {
   const resumo = montarResumo({
+    ...extras,
     inicio: "2026-10-10",
     fim: "2026-10-16",
     categorias: CATEGORIAS,
@@ -105,4 +111,25 @@ test("nome do arquivo legível e sem caracteres proibidos", () => {
   assert.equal(nomeDoArquivoDoResumo("Resumo para consulta", "Exemplo", "2026-10-13"), "Resumo para consulta - Exemplo - 2026-10-13.pdf");
   assert.equal(nomeDoArquivoDoResumo("Resumo", 'Ana/Clara: "mãe"?', "2026-10-13"), "Resumo - Ana Clara mãe - 2026-10-13.pdf");
   assert.equal(nomeDoArquivoDoResumo("Resumo", "///", "2026-10-13"), "Resumo - 2026-10-13.pdf");
+});
+
+const CRIADA = "2026-10-16T12:00:00.000Z";
+
+test("mudanças na rotina e perguntas saem escapadas, mesmo sem registros no período", () => {
+  const html = gerar([], "pt-BR", [], {
+    mudancas: [{ id: "m1", pessoaId: "pessoa-ficticia", dia: "2026-10-12", texto: "Férias <início>", lancadoEm: CRIADA }],
+    perguntas: [{ id: "p1", pessoaId: "pessoa-ficticia", texto: "Barulho & escola?", criadaEm: CRIADA }],
+  });
+  assert.ok(html.includes("Mudanças na rotina"));
+  assert.ok(html.includes("<td>12/10/2026</td><td>Férias &lt;início&gt;</td>"));
+  assert.ok(html.includes("não indicam causa"));
+  assert.ok(html.includes('<ol class="perguntas"><li>Barulho &amp; escola?</li></ol>'));
+  // Contexto não vira registro: o dia 12 continua sem informação.
+  assert.match(html, /class="c-sem"><span class="dia">12\/10<\/span>/);
+});
+
+test("sem mudanças nem perguntas, as seções não aparecem", () => {
+  const html = gerar([reg(11, 9, episodio)]);
+  assert.ok(!html.includes("Mudanças na rotina"));
+  assert.ok(!html.includes("Perguntas para a consulta"));
 });

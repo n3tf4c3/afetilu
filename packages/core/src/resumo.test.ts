@@ -103,3 +103,37 @@ test("período só com dias marcados sem crises não é vazio", () => {
   assert.equal(r.cobertura.diasSemCrises, 1);
   assert.equal(r.cobertura.diasSemInformacao, 6);
 });
+
+const mudanca = (dia: string, texto: string, lancadoEm = `${dia}T20:00:00.000Z`) => ({ id: `m-${dia}-${texto}`, pessoaId: PESSOA, dia, texto, lancadoEm });
+
+test("mudanças na rotina: só as do período, em ordem, sem contar como dia com registro", () => {
+  const r = montarResumo({
+    ...base,
+    registros: [],
+    mudancas: [mudanca("2026-10-14", "Férias"), mudanca("2026-10-11", "Mudou de escola"), mudanca("2026-10-09", "Fora do período")],
+  });
+  assert.deepEqual(
+    r.mudancas.map((m) => m.texto),
+    ["Mudou de escola", "Férias"],
+  );
+  assert.equal(r.cobertura.diasComRegistro, 0);
+  assert.equal(r.cobertura.diasSemInformacao, 7);
+});
+
+test("mudanças e perguntas não dependem das categorias escolhidas", () => {
+  const r = montarResumo({
+    ...base,
+    categorias: [],
+    registros: [],
+    mudancas: [mudanca("2026-10-12", "Viagem")],
+    perguntas: [
+      { id: "p2", pessoaId: PESSOA, texto: "Segunda", criadaEm: "2026-10-13T10:00:00.000Z" },
+      { id: "p1", pessoaId: PESSOA, texto: "Primeira", criadaEm: "2026-10-12T10:00:00.000Z" },
+    ],
+  });
+  assert.equal(r.mudancas.length, 1);
+  assert.deepEqual(
+    r.perguntas.map((p) => p.texto),
+    ["Primeira", "Segunda"],
+  );
+});

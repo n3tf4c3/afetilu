@@ -39,7 +39,7 @@ export const en: DicionarioDominio = {
   higiene: { banho: "Bath", escovacao: "Toothbrushing", troca: "Diaper or clothes change", outro: "Other" },
   positivo: {
     comunicacao: "Communication", atividade: "Activity", conquista: "Achievement", tranquilo: "Calm period",
-    estrategia: "Strategy that worked",
+    estrategia: "Strategy that worked", sem_ajuda: "Did it without help", interacao: "Interacted or shared",
   },
   quantidade: { pouco: "A little", metade: "About half", tudo: "All of it", recusou: "Refused" },
   aceitacao: { aceitou: "Accepted", com_ajuda: "With help", recusou: "Refused" },
@@ -64,6 +64,7 @@ export const en: DicionarioDominio = {
     sono: n("Sleep"), cochilo: n("Nap"), evacuacao: n("Bowel movement"),
     comunicacao: n("Communication"), atividade: n("Activity"), conquista: n("Achievement"),
     tranquilo: n("Calm period"), estrategia: n("Strategy that worked"),
+    sem_ajuda: n("Independence"), interacao: n("Interaction"),
   },
   registrado: (x) => `${x.nome} logged`,
   suspeitaRegistrada: (x) => `Suspicion logged: ${x.nome.toLowerCase()}`,

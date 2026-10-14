@@ -1,16 +1,35 @@
-import { CATEGORIAS, chaveDoDia, montarResumo, somarDias, type Categoria, type DiaAnotado, type Registro } from "@afetilu/core";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  CATEGORIAS,
+  chaveDoDia,
+  LIMITES,
+  montarResumo,
+  somarDias,
+  type Categoria,
+  type DiaAnotado,
+  type MudancaRotina,
+  type PerguntaConsulta,
+  type Registro,
+} from "@afetilu/core";
 import { File, Paths } from "expo-file-system";
 import * as Print from "expo-print";
 import { Stack } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useEffect, useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Aviso, Botao, Chip, Secao, estilos as ui } from "../components/ui";
+import { Aviso, Botao, Campo, Chip, Secao, estilos as ui } from "../components/ui";
 import { useApp, useTextos } from "../lib/estado";
-import { listarDiasAnotados, listarRegistros } from "../lib/repositorio";
+import {
+  apagarPergunta,
+  criarPergunta,
+  listarDiasAnotados,
+  listarMudancas,
+  listarPerguntas,
+  listarRegistros,
+} from "../lib/repositorio";
 import { montarResumoHtml, nomeDoArquivoDoResumo } from "../lib/resumo-html";
-import { cor, espaco, texto } from "../lib/tema";
+import { ALVO_MINIMO, cor, espaco, raio, texto } from "../lib/tema";
 
 const PERIODOS = [7, 30, 90] as const;
 // A4 a 72 pontos por polegada: sem isto o expo-print usa o formato Carta.
@@ -21,13 +40,19 @@ const PAGINA_A4 = { width: 595, height: 842 };
  * folha do sistema por escolha do responsável (docs/viabilidade-e-escopo.md, fluxo 5).
  */
 export default function Resumo() {
-  const { db, pessoaAtiva, versaoDados } = useApp();
+  const { db, pessoaAtiva, versaoDados, notificarMudanca } = useApp();
   const { t, d, idioma } = useTextos();
   const tr = t.resumo;
   const insets = useSafeAreaInsets();
   const [dias, setDias] = useState<(typeof PERIODOS)[number]>(30);
   const [categorias, setCategorias] = useState<Categoria[]>([...CATEGORIAS]);
-  const [dados, setDados] = useState<{ registros: Registro[]; anotados: DiaAnotado[] } | null>(null);
+  const [dados, setDados] = useState<{
+    registros: Registro[];
+    anotados: DiaAnotado[];
+    mudancas: MudancaRotina[];
+    perguntas: PerguntaConsulta[];
+  } | null>(null);
+  const [novaPergunta, setNovaPergunta] = useState("");
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const hoje = chaveDoDia(new Date());
@@ -36,18 +61,32 @@ export default function Resumo() {
   useEffect(() => {
     if (!pessoaAtiva) return;
     let ativo = true;
-    void Promise.all([listarRegistros(db, pessoaAtiva.id, inicio, hoje), listarDiasAnotados(db, pessoaAtiva.id, inicio, hoje)]).then(
-      ([registros, anotados]) => {
-        if (ativo) setDados({ registros, anotados });
-      },
-    );
+    void Promise.all([
+      listarRegistros(db, pessoaAtiva.id, inicio, hoje),
+      listarDiasAnotados(db, pessoaAtiva.id, inicio, hoje),
+      listarMudancas(db, pessoaAtiva.id, inicio, hoje),
+      listarPerguntas(db, pessoaAtiva.id),
+    ]).then(([registros, anotados, mudancas, perguntas]) => {
+      if (ativo) setDados({ registros, anotados, mudancas, perguntas });
+    });
     return () => {
       ativo = false;
     };
   }, [db, pessoaAtiva, versaoDados, inicio, hoje]);
 
   const resumo = useMemo(
-    () => (dados ? montarResumo({ inicio, fim: hoje, categorias, registros: dados.registros, diasAnotados: dados.anotados }) : null),
+    () =>
+      dados
+        ? montarResumo({
+            inicio,
+            fim: hoje,
+            categorias,
+            registros: dados.registros,
+            diasAnotados: dados.anotados,
+            mudancas: dados.mudancas,
+            perguntas: dados.perguntas,
+          })
+        : null,
     [dados, inicio, hoje, categorias],
   );
 
@@ -56,6 +95,17 @@ export default function Resumo() {
   const alternar = (c: Categoria) =>
     setCategorias((atual) => (atual.includes(c) ? atual.filter((x) => x !== c) : CATEGORIAS.filter((x) => x === c || atual.includes(x))));
   const todas = categorias.length === CATEGORIAS.length;
+
+  const acrescentarPergunta = async () => {
+    if (!novaPergunta.trim()) return;
+    await criarPergunta(db, pessoaAtiva.id, novaPergunta);
+    setNovaPergunta("");
+    notificarMudanca();
+  };
+  const removerPergunta = async (id: string) => {
+    await apagarPergunta(db, id);
+    notificarMudanca();
+  };
 
   const html = () =>
     resumo ? montarResumoHtml({ resumo, apelido: pessoaAtiva.apelido, geradoEm: new Date(), d, t, idioma }) : null;
@@ -99,7 +149,7 @@ export default function Resumo() {
   return (
     <View style={{ flex: 1, backgroundColor: cor.fundo }}>
       <Stack.Screen options={{ title: tr.titulo }} />
-      <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }}>
+      <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled">
         <Secao titulo={tr.periodo}>
           <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={tr.periodo}>
             {PERIODOS.map((n) => (
@@ -114,6 +164,30 @@ export default function Resumo() {
               <Chip key={c} multiplo rotulo={d.categoria[c]} selecionado={categorias.includes(c)} onPress={() => alternar(c)} />
             ))}
           </View>
+        </Secao>
+        <Secao titulo={tr.perguntasTitulo}>
+          <Text style={texto.suave}>{tr.perguntasAjuda}</Text>
+          {dados?.perguntas.map((p) => (
+            <View key={p.id} style={estilos.pergunta}>
+              <Text style={[texto.corpo, { flex: 1 }]}>{p.texto}</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={tr.apagarPergunta(p.texto)}
+                onPress={() => void removerPergunta(p.id)}
+                style={estilos.apagar}
+              >
+                <MaterialCommunityIcons name="trash-can-outline" size={22} color={cor.textoSuave} />
+              </Pressable>
+            </View>
+          ))}
+          <Campo rotulo={tr.novaPergunta} valor={novaPergunta} onChange={setNovaPergunta} max={LIMITES.anotacao} dica={tr.novaPerguntaDica} multilinha />
+          <Botao
+            variante="secundaria"
+            icone="plus"
+            rotulo={tr.acrescentarPergunta}
+            desabilitado={!novaPergunta.trim()}
+            onPress={() => void acrescentarPergunta()}
+          />
         </Secao>
         {cob ? (
           <View style={estilos.previa} accessible accessibilityLiveRegion="polite">
@@ -133,6 +207,17 @@ export default function Resumo() {
 
 const estilos = StyleSheet.create({
   previa: { backgroundColor: cor.primariaClara, borderRadius: 12, padding: espaco.l },
+  pergunta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: espaco.s,
+    backgroundColor: cor.superficie,
+    borderRadius: raio.m,
+    borderWidth: 1,
+    borderColor: cor.borda,
+    paddingLeft: espaco.m,
+  },
+  apagar: { minWidth: ALVO_MINIMO, minHeight: ALVO_MINIMO, alignItems: "center", justifyContent: "center" },
   barra: {
     gap: espaco.s,
     paddingHorizontal: espaco.l,

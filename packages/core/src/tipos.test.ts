@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { calmo, comida, PESSOA } from "./fixtures.test-util";
-import { entradaPessoa, entradaRegistro, LIMITES } from "./tipos";
+import { entradaMudanca, entradaPergunta, entradaPessoa, entradaRegistro, LIMITES } from "./tipos";
 
 const base = {
   pessoaId: PESSOA,
@@ -52,4 +52,12 @@ test("local é opcional e só aceita os lugares conhecidos", () => {
   assert.equal(entradaRegistro.safeParse({ ...base, local: "escola" }).success, true);
   assert.equal(entradaRegistro.safeParse({ ...base, local: "shopping" }).success, false);
   assert.equal(entradaRegistro.safeParse(base).success, true);
+});
+
+test("mudança na rotina e pergunta: texto obrigatório, aparado e limitado", () => {
+  assert.equal(entradaMudanca.safeParse({ pessoaId: PESSOA, dia: "2026-10-13", texto: "  " }).success, false);
+  assert.equal(entradaMudanca.safeParse({ pessoaId: PESSOA, dia: "13/10/2026", texto: "Férias" }).success, false);
+  assert.equal(entradaMudanca.parse({ pessoaId: PESSOA, dia: "2026-10-13", texto: " Férias " }).texto, "Férias");
+  assert.equal(entradaPergunta.safeParse({ pessoaId: PESSOA, texto: "x".repeat(LIMITES.anotacao + 1) }).success, false);
+  assert.equal(entradaPergunta.safeParse({ pessoaId: PESSOA, texto: "Como lidar com o barulho na escola?" }).success, true);
 });

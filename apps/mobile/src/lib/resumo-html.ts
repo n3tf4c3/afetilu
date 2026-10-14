@@ -105,8 +105,23 @@ export function montarResumoHtml(o: OpcoesResumoHtml): string {
 
   const mapa = mapaDeDias(cob.dias, d, tr);
 
+  // Contexto do período, nas palavras do responsável. Fica separado dos registros e sem ligação com eles.
+  const mudancas = r.mudancas.length
+    ? `<section class="bloco"><h2>${esc(tr.mudancasTitulo)}</h2>` +
+      `<table class="lista"><colgroup><col class="c-data"><col></colgroup>` +
+      `<thead><tr><th>${esc(tr.colData)}</th><th>${esc(tr.colMudanca)}</th></tr></thead><tbody>` +
+      r.mudancas.map((m) => `<tr><td>${esc(dataDoDia(m.dia))}</td><td>${esc(m.texto)}</td></tr>`).join("") +
+      `</tbody></table><p class="nota">${esc(tr.mudancasNota)}</p></section>`
+    : "";
+
+  const perguntas = r.perguntas.length
+    ? `<section class="bloco"><h2>${esc(tr.perguntasTitulo)}</h2><ol class="perguntas">` +
+      r.perguntas.map((p) => `<li>${esc(p.texto)}</li>`).join("") +
+      `</ol></section>`
+    : "";
+
   if (r.vazio) {
-    return documento(o, topo + faixa + destaque + kpis + mapa + `<p class="aviso">${esc(tr.vazio)}</p>`);
+    return documento(o, topo + faixa + destaque + kpis + mapa + `<p class="aviso">${esc(tr.vazio)}</p>` + mudancas + perguntas);
   }
 
   const porCategoria =
@@ -169,7 +184,7 @@ export function montarResumoHtml(o: OpcoesResumoHtml): string {
 
   const demais = r.demais.length ? `<section class="bloco"><h2>${esc(tr.demaisTitulo)}</h2>${tabela(r.demais)}</section>` : "";
 
-  return documento(o, topo + faixa + destaque + kpis + mapa + porCategoria + episodios + positivos + demais);
+  return documento(o, topo + faixa + destaque + kpis + mapa + mudancas + porCategoria + episodios + positivos + demais + perguntas);
 }
 
 /** Grade dia a dia, 7 por linha. O símbolo carrega a informação; a cor só reforça. */
@@ -267,6 +282,8 @@ function documento(o: OpcoesResumoHtml, conteudo: string): string {
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { display: inline-block; padding: 2px 8px; border-radius: 4px; background: ${COR.rosaClaro}; font-size: 11px; font-weight: 600; color: ${COR.texto}; }
   .ajudou { padding-left: 16px; }
+  .perguntas { padding-left: 18px; }
+  .perguntas li { padding: 4px 0; border-bottom: 1px solid ${COR.divisoria}; break-inside: avoid; page-break-inside: avoid; }
   .cartao { border: 1px solid ${COR.borda}; border-left: 4px solid ${COR.rosa}; border-radius: 6px; padding: 9px 12px; break-inside: avoid; page-break-inside: avoid; }
   .cartao-titulo { font-size: 12px; font-weight: 700; color: ${COR.tinta}; margin-bottom: 5px; }
   .campos { display: grid; grid-template-columns: 150px 1fr; gap: 3px 12px; }

@@ -9,7 +9,7 @@ import { diasDesde, PREF_ULTIMO_BACKUP } from "../../lib/backup";
 import { NOME_DO_IDIOMA } from "../../i18n";
 import { gerarDadosFicticios } from "../../lib/dados-ficticios";
 import { useApp, useTextos } from "../../lib/estado";
-import { criarPessoa, criarRegistro, lerPreferencia, marcarSemCrises, renomearPessoa } from "../../lib/repositorio";
+import { criarMudanca, criarPergunta, criarPessoa, criarRegistro, lerPreferencia, marcarSemCrises, renomearPessoa } from "../../lib/repositorio";
 import { espaco, texto } from "../../lib/tema";
 
 /** "pendente" aparece como desligado: os sons só tocam depois da escolha. */
@@ -74,9 +74,11 @@ export default function Ajustes() {
 
   const gerarFicticios = async () => {
     const p = await criarPessoa(db, a.exemploFicticio);
-    const { registros, diasSemCrises } = gerarDadosFicticios(p.id, new Date());
+    const { registros, diasSemCrises, mudancas, perguntas } = gerarDadosFicticios(p.id, new Date());
     for (const e of registros) await criarRegistro(db, e);
     for (const dia of diasSemCrises) await marcarSemCrises(db, p.id, dia);
+    for (const m of mudancas) await criarMudanca(db, p.id, m.dia, m.texto);
+    for (const q of perguntas) await criarPergunta(db, p.id, q);
     await recarregarPessoas();
     await escolherPessoa(p.id);
     notificarMudanca();

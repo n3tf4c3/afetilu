@@ -2,6 +2,8 @@ import {
   entradaRegistro,
   type DiaAnotado,
   type EntradaRegistro,
+  type MudancaRotina,
+  type PerguntaConsulta,
   type Pessoa,
   type Registro,
   type RevisaoRegistro,
@@ -88,4 +90,34 @@ export const diaAnotadoDaLinha = (l: LinhaDiaAnotado): DiaAnotado => ({
   semCrises: l.sem_crises === 1,
   ...(l.observacao ? { observacao: l.observacao } : {}),
   lancadoEm: l.lancado_em,
+});
+
+export interface LinhaMudanca {
+  id: string;
+  pessoa_id: string;
+  dia: string;
+  texto: string;
+  lancado_em: string;
+}
+
+export interface LinhaPergunta {
+  id: string;
+  pessoa_id: string;
+  texto: string;
+  criada_em: string;
+}
+
+export const mudancaDaLinha = (l: LinhaMudanca): MudancaRotina => ({
+  id: l.id,
+  pessoaId: l.pessoa_id,
+  dia: l.dia,
+  texto: l.texto,
+  lancadoEm: l.lancado_em,
+});
+
+export const perguntaDaLinha = (l: LinhaPergunta): PerguntaConsulta => ({
+  id: l.id,
+  pessoaId: l.pessoa_id,
+  texto: l.texto,
+  criadaEm: l.criada_em,
 });

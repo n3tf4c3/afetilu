@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { comida, enjoo, episodio, registro, sono } from "./fixtures.test-util";
 import { dominio, IDIOMAS, type ChaveNome } from "./i18n";
 import { chaveDoNome, horarioLegivel, legendaDoRegistro, nomeDoRegistro } from "./legenda";
-import type { Detalhe } from "./tipos";
+import { TIPOS_POSITIVO, type Detalhe } from "./tipos";
 
 const HOJE = "2026-10-13";
 const pt = dominio("pt-BR");
@@ -72,7 +72,7 @@ test("todo tipo de registro tem nome em todos os idiomas", () => {
     episodio, { categoria: "comportamento", observado: ["calmo"], ehEpisodio: false },
     ...(["banho", "escovacao", "troca", "outro"] as const).map((tipo): Detalhe => ({ categoria: "higiene", tipo })),
     sono, { categoria: "sono", tipo: "cochilo" }, { categoria: "evacuacao" },
-    ...(["comunicacao", "atividade", "conquista", "tranquilo", "estrategia"] as const).map((tipo): Detalhe => ({ categoria: "positivo", tipo })),
+    ...TIPOS_POSITIVO.map((tipo): Detalhe => ({ categoria: "positivo", tipo })),
   ];
   const chaves = new Set<ChaveNome>(detalhes.map(chaveDoNome));
   for (const idioma of IDIOMAS) {

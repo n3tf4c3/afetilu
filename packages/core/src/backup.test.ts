@@ -34,6 +34,8 @@ function valido(): ConteudoBackup {
       { pessoaId: PESSOA, dia: "2026-10-09", semCrises: true, lancadoEm: CRIADA },
       { pessoaId: OUTRA, dia: "2026-10-14", semCrises: false, observacao: "nota", lancadoEm: CRIADA },
     ],
+    mudancas: [{ id: "mudanca-1", pessoaId: PESSOA, dia: "2026-10-11", texto: "Férias (fictício)", lancadoEm: CRIADA }],
+    perguntas: [{ id: "pergunta-1", pessoaId: OUTRA, texto: "Pergunta fictícia?", criadaEm: CRIADA }],
   };
 }
 
@@ -49,7 +51,23 @@ test("aceita um conteúdo completo e devolve os mesmos dados", () => {
 });
 
 test("aceita um backup sem nenhum dado", () => {
-  assert.deepEqual(motivos({ ...valido(), pessoas: [], registros: [], revisoes: [], diasAnotados: [] }), []);
+  assert.deepEqual(motivos({ ...valido(), pessoas: [], registros: [], revisoes: [], diasAnotados: [], mudancas: [], perguntas: [] }), []);
+});
+
+test("backup da versão 1 (sem mudanças nem perguntas) abre com as listas vazias", () => {
+  const { mudancas: _m, perguntas: _p, ...v1 } = { ...valido(), versao: 1 };
+  const c = conteudoBackup.parse(JSON.parse(JSON.stringify(v1)));
+  assert.equal(c.versao, 1);
+  assert.deepEqual(c.mudancas, []);
+  assert.deepEqual(c.perguntas, []);
+  assert.equal(c.registros.length, 3);
+});
+
+test("recusa mudança ou pergunta de pessoa ausente e id repetido", () => {
+  const c = valido();
+  assert.ok(motivos({ ...c, mudancas: [{ ...c.mudancas[0]!, pessoaId: "ninguem" }] }).includes("Mudança de pessoa ausente."));
+  assert.ok(motivos({ ...c, perguntas: [{ ...c.perguntas[0]!, pessoaId: "ninguem" }] }).includes("Pergunta de pessoa ausente."));
+  assert.ok(motivos({ ...c, perguntas: [c.perguntas[0]!, c.perguntas[0]!] }).includes("Pergunta repetida."));
 });
 
 test("recusa versão de conteúdo desconhecida", () => {

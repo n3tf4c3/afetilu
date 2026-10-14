@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   CATEGORIAS,
   chaveDoDia,
@@ -6,17 +7,25 @@ import {
   somarDias,
   type DiaAnotado,
   type DicionarioDominio,
+  type MudancaRotina,
   type Registro,
 } from "@afetilu/core";
 import { router } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { FlatList, ScrollView, Text, View } from "react-native";
+import { Alert, FlatList, Pressable, ScrollView, Text, View } from "react-native";
 import { ItemRegistro } from "../../components/item-registro";
 import { Aviso, Botao, Chip, estilos as ui } from "../../components/ui";
 import { useApp, useTextos } from "../../lib/estado";
 import { montarLinhaDoTempo, resumoDoDia, type DiaDaLinha, type FiltroCategoria } from "../../lib/linha-do-tempo";
-import { desmarcarSemCrises, listarDiasAnotados, listarRegistros, marcarSemCrises } from "../../lib/repositorio";
-import { cor, espaco, raio, texto } from "../../lib/tema";
+import {
+  apagarMudanca,
+  desmarcarSemCrises,
+  listarDiasAnotados,
+  listarMudancas,
+  listarRegistros,
+  marcarSemCrises,
+} from "../../lib/repositorio";
+import { ALVO_MINIMO, cor, espaco, raio, texto } from "../../lib/tema";
 import type { TextosApp } from "../../i18n";
 
 const PERIODOS = [7, 30] as const;
@@ -35,6 +44,7 @@ export default function LinhaDoTempo() {
   const [filtro, setFiltro] = useState<FiltroCategoria>("todas");
   const [registros, setRegistros] = useState<Registro[]>([]);
   const [anotados, setAnotados] = useState<DiaAnotado[]>([]);
+  const [mudancas, setMudancas] = useState<MudancaRotina[]>([]);
   const hoje = chaveDoDia(new Date());
   const inicio = somarDias(hoje, -(dias - 1));
 
@@ -42,13 +52,15 @@ export default function LinhaDoTempo() {
     if (!pessoaAtiva) return;
     let ativo = true;
     void (async () => {
-      const [r, a] = await Promise.all([
+      const [r, a, m] = await Promise.all([
         listarRegistros(db, pessoaAtiva.id, inicio, hoje),
         listarDiasAnotados(db, pessoaAtiva.id, inicio, hoje),
+        listarMudancas(db, pessoaAtiva.id, inicio, hoje),
       ]);
       if (!ativo) return;
       setRegistros(r);
       setAnotados(a);
+      setMudancas(m);
     })();
     return () => {
       ativo = false;
@@ -60,7 +72,23 @@ export default function LinhaDoTempo() {
     [inicio, hoje, registros, anotados, filtro],
   );
 
+  const mudancasDoDia = useMemo(() => {
+    const porDia = new Map<string, MudancaRotina[]>();
+    for (const m of mudancas) porDia.set(m.dia, [...(porDia.get(m.dia) ?? []), m]);
+    return porDia;
+  }, [mudancas]);
+
   if (!pessoaAtiva) return null;
+
+  const removerMudanca = (m: MudancaRotina) =>
+    Alert.alert(tl.apagarMudancaTitulo, tl.apagarMudancaTexto, [
+      { text: t.geral.cancelar, style: "cancel" },
+      {
+        text: t.geral.apagar,
+        style: "destructive",
+        onPress: () => void apagarMudanca(db, m.id).then(notificarMudanca),
+      },
+    ]);
 
   const alternar = async (dia: DiaDaLinha) => {
     if (dia.situacao.semCrisesAnotado) await desmarcarSemCrises(db, pessoaAtiva.id, dia.situacao.dia);
@@ -71,6 +99,7 @@ export default function LinhaDoTempo() {
   const cabecalho = (
     <View style={{ gap: espaco.m, paddingBottom: espaco.s }}>
       <Botao variante="secundaria" icone="file-document-outline" rotulo={t.resumo.abrir} onPress={() => router.push("/resumo")} />
+      <Botao variante="secundaria" icone="calendar-edit" rotulo={tl.anotarMudanca} onPress={() => router.push("/mudanca")} />
       <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={tl.periodo}>
         {PERIODOS.map((p) => (
           <Chip key={p} rotulo={tl.ultimosDias(p)} selecionado={dias === p} onPress={() => setDias(p)} />
@@ -107,6 +136,24 @@ export default function LinhaDoTempo() {
             {tituloDoDia(dia.situacao.dia, hoje, d, tl)}
           </Text>
           <Text style={texto.suave}>{resumoDoDia(dia.situacao, tl)}</Text>
+          {/* Contexto anotado pelo responsável; não muda a situação do dia. */}
+          {(mudancasDoDia.get(dia.situacao.dia) ?? []).map((m) => (
+            <View key={m.id} style={{ flexDirection: "row", alignItems: "center", gap: espaco.s }}>
+              <MaterialCommunityIcons name="calendar-edit" size={20} color={cor.primaria} />
+              <Text style={[texto.corpo, { flex: 1 }]}>
+                <Text style={{ fontWeight: "600" }}>{tl.mudancaRotulo}: </Text>
+                {m.texto}
+              </Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={tl.apagarMudanca(m.texto)}
+                onPress={() => removerMudanca(m)}
+                style={{ minWidth: ALVO_MINIMO, minHeight: ALVO_MINIMO, alignItems: "center", justifyContent: "center" }}
+              >
+                <MaterialCommunityIcons name="trash-can-outline" size={22} color={cor.textoSuave} />
+              </Pressable>
+            </View>
+          ))}
           {dia.situacao.inconsistente ? (
             <Aviso tipo="alerta" texto={tl.inconsistente} />
           ) : null}

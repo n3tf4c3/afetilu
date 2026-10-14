@@ -39,7 +39,7 @@ export const ptBR: DicionarioDominio = {
   higiene: { banho: "Banho", escovacao: "Escovação", troca: "Troca", outro: "Outro" },
   positivo: {
     comunicacao: "Comunicação", atividade: "Atividade", conquista: "Conquista", tranquilo: "Período tranquilo",
-    estrategia: "Estratégia que funcionou",
+    estrategia: "Estratégia que funcionou", sem_ajuda: "Fez sem ajuda", interacao: "Interagiu ou compartilhou",
   },
   quantidade: { pouco: "Pouco", metade: "Metade", tudo: "Tudo", recusou: "Recusou" },
   aceitacao: { aceitou: "Aceitou", com_ajuda: "Com ajuda", recusou: "Recusou" },
@@ -64,6 +64,7 @@ export const ptBR: DicionarioDominio = {
     sono: m("Sono"), cochilo: m("Cochilo"), evacuacao: f("Evacuação"),
     comunicacao: f("Comunicação"), atividade: f("Atividade"), conquista: f("Conquista"),
     tranquilo: m("Período tranquilo"), estrategia: f("Estratégia que funcionou"),
+    sem_ajuda: f("Autonomia"), interacao: f("Interação"),
   },
   registrado: (n) => `${n.nome} ${n.genero === "f" ? "registrada" : "registrado"}`,
   suspeitaRegistrada: (n) => `Suspeita registrada: ${n.nome.toLowerCase()}`,

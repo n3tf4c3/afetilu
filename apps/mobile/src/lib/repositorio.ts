@@ -1,5 +1,7 @@
 import {
   corrigirRegistro,
+  entradaMudanca,
+  entradaPergunta,
   entradaPessoa,
   entradaRegistro,
   novoRegistro,
@@ -7,6 +9,8 @@ import {
   type ConteudoBackup,
   type DiaAnotado,
   type EntradaRegistro,
+  type MudancaRotina,
+  type PerguntaConsulta,
   type Pessoa,
   type Registro,
   type RevisaoRegistro,
@@ -16,10 +20,14 @@ import { novoId } from "./db";
 import {
   diaAnotadoDaLinha,
   linhaDoRegistro,
+  mudancaDaLinha,
+  perguntaDaLinha,
   pessoaDaLinha,
   registroDaLinha,
   revisaoDaLinha,
   type LinhaDiaAnotado,
+  type LinhaMudanca,
+  type LinhaPergunta,
   type LinhaPessoa,
   type LinhaRegistro,
   type LinhaRevisao,
@@ -164,6 +172,48 @@ export async function desmarcarSemCrises(db: SQLiteDatabase, pessoaId: string, d
   await db.runAsync("DELETE FROM dia_anotado WHERE pessoa_id = ? AND dia = ?", pessoaId, dia);
 }
 
+// Mudanças na rotina e perguntas para a consulta -----------------------------
+
+/** Mudanças da pessoa entre dois dias (inclusive), do dia mais antigo ao mais recente. */
+export async function listarMudancas(db: SQLiteDatabase, pessoaId: string, inicio: string, fim: string): Promise<MudancaRotina[]> {
+  const linhas = await db.getAllAsync<LinhaMudanca>(
+    "SELECT * FROM mudanca_rotina WHERE pessoa_id = ? AND dia BETWEEN ? AND ? ORDER BY dia, lancado_em",
+    pessoaId, inicio, fim,
+  );
+  return linhas.map(mudancaDaLinha);
+}
+
+export async function criarMudanca(db: SQLiteDatabase, pessoaId: string, dia: string, texto: string): Promise<MudancaRotina> {
+  const dados = entradaMudanca.parse({ pessoaId, dia, texto });
+  const m: MudancaRotina = { ...dados, id: novoId(), lancadoEm: agoraIso() };
+  await db.runAsync(
+    "INSERT INTO mudanca_rotina (id, pessoa_id, dia, texto, lancado_em) VALUES (?, ?, ?, ?, ?)",
+    m.id, m.pessoaId, m.dia, m.texto, m.lancadoEm,
+  );
+  return m;
+}
+
+export async function apagarMudanca(db: SQLiteDatabase, id: string): Promise<void> {
+  await db.runAsync("DELETE FROM mudanca_rotina WHERE id = ?", id);
+}
+
+/** Perguntas da pessoa, na ordem em que foram anotadas. */
+export async function listarPerguntas(db: SQLiteDatabase, pessoaId: string): Promise<PerguntaConsulta[]> {
+  const linhas = await db.getAllAsync<LinhaPergunta>("SELECT * FROM pergunta_consulta WHERE pessoa_id = ? ORDER BY criada_em", pessoaId);
+  return linhas.map(perguntaDaLinha);
+}
+
+export async function criarPergunta(db: SQLiteDatabase, pessoaId: string, texto: string): Promise<PerguntaConsulta> {
+  const dados = entradaPergunta.parse({ pessoaId, texto });
+  const p: PerguntaConsulta = { ...dados, id: novoId(), criadaEm: agoraIso() };
+  await db.runAsync("INSERT INTO pergunta_consulta (id, pessoa_id, texto, criada_em) VALUES (?, ?, ?, ?)", p.id, p.pessoaId, p.texto, p.criadaEm);
+  return p;
+}
+
+export async function apagarPergunta(db: SQLiteDatabase, id: string): Promise<void> {
+  await db.runAsync("DELETE FROM pergunta_consulta WHERE id = ?", id);
+}
+
 // Backup --------------------------------------------------------------------
 
 /**
@@ -181,8 +231,10 @@ export async function lerConteudoParaBackup(db: SQLiteDatabase, criadoEm: string
     .map(revisaoDaLinha)
     .filter((r): r is RevisaoRegistro => r !== null);
   const diasAnotados = (await db.getAllAsync<LinhaDiaAnotado>("SELECT * FROM dia_anotado ORDER BY pessoa_id, dia")).map(diaAnotadoDaLinha);
+  const mudancas = (await db.getAllAsync<LinhaMudanca>("SELECT * FROM mudanca_rotina ORDER BY pessoa_id, dia, lancado_em")).map(mudancaDaLinha);
+  const perguntas = (await db.getAllAsync<LinhaPergunta>("SELECT * FROM pergunta_consulta ORDER BY pessoa_id, criada_em")).map(perguntaDaLinha);
   return {
-    conteudo: { versao: VERSAO_CONTEUDO_BACKUP, criadoEm, pessoas, registros, revisoes, diasAnotados },
+    conteudo: { versao: VERSAO_CONTEUDO_BACKUP, criadoEm, pessoas, registros, revisoes, diasAnotados, mudancas, perguntas },
     ignorados: linhas.length - registros.length + linhasRevisao.length - revisoes.length,
   };
 }
@@ -215,6 +267,15 @@ export async function substituirPorBackup(db: SQLiteDatabase, c: ConteudoBackup)
         "INSERT INTO dia_anotado (pessoa_id, dia, sem_crises, observacao, lancado_em) VALUES (?, ?, ?, ?, ?)",
         d.pessoaId, d.dia, d.semCrises ? 1 : 0, d.observacao ?? null, d.lancadoEm,
       );
+    }
+    for (const m of c.mudancas) {
+      await db.runAsync(
+        "INSERT INTO mudanca_rotina (id, pessoa_id, dia, texto, lancado_em) VALUES (?, ?, ?, ?, ?)",
+        m.id, m.pessoaId, m.dia, m.texto, m.lancadoEm,
+      );
+    }
+    for (const p of c.perguntas) {
+      await db.runAsync("INSERT INTO pergunta_consulta (id, pessoa_id, texto, criada_em) VALUES (?, ?, ?, ?)", p.id, p.pessoaId, p.texto, p.criadaEm);
     }
   });
 }

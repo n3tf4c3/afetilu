@@ -1,6 +1,17 @@
 import { calcularCobertura, ehEpisodio, type Cobertura } from "./cobertura";
 import { diasDoPeriodo } from "./datas";
-import { CATEGORIAS, INTENSIDADES, ORIGENS, type Categoria, type DiaAnotado, type Intensidade, type Origem, type Registro } from "./tipos";
+import {
+  CATEGORIAS,
+  INTENSIDADES,
+  ORIGENS,
+  type Categoria,
+  type DiaAnotado,
+  type Intensidade,
+  type MudancaRotina,
+  type Origem,
+  type PerguntaConsulta,
+  type Registro,
+} from "./tipos";
 
 /** "O que ajudou" anotado nos episódios: contagem literal, nunca ranking de eficácia. */
 export interface AjudouAnotado {
@@ -30,6 +41,10 @@ export interface Resumo {
   demais: Registro[];
   origens: Record<Origem, number>;
   corrigidos: number;
+  /** Mudanças na rotina do período, em ordem cronológica. Independem das categorias escolhidas. */
+  mudancas: MudancaRotina[];
+  /** Perguntas para a consulta, na ordem em que foram anotadas. */
+  perguntas: PerguntaConsulta[];
   /** Nenhum registro das categorias escolhidas e nenhum dia marcado sem crises. */
   vazio: boolean;
 }
@@ -42,6 +57,8 @@ export function montarResumo(args: {
   categorias: readonly Categoria[];
   registros: readonly Registro[];
   diasAnotados: readonly DiaAnotado[];
+  mudancas?: readonly MudancaRotina[];
+  perguntas?: readonly PerguntaConsulta[];
 }): Resumo {
   const noPeriodo = args.registros.filter((r) => r.ocorreuDia >= args.inicio && r.ocorreuDia <= args.fim);
   const anotados = args.diasAnotados.filter((d) => d.dia >= args.inicio && d.dia <= args.fim);
@@ -95,6 +112,10 @@ export function montarResumo(args: {
     demais,
     origens,
     corrigidos: incluidos.filter((r) => r.versao > 1).length,
+    mudancas: (args.mudancas ?? [])
+      .filter((m) => m.dia >= args.inicio && m.dia <= args.fim)
+      .sort((a, b) => a.dia.localeCompare(b.dia) || a.lancadoEm.localeCompare(b.lancadoEm)),
+    perguntas: [...(args.perguntas ?? [])].sort((a, b) => a.criadaEm.localeCompare(b.criadaEm)),
     vazio: incluidos.length === 0 && !anotados.some((d) => d.semCrises),
   };
 }

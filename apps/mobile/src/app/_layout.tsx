@@ -77,6 +77,7 @@ function Navegacao() {
         <Stack.Screen name="detalhe/[id]" options={{ title: t.detalhe.titulo }} />
         <Stack.Screen name="apagar" />
         <Stack.Screen name="resumo" />
+        <Stack.Screen name="mudanca" options={{ title: t.mudanca.titulo }} />
         <Stack.Screen name="backup" />
         <Stack.Screen name="restaurar" />
       </Stack>

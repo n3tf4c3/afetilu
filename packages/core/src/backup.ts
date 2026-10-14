@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { dia, entradaPessoa, entradaRegistro, instante, textoLivre } from "./tipos";
+import { dia, entradaMudanca, entradaPergunta, entradaPessoa, entradaRegistro, instante, textoLivre } from "./tipos";
 
 /**
  * Versão do conteúdo do backup. Subir ao mudar o formato e manter a leitura das anteriores:
  * um backup antigo precisa continuar abrindo depois de atualizar o app.
  */
-export const VERSAO_CONTEUDO_BACKUP = 1;
+export const VERSAO_CONTEUDO_BACKUP = 2;
 
 const id = z.string().min(1);
 
@@ -34,6 +34,9 @@ const diaAnotadoBackup = z.object({
   lancadoEm: instante,
 });
 
+const mudancaBackup = entradaMudanca.extend({ id, lancadoEm: instante });
+const perguntaBackup = entradaPergunta.extend({ id, criadaEm: instante });
+
 function repetido(chaves: readonly string[]): string | undefined {
   const vistas = new Set<string>();
   for (const c of chaves) {
@@ -44,18 +47,22 @@ function repetido(chaves: readonly string[]): string | undefined {
 }
 
 /**
- * Tudo o que o backup leva: pessoas, registros com o histórico de correções e dias anotados.
+ * Tudo o que o backup leva: pessoas, registros com o histórico de correções, dias anotados,
+ * mudanças na rotina e perguntas para a consulta (as duas últimas desde a versão 2; um backup
+ * da versão 1 abre com as listas vazias).
  * Preferências do aparelho (idioma, aparência) ficam de fora. A restauração é tudo ou nada,
  * então qualquer referência quebrada ou chave repetida recusa o arquivo inteiro.
  */
 export const conteudoBackup = z
   .object({
-    versao: z.literal(VERSAO_CONTEUDO_BACKUP),
+    versao: z.union([z.literal(1), z.literal(VERSAO_CONTEUDO_BACKUP)]),
     criadoEm: instante,
     pessoas: z.array(pessoaBackup),
     registros: z.array(registroBackup),
     revisoes: z.array(revisaoBackup),
     diasAnotados: z.array(diaAnotadoBackup),
+    mudancas: z.array(mudancaBackup).default([]),
+    perguntas: z.array(perguntaBackup).default([]),
   })
   .superRefine((c, ctx) => {
     const falha = (path: (string | number)[], message: string) => ctx.addIssue({ code: "custom", path, message });
@@ -66,6 +73,8 @@ export const conteudoBackup = z
     if (repetido(c.registros.map((r) => r.id))) falha(["registros"], "Registro repetido.");
     if (repetido(c.revisoes.map((r) => `${r.registroId}#${r.versao}`))) falha(["revisoes"], "Revisão repetida.");
     if (repetido(c.diasAnotados.map((d) => `${d.pessoaId}#${d.dia}`))) falha(["diasAnotados"], "Dia anotado repetido.");
+    if (repetido(c.mudancas.map((m) => m.id))) falha(["mudancas"], "Mudança repetida.");
+    if (repetido(c.perguntas.map((p) => p.id))) falha(["perguntas"], "Pergunta repetida.");
 
     c.registros.forEach((r, i) => {
       if (!pessoas.has(r.pessoaId)) falha(["registros", i, "pessoaId"], "Registro de pessoa ausente.");
@@ -77,6 +86,12 @@ export const conteudoBackup = z
     });
     c.diasAnotados.forEach((d, i) => {
       if (!pessoas.has(d.pessoaId)) falha(["diasAnotados", i, "pessoaId"], "Dia anotado de pessoa ausente.");
+    });
+    c.mudancas.forEach((m, i) => {
+      if (!pessoas.has(m.pessoaId)) falha(["mudancas", i, "pessoaId"], "Mudança de pessoa ausente.");
+    });
+    c.perguntas.forEach((p, i) => {
+      if (!pessoas.has(p.pessoaId)) falha(["perguntas", i, "pessoaId"], "Pergunta de pessoa ausente.");
     });
   });
 export type ConteudoBackup = z.infer<typeof conteudoBackup>;

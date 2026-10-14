@@ -203,6 +203,21 @@ export const es: TextosApp = {
     desmarcarSemCrises: "Desmarcar día sin crisis",
     hojeDia: (d) => `Hoy, ${d}`,
     ontemDia: (d) => `Ayer, ${d}`,
+    anotarMudanca: "Anotar un cambio en la rutina",
+    mudancaRotulo: "Cambio en la rutina",
+    apagarMudanca: (texto) => `Eliminar cambio en la rutina: ${texto}`,
+    apagarMudancaTitulo: "¿Eliminar este cambio en la rutina?",
+    apagarMudancaTexto: "Sale de la línea de tiempo y de los próximos resúmenes.",
+  },
+  mudanca: {
+    titulo: "Cambio en la rutina",
+    explicacao:
+      "Anota algo que cambió en la rutina, como cambio de escuela, viaje, vacaciones u otro cuidador. Aparece en la línea de tiempo y en el resumen como contexto: no cuenta como registro del día.",
+    texto: "Qué cambió",
+    textoDica: "Ej.: empezaron las vacaciones",
+    salvar: "Guardar",
+    erroVazio: "Escribe qué cambió.",
+    erroSalvar: "No se pudo guardar. Inténtalo de nuevo.",
   },
   ajustes: {
     pessoas: "Personas acompañadas",
@@ -259,9 +274,9 @@ export const es: TextosApp = {
     oQueApagaPessoa: (a, r, d) =>
       `Se eliminarán ${a}, ${r === 0 ? "ningún registro" : r === 1 ? "1 registro" : `${r} registros`} (con el historial de correcciones) y ${
         d === 0 ? "ningún día marcado sin crisis" : d === 1 ? "1 día marcado sin crisis" : `${d} días marcados sin crisis`
-      }.`,
+      }, además de los cambios en la rutina y las preguntas anotadas.`,
     oQueApagaTudo:
-      "Se eliminarán todas las personas, registros, historiales de correcciones, días marcados y preferencias de este dispositivo, junto con la clave de protección de los datos. La app vuelve al primer uso.",
+      "Se eliminarán todas las personas, registros, historiales de correcciones, días marcados, cambios en la rutina, preguntas y preferencias de este dispositivo, junto con la clave de protección de los datos. La app vuelve al primer uso.",
     semVolta: "No se puede deshacer. Los archivos que ya exportaste o compartiste no se ven afectados.",
     digite: (p) => `Para confirmar, escribe: ${p}`,
     palavraTudo: "ELIMINAR",
@@ -388,5 +403,14 @@ export const es: TextosApp = {
     vazio: "No hay registros de las categorías elegidas en este período.",
     rodape:
       "Este resumen refleja solo lo que se registró. Los hechos cercanos en el tiempo no indican causa. No sustituye la evaluación profesional.",
+    perguntasTitulo: "Preguntas para la consulta",
+    perguntasAjuda: "Aparecen al final del PDF. Después de la consulta, elimina las que ya fueron respondidas.",
+    novaPergunta: "Nueva pregunta",
+    novaPerguntaDica: "Ej.: ¿cómo manejar el ruido en la escuela?",
+    acrescentarPergunta: "Agregar pregunta",
+    apagarPergunta: (texto) => `Eliminar pregunta: ${texto}`,
+    mudancasTitulo: "Cambios en la rutina",
+    mudancasNota: "Anotados por el responsable como contexto del período; no indican causa.",
+    colMudanca: "Qué cambió",
   },
 };

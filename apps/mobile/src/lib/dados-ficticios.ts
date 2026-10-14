@@ -21,7 +21,7 @@ export function gerarDadosFicticios(
   pessoaId: string,
   hoje: Date,
   dias = 14,
-): { registros: EntradaRegistro[]; diasSemCrises: string[] } {
+): { registros: EntradaRegistro[]; diasSemCrises: string[]; mudancas: { dia: string; texto: string }[]; perguntas: string[] } {
   const sortear = sorteador(20261013);
   const hojeChave = chaveDoDia(hoje);
   const registros: EntradaRegistro[] = [];
@@ -77,5 +77,10 @@ export function gerarDadosFicticios(
       em(dia, 10, 0, { categoria: "positivo", tipo: "comunicacao", descricao: "Pediu água apontando (fictício)" });
     }
   }
-  return { registros, diasSemCrises };
+  return {
+    registros,
+    diasSemCrises,
+    mudancas: [{ dia: somarDias(hojeChave, -Math.min(5, dias - 1)), texto: "Começaram as férias escolares (fictício)" }],
+    perguntas: ["Pergunta fictícia: como lidar com o barulho na escola?"],
+  };
 }

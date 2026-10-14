@@ -41,6 +41,8 @@ const conteudo: ConteudoBackup = {
   ],
   revisoes: [],
   diasAnotados: [{ pessoaId: "p1", dia: "2026-10-11", semCrises: true, lancadoEm: T }],
+  mudancas: [{ id: "m1", pessoaId: "p1", dia: "2026-10-10", texto: "Começaram as férias ☀️", lancadoEm: T }],
+  perguntas: [{ id: "q1", pessoaId: "p1", texto: "Como lidar com o barulho na escola?", criadaEm: T }],
 };
 
 const SENHA = "pão de queijo";

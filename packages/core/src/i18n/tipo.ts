@@ -33,7 +33,7 @@ export type ChaveNome =
   | "episodio" | "comportamento"
   | "banho" | "escovacao" | "troca" | "higiene"
   | "sono" | "cochilo" | "evacuacao"
-  | "comunicacao" | "atividade" | "conquista" | "tranquilo" | "estrategia";
+  | "comunicacao" | "atividade" | "conquista" | "tranquilo" | "estrategia" | "sem_ajuda" | "interacao";
 
 /**
  * Textos do domínio em um idioma. Todos os idiomas implementam o mesmo tipo:

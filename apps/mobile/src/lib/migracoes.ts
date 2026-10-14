@@ -50,4 +50,23 @@ export const MIGRACOES: readonly string[] = [
     valor TEXT NOT NULL
   );
   `,
+  // 2: mudanças na rotina e perguntas para a consulta. Saem junto com a pessoa (cascata).
+  `
+  CREATE TABLE mudanca_rotina (
+    id TEXT PRIMARY KEY NOT NULL,
+    pessoa_id TEXT NOT NULL REFERENCES pessoa(id) ON DELETE CASCADE,
+    dia TEXT NOT NULL,
+    texto TEXT NOT NULL CHECK (length(texto) BETWEEN 1 AND ${LIMITES.anotacao}),
+    lancado_em TEXT NOT NULL
+  );
+  CREATE INDEX mudanca_rotina_pessoa_dia ON mudanca_rotina (pessoa_id, dia);
+
+  CREATE TABLE pergunta_consulta (
+    id TEXT PRIMARY KEY NOT NULL,
+    pessoa_id TEXT NOT NULL REFERENCES pessoa(id) ON DELETE CASCADE,
+    texto TEXT NOT NULL CHECK (length(texto) BETWEEN 1 AND ${LIMITES.anotacao}),
+    criada_em TEXT NOT NULL
+  );
+  CREATE INDEX pergunta_consulta_pessoa ON pergunta_consulta (pessoa_id);
+  `,
 ];

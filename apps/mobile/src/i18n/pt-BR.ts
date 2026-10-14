@@ -201,6 +201,21 @@ export const ptBR: TextosApp = {
     desmarcarSemCrises: "Desmarcar dia sem crises",
     hojeDia: (d) => `Hoje, ${d}`,
     ontemDia: (d) => `Ontem, ${d}`,
+    anotarMudanca: "Anotar mudança na rotina",
+    mudancaRotulo: "Mudança na rotina",
+    apagarMudanca: (texto) => `Apagar mudança na rotina: ${texto}`,
+    apagarMudancaTitulo: "Apagar esta mudança na rotina?",
+    apagarMudancaTexto: "Ela sai da linha do tempo e dos próximos resumos.",
+  },
+  mudanca: {
+    titulo: "Mudança na rotina",
+    explicacao:
+      "Anote algo que mudou na rotina, como troca de escola, viagem, férias ou outro cuidador. Aparece na linha do tempo e no resumo como contexto: não conta como registro do dia.",
+    texto: "O que mudou",
+    textoDica: "Ex.: começaram as férias",
+    salvar: "Salvar",
+    erroVazio: "Escreva o que mudou.",
+    erroSalvar: "Não foi possível salvar. Tente novamente.",
   },
   ajustes: {
     pessoas: "Pessoas acompanhadas",
@@ -251,9 +266,9 @@ export const ptBR: TextosApp = {
     oQueApagaPessoa: (a, r, d) =>
       `Serão apagados ${a}, ${r === 0 ? "nenhum registro" : r === 1 ? "1 registro" : `${r} registros`} (com o histórico de correções) e ${
         d === 0 ? "nenhum dia marcado sem crises" : d === 1 ? "1 dia marcado sem crises" : `${d} dias marcados sem crises`
-      }.`,
+      }, além das mudanças na rotina e das perguntas anotadas.`,
     oQueApagaTudo:
-      "Serão apagados todas as pessoas, registros, históricos de correções, dias marcados e preferências deste aparelho, junto com a chave de proteção dos dados. O app volta ao primeiro uso.",
+      "Serão apagados todas as pessoas, registros, históricos de correções, dias marcados, mudanças na rotina, perguntas e preferências deste aparelho, junto com a chave de proteção dos dados. O app volta ao primeiro uso.",
     semVolta: "Não dá para desfazer. Arquivos que você já exportou ou compartilhou não são afetados.",
     digite: (p) => `Para confirmar, digite: ${p}`,
     palavraTudo: "APAGAR",
@@ -380,5 +395,14 @@ export const ptBR: TextosApp = {
     vazio: "Nenhum registro das categorias escolhidas neste período.",
     rodape:
       "Este resumo reflete apenas o que foi registrado. Acontecimentos próximos no tempo não indicam causa. Não substitui avaliação profissional.",
+    perguntasTitulo: "Perguntas para a consulta",
+    perguntasAjuda: "Saem no fim do PDF. Depois da consulta, apague as que já foram respondidas.",
+    novaPergunta: "Nova pergunta",
+    novaPerguntaDica: "Ex.: como lidar com o barulho na escola?",
+    acrescentarPergunta: "Acrescentar pergunta",
+    apagarPergunta: (texto) => `Apagar pergunta: ${texto}`,
+    mudancasTitulo: "Mudanças na rotina",
+    mudancasNota: "Anotadas pelo responsável como contexto do período; não indicam causa.",
+    colMudanca: "O que mudou",
   },
 };

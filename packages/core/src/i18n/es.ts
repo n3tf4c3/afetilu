@@ -41,7 +41,7 @@ export const es: DicionarioDominio = {
   higiene: { banho: "Baño", escovacao: "Cepillado de dientes", troca: "Cambio de pañal o ropa", outro: "Otro" },
   positivo: {
     comunicacao: "Comunicación", atividade: "Actividad", conquista: "Logro", tranquilo: "Periodo tranquilo",
-    estrategia: "Estrategia que funcionó",
+    estrategia: "Estrategia que funcionó", sem_ajuda: "Lo hizo sin ayuda", interacao: "Interactuó o compartió",
   },
   quantidade: { pouco: "Poco", metade: "La mitad", tudo: "Todo", recusou: "Lo rechazó" },
   aceitacao: { aceitou: "Aceptó", com_ajuda: "Con ayuda", recusou: "Rechazó" },
@@ -66,6 +66,7 @@ export const es: DicionarioDominio = {
     sono: m("Sueño"), cochilo: f("Siesta"), evacuacao: f("Evacuación"),
     comunicacao: f("Comunicación"), atividade: f("Actividad"), conquista: m("Logro"),
     tranquilo: m("Periodo tranquilo"), estrategia: f("Estrategia que funcionó"),
+    sem_ajuda: f("Autonomía"), interacao: f("Interacción"),
   },
   registrado: (x) => `${x.nome} ${x.genero === "f" ? "registrada" : "registrado"}`,
   suspeitaRegistrada: (x) => `Sospecha registrada: ${x.nome.toLowerCase()}`,
