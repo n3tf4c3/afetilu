@@ -37,6 +37,7 @@ Documentos de decisão: `docs/viabilidade-e-escopo.md` (lojas, privacidade, arqu
 - Monorepo **pnpm** (`packageManager` fixado), `nodeLinker: hoisted`, React no `catalog` do `pnpm-workspace.yaml`.
 - `packages/core` — domínio puro em TypeScript + Zod: tipos e limites (`LIMITES`), validação, cobertura de dias, legendas, contexto temporal, correções. Sem dependência de framework. Limites e enums são declarados só aqui.
 - `apps/mobile` — Expo SDK 57 (React Native 0.86), Expo Router (`src/app`), `expo-sqlite` + SQLCipher, `expo-secure-store`, `expo-crypto`. Exige **build de desenvolvimento** (não roda no Expo Go por causa do SQLCipher).
+- `apps/site` — landing page e política de privacidade (pt-BR na raiz, `/en`, `/es`): HTML estático gerado por `src/gerar.ts`, que roda direto no Node 24 (sem dependências, sem JavaScript na página, sem cookies nem analytics). Textos tipados em `src/textos`; capturas em `publico/telas` (só dados fictícios, uma por idioma). Publicado na Vercel pelo `vercel.json` da raiz a cada push na `main` que mexa em `apps/site`. Links das lojas em `src/config.ts` (`null` mostra "em breve").
 - O conteúdo do registro fica em JSON na coluna `conteudo`, validado pelo core na leitura; as colunas `categoria`, `ocorreu_em` e `ocorreu_dia` existem para filtro e ordenação. Migrações em `src/lib/migracoes.ts`: só acrescentar ao fim.
 - Lógica de tela fica em helpers puros (`src/lib/*.ts`) testados com `tsx --test`; componentes não têm teste de renderização ainda.
 
@@ -48,6 +49,7 @@ pnpm typecheck      # core + mobile (inclui os testes)
 pnpm lint           # expo lint no mobile
 pnpm test           # core + helpers do mobile
 pnpm android        # expo run:android (build de desenvolvimento local)
+pnpm --filter @afetilu/site build   # gera o site em apps/site/dist
 ```
 
 O CI do GitHub Actions (`.github/workflows/ci.yml`) só roda manualmente, para evitar gastar minutos a cada push: rodar `lint`, `typecheck` e `test` localmente antes de enviar.

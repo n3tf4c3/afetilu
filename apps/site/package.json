@@ -1,0 +1,16 @@
+{
+  "name": "@afetilu/site",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "node src/gerar.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"src/**/*.test.ts\""
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "typescript": "~6.0.3"
+  }
+}

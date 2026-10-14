@@ -1,0 +1,139 @@
+/* Cores do app (apps/mobile/src/lib/tema.ts) e do PDF. Texto sempre com contraste AA; sem animações. */
+:root {
+  --fundo: #faf7f2;
+  --superficie: #ffffff;
+  --texto: #22324a;
+  --suave: #4f5a6b;
+  --borda: #e1dbd0;
+  --primaria: #2f5f96;
+  --primaria-clara: #dceaf8;
+  --rosa: #e58aa8;
+  --rosa-texto: #a8345e;
+  --escuro: #1b2a40;
+  --escuro-suave: #b9c3d3;
+  --largura: 1180px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+a { color: var(--primaria); font-weight: 600; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--primaria); outline-offset: 3px; border-radius: 4px; }
+
+.pular { position: absolute; left: -9999px; top: 0; }
+.pular:focus { left: 16px; top: 16px; z-index: 10; background: var(--superficie); padding: 10px 16px; border-radius: 8px; }
+
+/* Cabeçalho */
+.topo {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px;
+  max-width: var(--largura); margin: 0 auto; padding: 22px 24px;
+  border-bottom: 1px solid var(--borda);
+}
+.marca { display: inline-flex; align-items: center; gap: 10px; margin: 0; color: var(--texto); text-decoration: none; font-size: 21px; font-weight: 700; letter-spacing: -0.01em; }
+.marca svg { width: 34px; height: 34px; }
+.topo-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.idiomas { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 15px; }
+.idiomas a, .idiomas span { display: inline-block; min-height: 44px; padding: 10px 10px; }
+.idiomas span { color: var(--suave); font-weight: 600; }
+.botao {
+  display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px;
+  background: var(--primaria); color: #ffffff; border-radius: 10px; text-decoration: none;
+}
+
+/* Destaque */
+.hero { max-width: 760px; margin: 0 auto; padding: 72px 24px 64px; text-align: center; }
+.selo-topo { margin: 0; color: var(--rosa-texto); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+h1 { margin: 16px 0 0; font-size: clamp(32px, 5vw, 46px); line-height: 1.18; letter-spacing: -0.02em; color: var(--escuro); }
+.subtitulo { margin: 20px auto 0; max-width: 600px; color: var(--suave); font-size: 18px; }
+.baixar { margin-top: 32px; scroll-margin-top: 24px; }
+.gratuito { margin: 18px 0 0; color: var(--suave); font-size: 15px; }
+.em-breve {
+  display: inline-block; margin: 0; padding: 12px 22px;
+  background: var(--primaria-clara); color: var(--escuro); border-radius: 999px; font-weight: 600;
+}
+
+/* Selos das lojas */
+.selos { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.selo {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 8px 18px;
+  background: var(--escuro); color: #ffffff; border-radius: 12px; text-decoration: none;
+}
+.selo svg { width: 24px; height: 24px; }
+.selo span { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+.selo small { font-size: 11px; font-weight: 400; }
+.selo strong { font-size: 17px; }
+.selo-claro { background: #ffffff; color: var(--escuro); }
+
+/* Recursos */
+.recursos { max-width: var(--largura); margin: 0 auto; padding: 0 24px 80px; }
+.recursos h2, .faixa h2 { margin: 0 0 28px; font-size: 26px; letter-spacing: -0.01em; color: var(--escuro); }
+.recursos h2 { text-align: center; }
+.grade { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px 24px; }
+.recurso { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 0; }
+.recurso img {
+  display: block; width: 100%; max-width: 270px; height: auto;
+  border: 6px solid var(--escuro); border-radius: 28px; background: var(--superficie);
+  box-shadow: 0 20px 40px rgba(27, 42, 64, 0.18);
+}
+.recurso-doc img { border: 1px solid var(--borda); border-radius: 6px; box-shadow: 0 16px 32px rgba(27, 42, 64, 0.14); }
+.recurso figcaption { max-width: 270px; color: var(--suave); font-size: 15px; text-align: center; }
+.recurso figcaption strong { display: block; margin-bottom: 4px; color: var(--escuro); font-size: 17px; }
+
+/* Privacidade, limites e código aberto */
+.faixa {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;
+  max-width: var(--largura); margin: 0 auto; padding: 0 24px 88px;
+}
+.cartao { padding: 28px; background: var(--superficie); border: 1px solid var(--borda); border-top: 4px solid var(--rosa); border-radius: 16px; }
+.faixa h2 { margin-bottom: 14px; font-size: 21px; }
+.cartao p { margin: 0 0 12px; }
+.lista { margin: 0 0 14px; padding-left: 20px; }
+.lista li { margin-bottom: 8px; }
+.emergencia { font-weight: 700; color: var(--escuro); }
+
+/* Política */
+.politica { max-width: 760px; margin: 0 auto; padding: 56px 24px 88px; }
+.politica h1 { font-size: clamp(30px, 4vw, 38px); }
+.politica h2 { margin: 36px 0 8px; font-size: 21px; color: var(--escuro); }
+.politica p { margin: 0 0 12px; }
+.data { color: var(--suave); font-size: 15px; }
+.introducao { font-size: 19px; }
+
+/* Rodapé */
+.rodape { background: var(--escuro); color: var(--escuro-suave); font-size: 15px; }
+.rodape a { color: #ffffff; }
+.rodape-linha, .rodape-base {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 24px;
+  max-width: var(--largura); margin: 0 auto; padding: 48px 24px 32px;
+}
+.rodape-base { padding-top: 24px; padding-bottom: 48px; border-top: 1px solid #2e3d55; }
+.rodape-marca { max-width: 360px; }
+.rodape .marca { color: #ffffff; font-size: 18px; margin-bottom: 10px; }
+.rodape .marca svg { width: 28px; height: 28px; }
+.rodape .em-breve { background: #2e3d55; color: #ffffff; }
+.rodape-base p { margin: 0; }
+.rodape-base ul { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0; padding: 0; list-style: none; }
+.rodape-base a { display: inline-block; min-height: 44px; padding: 10px 0; }
+
+@media (max-width: 960px) {
+  .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .faixa { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .hero { padding-top: 48px; }
+  .grade { gap: 32px 14px; }
+  .recurso img { border-width: 4px; border-radius: 20px; }
+}
