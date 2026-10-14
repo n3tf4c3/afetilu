@@ -243,6 +243,7 @@ export const ptBR: TextosApp = {
     corSlime: "Cor do slime",
     corSlimeAjuda: "As cores das reações não mudam: verde-claro no enjoo e pêssego na dor.",
     cores: { azul: "Azul", lilas: "Lilás", turquesa: "Turquesa", amarelo: "Amarelo" },
+    versao: (v) => `Afetilu ${v}`,
     seusDados: "Seus dados",
     seusDadosTexto:
       "Os registros ficam só neste aparelho, cifrados. O app não tem servidor, não envia dados e não usa ferramentas de análise ou publicidade.",

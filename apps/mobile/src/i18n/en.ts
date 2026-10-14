@@ -243,6 +243,7 @@ export const en: TextosApp = {
     corSlime: "Slime color",
     corSlimeAjuda: "Reaction colors stay the same: light green for nausea and peach for pain.",
     cores: { azul: "Blue", lilas: "Lilac", turquesa: "Turquoise", amarelo: "Yellow" },
+    versao: (v) => `Afetilu ${v}`,
     seusDados: "Your data",
     seusDadosTexto:
       "Entries stay on this device only, encrypted. The app has no server, sends no data and uses no analytics or advertising tools.",

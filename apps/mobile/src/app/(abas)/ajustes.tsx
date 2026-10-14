@@ -1,4 +1,5 @@
 import { IDIOMAS, LIMITES } from "@afetilu/core";
+import Constants from "expo-constants";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
@@ -161,6 +162,7 @@ export default function Ajustes() {
           <Botao variante="secundaria" rotulo="Prova técnica: slime 3D" onPress={() => router.push("/prova-slime")} />
         </Secao>
       ) : null}
+      <Text style={[texto.suave, { textAlign: "center" }]}>{a.versao(Constants.expoConfig?.version ?? "?")}</Text>
     </ScrollView>
   );
 }

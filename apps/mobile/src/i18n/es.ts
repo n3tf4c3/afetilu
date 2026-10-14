@@ -245,6 +245,7 @@ export const es: TextosApp = {
     corSlime: "Color del slime",
     corSlimeAjuda: "Los colores de las reacciones no cambian: verde claro en las náuseas y durazno en el dolor.",
     cores: { azul: "Azul", lilas: "Lila", turquesa: "Turquesa", amarelo: "Amarillo" },
+    versao: (v) => `Afetilu ${v}`,
     seusDados: "Tus datos",
     seusDadosTexto:
       "Los registros quedan solo en este dispositivo, cifrados. La app no tiene servidor, no envía datos y no usa herramientas de análisis ni publicidad.",

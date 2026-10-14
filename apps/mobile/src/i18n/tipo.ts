@@ -236,6 +236,8 @@ export interface TextosApp {
     corSlimeAjuda: string;
     cores: Record<CorSlime, string>;
     seusDados: string;
+    /** Rodapé dos Ajustes, para o suporte saber qual versão está instalada. */
+    versao: (versao: string) => string;
     seusDadosTexto: string;
     backupTexto: string;
     ultimoBackup: (dias: number | null) => string;
