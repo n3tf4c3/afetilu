@@ -296,6 +296,7 @@ export const es: TextosApp = {
       "Elige un archivo de copia de seguridad de Afetilu y escribe su contraseña. Antes de cambiar nada, la app muestra lo que contiene la copia.",
     escolher: "Elegir archivo",
     escolherOutro: "Elegir otro archivo",
+    arquivoEscolhido: "Archivo elegido",
     falhouLer: "No se pudo leer el archivo elegido.",
     senha: "Contraseña de la copia",
     abrir: "Abrir copia",
@@ -307,7 +308,7 @@ export const es: TextosApp = {
       conteudo_invalido: "La copia se abrió, pero su contenido está dañado y no se puede restaurar.",
     },
     previaTitulo: "Qué contiene la copia",
-    feitoEm: (d) => `Hecha el ${d}.`,
+    feitoEm: (d, h) => `Hecha el ${d}, ${h}.`,
     pessoa: (a, r) => `${a}: ${r === 0 ? "ningún registro" : r === 1 ? "1 registro" : `${r} registros`}`,
     periodo: (i, f) => `Período: del ${i} al ${f}.`,
     totais: (r, d) =>

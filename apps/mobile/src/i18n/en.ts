@@ -288,6 +288,7 @@ export const en: TextosApp = {
     explicacao: "Choose an Afetilu backup file and type its password. Before changing anything, the app shows what the backup contains.",
     escolher: "Choose file",
     escolherOutro: "Choose another file",
+    arquivoEscolhido: "Chosen file",
     falhouLer: "Could not read the chosen file.",
     senha: "Backup password",
     abrir: "Open backup",
@@ -299,7 +300,7 @@ export const en: TextosApp = {
       conteudo_invalido: "The backup opened, but its content is damaged and cannot be restored.",
     },
     previaTitulo: "What the backup contains",
-    feitoEm: (d) => `Made on ${d}.`,
+    feitoEm: (d, h) => `Made on ${d} at ${h}.`,
     pessoa: (a, r) => `${a}: ${r === 0 ? "no entries" : r === 1 ? "1 entry" : `${r} entries`}`,
     periodo: (i, f) => `Period: ${i} to ${f}.`,
     totais: (r, d) =>

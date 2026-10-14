@@ -50,8 +50,17 @@ export function problemaDaSenha(senha: string, confirmacao: string): "curta" | "
   return null;
 }
 
-/** Sem apelido no nome: o arquivo pode ficar visível numa pasta ou num serviço de nuvem. */
-export const nomeDoArquivoDeBackup = (hoje: string) => `afetilu-backup-${hoje}.afetilu`;
+/**
+ * Sem apelido no nome: o arquivo pode ficar visível numa pasta ou num serviço de nuvem. A hora
+ * evita dois backups do mesmo dia com o mesmo nome (o seletor do sistema não diferencia).
+ */
+export function nomeDoArquivoDeBackup(agora: Date): string {
+  const hhmm = `${String(agora.getHours()).padStart(2, "0")}${String(agora.getMinutes()).padStart(2, "0")}`;
+  return `afetilu-backup-${chaveDoDia(agora)}-${hhmm}.afetilu`;
+}
+
+/** Nome do arquivo escolhido, se for legível: o Drive, por exemplo, devolve o id interno do documento. */
+export const nomeLegivel = (nome: string): string | null => (/^[^;=/]+.afetilu$/i.test(nome) ? nome : null);
 
 /** Dias de calendário desde o último backup; null quando nunca houve. */
 export function diasDesde(iso: string | null, agora: Date): number | null {

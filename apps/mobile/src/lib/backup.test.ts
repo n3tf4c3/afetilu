@@ -11,6 +11,7 @@ import {
   ErroBackup,
   lerArquivoDeBackup,
   nomeDoArquivoDeBackup,
+  nomeLegivel,
   problemaDaSenha,
   type FalhaBackup,
 } from "./backup";
@@ -150,8 +151,17 @@ test("senha: mínimo de caracteres e confirmação igual", () => {
   assert.equal(problemaDaSenha("🌟🌟🌟🌟🌟", "🌟🌟🌟🌟🌟"), "curta");
 });
 
-test("nome do arquivo não traz apelido", () => {
-  assert.equal(nomeDoArquivoDeBackup("2026-10-13"), "afetilu-backup-2026-10-13.afetilu");
+test("nome do arquivo não traz apelido e leva a hora", () => {
+  assert.equal(nomeDoArquivoDeBackup(new Date(2026, 9, 13, 9, 5)), "afetilu-backup-2026-10-13-0905.afetilu");
+  assert.equal(nomeDoArquivoDeBackup(new Date(2026, 9, 13, 22, 47)), "afetilu-backup-2026-10-13-2247.afetilu");
+});
+
+test("só mostra o nome do arquivo escolhido quando ele é legível", () => {
+  assert.equal(nomeLegivel("afetilu-backup-2026-10-13-2247.afetilu"), "afetilu-backup-2026-10-13-2247.afetilu");
+  assert.equal(nomeLegivel("afetilu-backup-2026-10-13 (1).afetilu"), "afetilu-backup-2026-10-13 (1).afetilu");
+  // Identificador interno do Drive no lugar do nome.
+  assert.equal(nomeLegivel("acc=11;doc=encoded=yz7z9an_KMmw9cn7QKK9G="), null);
+  assert.equal(nomeLegivel("resumo.pdf"), null);
 });
 
 test("dias desde o último backup contam dias de calendário", () => {

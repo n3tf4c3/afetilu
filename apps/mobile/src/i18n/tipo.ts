@@ -275,13 +275,14 @@ export interface TextosApp {
     explicacao: string;
     escolher: string;
     escolherOutro: string;
+    arquivoEscolhido: string;
     falhouLer: string;
     senha: string;
     abrir: string;
     abrindo: (pct: number) => string;
     erros: Record<FalhaBackup, string>;
     previaTitulo: string;
-    feitoEm: (data: string) => string;
+    feitoEm: (data: string, hora: string) => string;
     pessoa: (apelido: string, registros: number) => string;
     periodo: (inicio: string, fim: string) => string;
     totais: (registros: number, diasSemCrises: number) => string;

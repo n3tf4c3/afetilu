@@ -288,6 +288,7 @@ export const ptBR: TextosApp = {
     explicacao: "Escolha um arquivo de backup do Afetilu e digite a senha dele. Antes de qualquer mudança, o app mostra o que tem no backup.",
     escolher: "Escolher arquivo",
     escolherOutro: "Escolher outro arquivo",
+    arquivoEscolhido: "Arquivo escolhido",
     falhouLer: "Não foi possível ler o arquivo escolhido.",
     senha: "Senha do backup",
     abrir: "Abrir backup",
@@ -299,7 +300,7 @@ export const ptBR: TextosApp = {
       conteudo_invalido: "O backup abriu, mas o conteúdo está danificado e não pode ser restaurado.",
     },
     previaTitulo: "O que tem no backup",
-    feitoEm: (d) => `Feito em ${d}.`,
+    feitoEm: (d, h) => `Feito em ${d}, às ${h}.`,
     pessoa: (a, r) => `${a}: ${r === 0 ? "nenhum registro" : r === 1 ? "1 registro" : `${r} registros`}`,
     periodo: (i, f) => `Período: de ${i} a ${f}.`,
     totais: (r, d) =>

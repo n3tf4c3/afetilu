@@ -1,4 +1,3 @@
-import { chaveDoDia } from "@afetilu/core";
 import * as Crypto from "expo-crypto";
 import { Directory, File, Paths } from "expo-file-system";
 import { Stack } from "expo-router";
@@ -71,7 +70,7 @@ export default function FazerBackup() {
     if (problema) return;
     setResultado(null);
     try {
-      const nome = nomeDoArquivoDeBackup(chaveDoDia(new Date()));
+      const nome = nomeDoArquivoDeBackup(new Date());
       if (destino === "aparelho") {
         let pasta: Directory;
         try {

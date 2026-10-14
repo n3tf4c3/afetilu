@@ -4,7 +4,7 @@ import { router, Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { Aviso, Botao, Campo, Secao } from "../components/ui";
-import { decifrarBackup, ErroBackup, lerArquivoDeBackup, PREF_ULTIMO_BACKUP, TAMANHO_MAX_BACKUP } from "../lib/backup";
+import { decifrarBackup, ErroBackup, lerArquivoDeBackup, nomeLegivel, PREF_ULTIMO_BACKUP, TAMANHO_MAX_BACKUP } from "../lib/backup";
 import { useApp, useTextos } from "../lib/estado";
 import { confirmacaoConfere } from "../lib/exclusao";
 import { contarTudo, gravarPreferencia, lerPreferencia, substituirPorBackup } from "../lib/repositorio";
@@ -16,7 +16,7 @@ import { cor, espaco, texto } from "../lib/tema";
  */
 export default function Restaurar() {
   const { db, recarregarPessoas, notificarMudanca } = useApp();
-  const { t } = useTextos();
+  const { t, d } = useTextos();
   const tr = t.restaurar;
   const [arquivo, setArquivo] = useState<{ nome: string; envelope: EnvelopeBackup } | null>(null);
   const [senha, setSenha] = useState("");
@@ -106,7 +106,7 @@ export default function Restaurar() {
       />
 
       {arquivo && !previa ? (
-        <Secao titulo={arquivo.nome}>
+        <Secao titulo={nomeLegivel(arquivo.nome) ?? tr.arquivoEscolhido}>
           <Campo rotulo={tr.senha} valor={senha} onChange={setSenha} senha />
           <Botao rotulo={tr.abrir} desabilitado={!senha || progresso !== null} onPress={() => void abrir()} />
           {progresso !== null ? (
@@ -122,7 +122,7 @@ export default function Restaurar() {
 
       {previa ? (
         <Secao titulo={tr.previaTitulo}>
-          <Text style={texto.corpo}>{tr.feitoEm(dataCurta(chaveDoDia(new Date(previa.criadoEm))))}</Text>
+          <Text style={texto.corpo}>{tr.feitoEm(dataCurta(chaveDoDia(new Date(previa.criadoEm))), d.hora(new Date(previa.criadoEm)))}</Text>
           {previa.pessoas.map((p, i) => (
             <Text key={i} style={texto.corpo}>
               • {tr.pessoa(p.apelido, p.registros)}
