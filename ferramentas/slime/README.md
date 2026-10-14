@@ -30,7 +30,7 @@ O exportador glTF pode mudar a ordem interna dos vértices: duas gerações não
 
 | Item | Conteúdo |
 |---|---|
-| Material `corpo` | Transparente por alfa (`alphaMode: BLEND`, alfa `ALFA_CORPO = 0.8`, igual no app) com verniz (`clearcoat`). A transmissão (`KHR_materials_transmission`) só vale nas prévias do Blender: o react-native-filament não a implementa. **A cor da reação é aplicada pelo app** (`baseColorFactor`, com o mesmo alfa): neutro `#79AEE0`, claro `#8CC2F0`, enjoo `#9ACF94`, desconforto `#F2BE9C`. |
+| Material `corpo` | Transparente por alfa (`alphaMode: BLEND`, alfa `ALFA_CORPO = 0.4`, igual no app) com verniz (`clearcoat`). A transmissão (`KHR_materials_transmission`) só vale nas prévias do Blender: o react-native-filament não a implementa. **A cor da reação é aplicada pelo app** (`baseColorFactor`, com o mesmo alfa): neutro `#79AEE0`, claro `#8CC2F0`, enjoo `#9ACF94`, desconforto `#F2BE9C`. |
 | Deformações do corpo (morph targets) | `achatar`, `esticar`, `amassar`, `respirar` |
 | Nós do rosto (mostrar = escala 1, esconder = escala 0) | `olhos_abertos`, `olhos_apertados` ("> <"), `olhos_piscando`, `olhos_cansados`, `olhos_barra`, `olhos_alegres`, `sobrancelhas_preocupadas`, `bochechas`, `boca_gato` ("ω"), `boca_sorriso`, `boca_ondulada`, `boca_preocupada`, `boca_o` |
 | Objetos de cena | `maca` (dentro do corpo, alimentação), `bolhas_banho` |

@@ -32,7 +32,8 @@ for (const p of ESPERADO.partes) if (!nos.has(p)) falhas.push(`parte ausente: ${
 // O app usa transparência por alfa (o Filament do RN não implementa KHR_materials_transmission).
 if (matCorpo?.alphaMode !== "BLEND") falhas.push("material do corpo sem alphaMode BLEND");
 const alfa = matCorpo?.pbrMetallicRoughness?.baseColorFactor?.[3];
-if (!(alfa > 0.5 && alfa < 0.95)) falhas.push(`alfa do corpo fora da faixa (${alfa})`);
+// Abaixo de 0,3 as cores de reação (enjoo, desconforto) somem contra o cenário.
+if (!(alfa >= 0.3 && alfa < 0.95)) falhas.push(`alfa do corpo fora da faixa (${alfa})`);
 if (!nos.has("rosto")) falhas.push("nó 'rosto' ausente");
 
 const duracoes = (gltf.animations ?? []).map((a) => {

@@ -88,7 +88,7 @@ Tela de prova: Ajustes › Desenvolvimento › "Prova técnica: slime 3D" (só e
 | Estabilidade | 1 encerramento pelo Android ("SuspendAll timeout" — a thread FilamentRenderer não respondeu à pausa do coletor de lixo) com renderização contínua por muitos minutos e o emulador sobrecarregado por capturas. Com renderização sob demanda: 75 reações sem falha. |
 
 **Problemas encontrados e contornados**
-- `react-native-filament` 1.11 não implementa `KHR_materials_transmission` (o material não tem `transmissionFactor`): o corpo usa transparência por alfa (`ALFA_CORPO = 0.8`). A transmissão fica só nas prévias do Blender.
+- `react-native-filament` 1.11 não implementa `KHR_materials_transmission` (o material não tem `transmissionFactor`): o corpo usa transparência por alfa (`ALFA_CORPO = 0.4`). A transmissão fica só nas prévias do Blender.
 - `useModel` devolve objeto novo a cada render: usar o `asset` como dependência (senão o animador é recriado e a reação reinicia sem parar).
 - `Skybox` e `DefaultLight` recriam recursos nativos a cada render e vazam memória (~1,2 MB/s com 1 render por segundo): ficam em componentes memorizados.
 - O liga/desliga do laço usa `choreographer` do contexto (API marcada como privada; a mesma de `FilamentView.pause/resume`). Versão fixada em 1.11.0.

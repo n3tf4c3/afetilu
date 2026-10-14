@@ -49,7 +49,7 @@ FPS = 30
 # Transparência real do corpo (alfa, mistura BLEND). O react-native-filament não implementa
 # KHR_materials_transmission (o material carregado não tem "transmissionFactor"); a transmissão
 # fica só para as prévias do Blender. Manter igual a ALFA_CORPO em apps/mobile/src/components/slime/reacoes.ts.
-ALFA_CORPO = 0.8
+ALFA_CORPO = 0.4
 
 
 def srgb_para_linear(c: float) -> float:

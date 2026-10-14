@@ -85,7 +85,7 @@ export const SOM_DA_REACAO: Record<Reacao, Som | null> = {
 };
 
 /** Transparência do corpo; igual a ALFA_CORPO em ferramentas/slime/gerar_slime.py. */
-export const ALFA_CORPO = 0.8;
+export const ALFA_CORPO = 0.4;
 
 const linear = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 
