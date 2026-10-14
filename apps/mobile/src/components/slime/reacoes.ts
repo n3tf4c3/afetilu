@@ -17,18 +17,20 @@ export const CLIPE_DA_REACAO: Record<Reacao, string | null> = {
 };
 
 /**
- * Cor do corpo escolhida pela pessoa (Ajustes › Aparência). Nenhuma é verde, pêssego, laranja ou
- * amarela: são as cores das reações de enjoo e dor, que precisam continuar perceptíveis.
+ * Cor do corpo escolhida pela pessoa (Ajustes › Aparência). Nenhuma é verde, pêssego ou laranja: são
+ * as cores das reações de enjoo e dor, que precisam continuar perceptíveis. O amarelo é limão (matiz
+ * 65°), porque o amarelo puro fica perto demais do pêssego da dor. Sem rosa: gota rosa com rostinho
+ * lembra um personagem de jogo conhecido.
  */
-export const CORES_SLIME = ["azul", "rosa", "lilas", "turquesa"] as const;
+export const CORES_SLIME = ["azul", "lilas", "turquesa", "amarelo"] as const;
 export type CorSlime = (typeof CORES_SLIME)[number];
 
 /** Repouso e tom mais claro (banho, momentos positivos) de cada cor, em sRGB. */
 export const PALETA_SLIME: Record<CorSlime, { neutro: string; claro: string }> = {
   azul: { neutro: "#79AEE0", claro: "#8CC2F0" },
-  rosa: { neutro: "#EE9DBB", claro: "#F5B6CD" },
   lilas: { neutro: "#B3A3E6", claro: "#C6BAF0" },
   turquesa: { neutro: "#6FC9C6", claro: "#8ADAD6" },
+  amarelo: { neutro: "#D6E068", claro: "#E5EC96" },
 };
 
 /** Cores de reação que não dependem da cor escolhida. */

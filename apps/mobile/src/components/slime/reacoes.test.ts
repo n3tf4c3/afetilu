@@ -102,11 +102,11 @@ test("cores de slime escolhíveis ficam longe das cores de enjoo e dor (a reaç�
 });
 
 test("com outra cor de slime: repouso e tom claro mudam, enjoo e dor não", () => {
-  assert.equal(corDaReacao("neutro", false, "rosa"), PALETA_SLIME.rosa.neutro);
+  assert.equal(corDaReacao("neutro", false, "amarelo"), PALETA_SLIME.amarelo.neutro);
   assert.equal(corDaReacao("sono", false, "lilas"), PALETA_SLIME.lilas.neutro);
   assert.equal(corDaReacao("banho", false, "turquesa"), PALETA_SLIME.turquesa.claro);
-  assert.equal(corDaReacao("enjoo", false, "rosa"), COR_FIXA.enjoo);
+  assert.equal(corDaReacao("enjoo", false, "amarelo"), COR_FIXA.enjoo);
   assert.equal(corDaReacao("desconforto", true, "lilas"), corDaReacao("desconforto", true, "azul"));
-  assert.equal(corDaReacao("episodio", true, "rosa"), PALETA_SLIME.rosa.neutro);
-  assert.notEqual(corDaReacao("positivo", true, "rosa"), PALETA_SLIME.rosa.claro);
+  assert.equal(corDaReacao("episodio", true, "amarelo"), PALETA_SLIME.amarelo.neutro);
+  assert.notEqual(corDaReacao("positivo", true, "amarelo"), PALETA_SLIME.amarelo.claro);
 });

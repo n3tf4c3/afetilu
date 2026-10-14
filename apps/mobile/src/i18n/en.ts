@@ -242,7 +242,7 @@ export const en: TextosApp = {
     sonsAjuda: "Short, quiet sounds when the slime reacts (food, sleep, bath and positive moments). Never for episodes, pain, nausea or bowel movements. Muted in silent or vibrate mode.",
     corSlime: "Slime color",
     corSlimeAjuda: "Reaction colors stay the same: light green for nausea and peach for pain.",
-    cores: { azul: "Blue", rosa: "Pink", lilas: "Lilac", turquesa: "Turquoise" },
+    cores: { azul: "Blue", lilas: "Lilac", turquesa: "Turquoise", amarelo: "Yellow" },
     seusDados: "Your data",
     seusDadosTexto:
       "Entries stay on this device only, encrypted. The app has no server, sends no data and uses no analytics or advertising tools.",

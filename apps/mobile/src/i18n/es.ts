@@ -244,7 +244,7 @@ export const es: TextosApp = {
     sonsAjuda: "Sonidos cortos y bajos en las reacciones del slime (alimentación, sueño, baño y momentos positivos). Nunca en episodios, dolor, náuseas o evacuación. Se silencian en modo silencio o vibración.",
     corSlime: "Color del slime",
     corSlimeAjuda: "Los colores de las reacciones no cambian: verde claro en las náuseas y durazno en el dolor.",
-    cores: { azul: "Azul", rosa: "Rosa", lilas: "Lila", turquesa: "Turquesa" },
+    cores: { azul: "Azul", lilas: "Lila", turquesa: "Turquesa", amarelo: "Amarillo" },
     seusDados: "Tus datos",
     seusDadosTexto:
       "Los registros quedan solo en este dispositivo, cifrados. La app no tiene servidor, no envía datos y no usa herramientas de análisis ni publicidad.",
