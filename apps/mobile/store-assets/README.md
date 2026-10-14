@@ -4,6 +4,7 @@ Tudo aqui é público e vai para as fichas. Nada de dado real: as capturas usam 
 
 | Arquivo | Origem | Restrições |
 |---|---|---|
+| `ficha-ios.md` | Escrito à mão | Campos só da App Store: subtítulo (30), texto promocional (170), palavras-chave (100). |
 | `ficha-pt-BR.md`, `ficha-en.md`, `ficha-es.md` | Escritos à mão | Título até 30, descrição curta até 80 e completa até 4000 caracteres. Linguagem de diário e resumo; sem promessa de resultado, diagnóstico ou tratamento; aviso de que não é serviço médico nem de emergência (SAMU 192 só em pt-BR). |
 | `icone-512.png` | `ferramentas/icone/gerar_icone.mjs` | Ícone da Google Play, 512 × 512, sem canal alfa. Não editar à mão. |
 | `destaque-1024x500.png` | `ferramentas/icone/gerar_icone.mjs` | Imagem de destaque da Google Play, sem texto traduzível (serve aos três idiomas). |
