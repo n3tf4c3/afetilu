@@ -72,12 +72,13 @@ def limpar_cena():
     return cena
 
 
-def material(nome, cor, *, rugosidade=0.4, transmissao=0.0, alfa=1.0, ior=1.45, verniz=0.0, brilho_proprio=0.0):
+def material(nome, cor, *, rugosidade=0.4, transmissao=0.0, alfa=1.0, ior=1.45, verniz=0.0, brilho_proprio=0.0, metalico=0.0):
     m = bpy.data.materials.new(nome)
     m.use_nodes = True
     bsdf = m.node_tree.nodes["Principled BSDF"]
     bsdf.inputs["Base Color"].default_value = rgba(cor)
     bsdf.inputs["Roughness"].default_value = rugosidade
+    bsdf.inputs["Metallic"].default_value = metalico
     bsdf.inputs["IOR"].default_value = ior
     bsdf.inputs["Transmission Weight"].default_value = transmissao
     bsdf.inputs["Coat Weight"].default_value = verniz
@@ -344,7 +345,80 @@ def montar():
         b.parent = bolhas
     partes["bolhas_banho"] = bolhas
 
+    criar_acessorios(rosto)
     return raiz, corpo, rosto, partes
+
+
+# --- Datas comemorativas -------------------------------------------------------------------
+# Um acessório por data (packages/core/src/comemorativas.ts). Ficam sob o "rosto", que acompanha as
+# deformações do corpo, e FORA dos clipes: as reações não mexem neles. Saem visíveis no arquivo (com o
+# grupo em escala 0 o exportador perde a posição das peças filhas) e o app esconde, ao carregar, todos
+# menos o da data em vigor. Decorativos, nada assustador.
+
+ACESSORIOS = {}
+CORES_ARCO_IRIS = ["#E5484D", "#F28C28", "#F2C230", "#46A758", "#3E7BD6", "#8E4EC6"]
+
+
+def _primitivo(op, nome, mat, pai, **kw):
+    op(**kw)
+    obj = bpy.context.active_object
+    obj.name = nome
+    bpy.ops.object.shade_smooth()
+    obj.data.materials.append(mat)
+    obj.parent = pai
+    return obj
+
+
+def lemniscata(cx, cz, a, n=72):
+    """Pontos do símbolo do infinito (lemniscata de Bernoulli) centrado em (cx, cz)."""
+    pts = []
+    for i in range(n + 1):
+        t = 2 * math.pi * i / n
+        d = 1 + math.sin(t) ** 2
+        pts.append((cx + a * math.cos(t) / d, cz + a * math.sin(t) * math.cos(t) / d))
+    return pts
+
+
+def criar_acessorios(rosto):
+    # Chapéus: no topo da gota, levemente inclinados para o lado.
+    z_aba = BASE_Z + 0.885 * ALTURA_TOTAL
+
+    natal = grupo("acessorio_natal", rosto)
+    gorro = grupo("gorro", natal)
+    vermelho = material("gorro_vermelho", "#D64545", rugosidade=0.8)
+    pelucia = material("gorro_pelucia", "#FFFFFF", rugosidade=0.95)
+    _primitivo(bpy.ops.mesh.primitive_cone_add, "gorro_cone", vermelho, gorro, vertices=48, radius1=0.46, radius2=0.04, depth=0.7, location=(0, 0, z_aba + 0.33))
+    _primitivo(bpy.ops.mesh.primitive_torus_add, "gorro_aba", pelucia, gorro, major_radius=0.47, minor_radius=0.085, major_segments=48, minor_segments=16, location=(0, 0, z_aba))
+    _primitivo(bpy.ops.mesh.primitive_uv_sphere_add, "gorro_pompom", pelucia, gorro, segments=24, ring_count=12, radius=0.1, location=(0, 0, z_aba + 0.7))
+    gorro.rotation_euler = Euler((math.radians(-8), math.radians(14), 0))
+    gorro.location = (-0.06, 0, 0)
+
+    bruxas = grupo("acessorio_bruxas", rosto)
+    chapeu = grupo("chapeu", bruxas)
+    roxo = material("chapeu_roxo", "#5E4590", rugosidade=0.7)
+    faixa = material("chapeu_faixa", "#E3B341", rugosidade=0.4)
+    _primitivo(bpy.ops.mesh.primitive_cylinder_add, "chapeu_aba", roxo, chapeu, vertices=64, radius=0.78, depth=0.04, location=(0, 0, z_aba))
+    _primitivo(bpy.ops.mesh.primitive_cone_add, "chapeu_cone", roxo, chapeu, vertices=48, radius1=0.42, radius2=0.03, depth=0.8, location=(0, 0, z_aba + 0.4))
+    _primitivo(bpy.ops.mesh.primitive_cylinder_add, "chapeu_faixa", faixa, chapeu, vertices=48, radius=0.405, depth=0.09, location=(0, 0, z_aba + 0.07))
+    chapeu.rotation_euler = Euler((math.radians(-6), math.radians(-12), 0))
+    chapeu.location = (0.05, 0, 0)
+
+    # Infinito: broche na frente do corpo, abaixo da bochecha direita (não flutua sobre a cabeça,
+    # para não ser lido como auréola). Arco-íris no Dia do Autismo, dourado no Orgulho Autista.
+    cx, cz, a = 0.40, 0.19, 0.22
+    pts = lemniscata(cx, cz, a)
+    autismo = grupo("acessorio_autismo", rosto)
+    trecho = len(pts) // len(CORES_ARCO_IRIS)
+    for i, cor in enumerate(CORES_ARCO_IRIS):
+        fim = len(pts) if i == len(CORES_ARCO_IRIS) - 1 else (i + 1) * trecho + 1
+        tubo(f"infinito_arco_iris_{i}", pts[i * trecho : fim], material(f"arco_iris_{i}", cor, rugosidade=0.35, brilho_proprio=0.15), espessura=0.036, folga=0.04, pai=autismo)
+
+    orgulho = grupo("acessorio_orgulho", rosto)
+    dourado = material("infinito_dourado", "#E0B341", rugosidade=0.3, metalico=0.6, brilho_proprio=0.1)
+    tubo("infinito_dourado", pts, dourado, espessura=0.036, folga=0.04, pai=orgulho)
+
+    for nome, g in (("natal", natal), ("bruxas", bruxas), ("autismo", autismo), ("orgulho", orgulho)):
+        ACESSORIOS[nome] = g
 
 
 # Estado visual de cada expressão: partes visíveis e pesos das deformações.
@@ -587,11 +661,21 @@ def previas(pasta, corpo, rosto, partes, forcar_cpu=False):
     cena.camera = cam
 
     os.makedirs(pasta, exist_ok=True)
+    for g in ACESSORIOS.values():
+        g.scale = (0, 0, 0)
     for nome in EXPRESSOES:
         aplicar_expressao(nome, corpo, rosto, partes)
         cena.render.filepath = os.path.join(pasta, f"{nome}.png")
         bpy.ops.render.render(write_still=True)
     aplicar_expressao("neutro", corpo, rosto, partes)
+    # Uma prévia por data comemorativa, com o slime em repouso.
+    for nome, g in ACESSORIOS.items():
+        g.scale = (1, 1, 1)
+        cena.render.filepath = os.path.join(pasta, f"comemorativa-{nome}.png")
+        bpy.ops.render.render(write_still=True)
+        g.scale = (0, 0, 0)
+    for g in ACESSORIOS.values():
+        g.scale = (1, 1, 1)
 
     # As peças da prévia não vão para o arquivo do app.
     for obj in (chao, luz, luz2, cam):

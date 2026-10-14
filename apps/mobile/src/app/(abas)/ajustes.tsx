@@ -1,9 +1,9 @@
-import { IDIOMAS, LIMITES } from "@afetilu/core";
+import { comemorativasDesligadas, DATAS_COMEMORATIVAS, IDIOMAS, LIMITES } from "@afetilu/core";
 import Constants from "expo-constants";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { Botao, Campo, Chip, Escolha, Secao, estilos as ui } from "../../components/ui";
+import { Botao, Campo, Chip, Escolha, EscolhaMultipla, Secao, estilos as ui } from "../../components/ui";
 import { CORES_SLIME } from "../../components/slime/reacoes";
 import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
 import { diasDesde, PREF_ULTIMO_BACKUP } from "../../lib/backup";
@@ -110,6 +110,14 @@ export default function Ajustes() {
           onChange={(v) => v && void definirAparencia({ corSlime: v })}
         />
         <Text style={texto.suave}>{a.corSlimeAjuda}</Text>
+        <EscolhaMultipla
+          rotulo={a.comemorativas}
+          opcoes={DATAS_COMEMORATIVAS}
+          rotulos={a.datasComemorativas}
+          valor={DATAS_COMEMORATIVAS.filter((data) => !comemorativasDesligadas(aparencia.comemorativas).includes(data))}
+          onChange={(ligadas) => void definirAparencia({ comemorativas: DATAS_COMEMORATIVAS.filter((data) => !ligadas.includes(data)).join(",") })}
+        />
+        <Text style={texto.suave}>{a.comemorativasAjuda}</Text>
         <Escolha
           rotulo={a.movimento}
           opcoes={PREFERENCIAS_MOVIMENTO}

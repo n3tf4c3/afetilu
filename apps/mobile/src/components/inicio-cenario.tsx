@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { CATEGORIAS, diaPorExtenso, type Local } from "@afetilu/core";
+import { CATEGORIAS, comemorativasDesligadas, dataComemorativaDoDia, diaPorExtenso, type Local } from "@afetilu/core";
 import { router } from "expo-router";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
@@ -188,6 +188,7 @@ export function InicioCenario() {
           disparo={reacaoSlime.disparo}
           suspeita={reacaoSlime.suspeita}
           corBase={aparencia.corSlime}
+          comemorativa={dataComemorativaDoDia(hoje, comemorativasDesligadas(aparencia.comemorativas))}
           movimento={movimento}
           corDeFundo={cor.fundo}
           fundoTransparente

@@ -8,3 +8,4 @@ export * from "./contexto";
 export * from "./revisao";
 export * from "./resumo";
 export * from "./backup";
+export * from "./comemorativas";

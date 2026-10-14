@@ -89,6 +89,7 @@ async function abrir(): Promise<Abertura> {
       local: await lerPreferencia(db, CHAVES_APARENCIA.local),
       som: await lerPreferencia(db, CHAVES_APARENCIA.som),
       corSlime: await lerPreferencia(db, CHAVES_APARENCIA.corSlime),
+      comemorativas: await lerPreferencia(db, CHAVES_APARENCIA.comemorativas),
     });
     return { tipo: "pronto", db, pessoas, ativaId, idioma: ehIdioma(idioma) ? idioma : "auto", aparencia };
   } catch (e) {

@@ -1,4 +1,4 @@
-import type { Origem } from "@afetilu/core";
+import type { DataComemorativa, Origem } from "@afetilu/core";
 import type { CorSlime } from "../components/slime/reacoes";
 import type { FalhaBackup } from "../lib/backup";
 /** Textos das telas. Todos os idiomas implementam este tipo: faltar uma chave é erro de compilação. */
@@ -235,6 +235,9 @@ export interface TextosApp {
     corSlime: string;
     corSlimeAjuda: string;
     cores: Record<CorSlime, string>;
+    comemorativas: string;
+    comemorativasAjuda: string;
+    datasComemorativas: Record<DataComemorativa, string>;
     seusDados: string;
     /** Rodapé dos Ajustes, para o suporte saber qual versão está instalada. */
     versao: (versao: string) => string;

@@ -16,6 +16,8 @@ const ESPERADO = {
     "sobrancelhas_preocupadas", "bochechas", "boca_gato", "boca_sorriso", "boca_ondulada", "boca_preocupada", "boca_o",
     "maca", "bolhas_banho",
   ],
+  // Datas comemorativas (packages/core/src/comemorativas.ts): ligados pelo app, fora dos clipes.
+  acessorios: ["acessorio_autismo", "acessorio_orgulho", "acessorio_bruxas", "acessorio_natal"],
 };
 
 const falhas = [];
@@ -29,6 +31,13 @@ const matCorpo = gltf.materials.find((m) => m.name === "corpo");
 for (const a of ESPERADO.animacoes) if (!animacoes.includes(a)) falhas.push(`animação ausente: ${a}`);
 for (const d of ESPERADO.deformacoes) if (!nomesDeformacoes.includes(d)) falhas.push(`deformação ausente: ${d}`);
 for (const p of ESPERADO.partes) if (!nos.has(p)) falhas.push(`parte ausente: ${p}`);
+for (const a of ESPERADO.acessorios) {
+  const i = gltf.nodes.findIndex((n) => n.name === a);
+  if (i < 0) falhas.push(`acessório ausente: ${a}`);
+  // Nenhum clipe mexe no acessório: uma reação não pode ligar nem desligar a data comemorativa.
+  // (Sai visível no arquivo, como as partes; o app esconde os que não são da data.)
+  else if ((gltf.animations ?? []).some((an) => an.channels.some((c) => c.target.node === i))) falhas.push(`acessório ${a} animado por um clipe`);
+}
 // O app usa transparência por alfa (o Filament do RN não implementa KHR_materials_transmission).
 if (matCorpo?.alphaMode !== "BLEND") falhas.push("material do corpo sem alphaMode BLEND");
 const alfa = matCorpo?.pbrMetallicRoughness?.baseColorFactor?.[3];
@@ -49,7 +58,7 @@ console.log(`malhas: ${gltf.meshes.length}, nós: ${gltf.nodes.length}, materiai
 if (corpo === undefined) falhas.push("malha do corpo não encontrada");
 // Pose de repouso: só os grupos de partes (liga/desliga) podem ter escala 0; peças internas nunca.
 for (const n of gltf.nodes) {
-  if (!ESPERADO.partes.includes(n.name) && n.scale && n.scale.every((s) => s === 0)) falhas.push(`nó ${n.name} com escala 0 na pose de repouso`);
+  if (!ESPERADO.partes.includes(n.name) && !ESPERADO.acessorios.includes(n.name) && n.scale && n.scale.every((s) => s === 0)) falhas.push(`nó ${n.name} com escala 0 na pose de repouso`);
 }
 // Cada clipe precisa definir o estado inteiro (partes, rosto e deformações) para poder ser interrompido.
 const canaisEsperados = ESPERADO.partes.length + 3;

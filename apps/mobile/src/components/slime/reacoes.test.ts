@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
+import { DATAS_COMEMORATIVAS } from "@afetilu/core";
+import { NO_DO_ACESSORIO } from "./reacoes";
 import { ALFA_CORPO, CLIPE_DA_REACAO, COR_DA_REACAO, COR_FIXA, CORES_SLIME, corDaReacao, corLinear, PALETA_SLIME, SOM_DA_REACAO, type Reacao } from "./reacoes";
 
 // Contrato entre o app e o slime.glb versionado (gerado por ferramentas/slime/gerar_slime.py).
@@ -51,6 +53,15 @@ test("toque no slime: cutucada curta, sem mudar a cor, com boing", () => {
   assert.ok(duracao > 0 && duracao <= 1, `cutucada dura ${duracao} s`);
   assert.equal(COR_DA_REACAO.cutucada, COR_DA_REACAO.neutro);
   assert.equal(SOM_DA_REACAO.cutucada, "boing");
+});
+
+test("todo acessório de data comemorativa existe no modelo e nenhum clipe mexe nele", () => {
+  const glb = lerGlb() as unknown as { nodes: { name: string }[]; animations: { channels: { target: { node: number } }[] }[] };
+  for (const data of DATAS_COMEMORATIVAS) {
+    const i = glb.nodes.findIndex((n) => n.name === NO_DO_ACESSORIO[data]);
+    assert.ok(i >= 0, `${data}: nó ${NO_DO_ACESSORIO[data]} ausente`);
+    assert.ok(!glb.animations.some((a) => a.channels.some((c) => c.target.node === i)), `${data}: animado por um clipe`);
+  }
 });
 
 test("alfa do corpo é o mesmo no modelo e no app", () => {

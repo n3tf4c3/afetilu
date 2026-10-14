@@ -245,6 +245,14 @@ export const es: TextosApp = {
     corSlime: "Color del slime",
     corSlimeAjuda: "Los colores de las reacciones no cambian: verde claro en las náuseas y durazno en el dolor.",
     cores: { azul: "Azul", lilas: "Lila", turquesa: "Turquesa", amarelo: "Amarillo" },
+    comemorativas: "Fechas especiales",
+    comemorativasAjuda: "En estas fechas el slime usa un accesorio. Es solo decoración y no cambia nada en los registros; desmarca las que prefieras no ver.",
+    datasComemorativas: {
+      autismo: "Día del Autismo (2 de abril)",
+      orgulho: "Orgullo Autista (18 de junio)",
+      bruxas: "Halloween (29 al 31 de octubre)",
+      natal: "Navidad (20 al 26 de diciembre)",
+    },
     versao: (v) => `Afetilu ${v}`,
     seusDados: "Tus datos",
     seusDadosTexto:

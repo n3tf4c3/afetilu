@@ -17,7 +17,8 @@ import {
 import { useSharedValue } from "react-native-worklets-core";
 // Modelo gerado por ferramentas/slime/gerar_slime.py (nunca editar o .glb à mão).
 import MODELO from "../../../assets/slime/slime.glb";
-import { ALFA_CORPO, CLIPE_DA_REACAO, corDaReacao, corLinear, PALETA_SLIME, type CorSlime, type Reacao } from "./reacoes";
+import { DATAS_COMEMORATIVAS, type DataComemorativa } from "@afetilu/core";
+import { ALFA_CORPO, CLIPE_DA_REACAO, corDaReacao, corLinear, NO_DO_ACESSORIO, PALETA_SLIME, type CorSlime, type Reacao } from "./reacoes";
 
 
 export type Movimento = "completo" | "reduzido" | "nenhum";
@@ -30,6 +31,8 @@ export interface CenaSlimeProps {
   suspeita?: boolean;
   /** Cor do corpo escolhida em Ajustes (padrão azul). */
   corBase?: CorSlime;
+  /** Data comemorativa em vigor (acessório no slime); null fora das datas ou desligada. */
+  comemorativa?: DataComemorativa | null;
   movimento: Movimento;
   corDeFundo: string;
   /** Desenha só o slime, sem fundo, sobre o que estiver atrás (cenário da tela inicial). */
@@ -46,7 +49,7 @@ export interface CenaSlimeProps {
 
 const MODO: Record<Movimento, number> = { completo: 0, reduzido: 1, nenhum: 2 };
 
-function Cena({ reacao, disparo, suspeita = false, corBase = "azul", movimento, corDeFundo, fundoTransparente, aoMedirQps, renderizacao = "sob_demanda" }: CenaSlimeProps) {
+function Cena({ reacao, disparo, suspeita = false, corBase = "azul", comemorativa = null, movimento, corDeFundo, fundoTransparente, aoMedirQps, renderizacao = "sob_demanda" }: CenaSlimeProps) {
   const modelo = useModel(MODELO);
   // useModel devolve um objeto novo a cada render; o asset é estável. Usar sempre o asset como
   // dependência (senão o animador é recriado e a reação reinicia a cada render).
@@ -54,7 +57,7 @@ function Cena({ reacao, disparo, suspeita = false, corBase = "azul", movimento, 
   const animador = useAnimator(asset);
   // choreographer é API marcada como privada; é o mesmo que FilamentView.pause()/resume() usam
   // (o componente exportado não repassa a ref). Versão da biblioteca fixada em 1.11.0.
-  const { renderableManager, choreographer } = useFilamentContext();
+  const { renderableManager, transformManager, choreographer } = useFilamentContext();
   const continua = renderizacao === "continua";
 
   // Renderização sob demanda: liga o laço de render por um tempo e desliga. Além da bateria, reduz
@@ -78,6 +81,17 @@ function Cena({ reacao, disparo, suspeita = false, corBase = "azul", movimento, 
   useEffect(() => () => {
     if (desligar.current) clearTimeout(desligar.current);
   }, []);
+
+  // Data comemorativa: o arquivo traz todos os acessórios visíveis; fica só o da data em vigor. Roda
+  // antes do primeiro quadro (o efeito dos clipes, abaixo, é quem liga o render).
+  useEffect(() => {
+    if (!asset) return;
+    for (const data of DATAS_COMEMORATIVAS) {
+      const no = asset.getFirstEntityByName(NO_DO_ACESSORIO[data]);
+      if (no) transformManager.setEntityScale(no, data === comemorativa ? [1, 1, 1] : [0, 0, 0], false);
+    }
+    renderizarPor(300);
+  }, [asset, comemorativa, transformManager, renderizarPor]);
 
   // Índices e durações dos clipes, lidos do arquivo pelo nome (o contrato é o nome, não a ordem).
   const clipes = useMemo(() => {

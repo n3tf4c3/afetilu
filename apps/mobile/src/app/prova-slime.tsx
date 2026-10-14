@@ -1,4 +1,5 @@
 import { Redirect, Stack } from "expo-router";
+import { DATAS_COMEMORATIVAS, type DataComemorativa } from "@afetilu/core";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { CenaSlime, type Movimento } from "../components/slime/cena-slime";
@@ -21,6 +22,7 @@ export default function ProvaSlime() {
   const [movimento, setMovimento] = useState<Movimento>("completo");
   const [continua, setContinua] = useState(false);
   const [suspeita, setSuspeita] = useState(false);
+  const [comemorativa, setComemorativa] = useState<DataComemorativa | null>(null);
   const [qps, setQps] = useState(0);
   const [amostras, setAmostras] = useState<number[]>([]);
 
@@ -44,6 +46,7 @@ export default function ProvaSlime() {
           disparo={disparo}
           suspeita={suspeita}
           corBase={aparencia.corSlime}
+          comemorativa={comemorativa}
           movimento={movimento}
           corDeFundo={cor.fundo}
           aoMedirQps={medir}
@@ -71,6 +74,14 @@ export default function ProvaSlime() {
             />
           ))}
           <Chip rotulo="suspeita" selecionado={suspeita} onPress={() => setSuspeita((v) => !v)} />
+        </View>
+      </Secao>
+      <Secao titulo="Data comemorativa">
+        <View style={estilos.linhaChips}>
+          <Chip rotulo="nenhuma" selecionado={comemorativa === null} onPress={() => setComemorativa(null)} />
+          {DATAS_COMEMORATIVAS.map((c) => (
+            <Chip key={c} rotulo={c} selecionado={comemorativa === c} onPress={() => setComemorativa(c)} />
+          ))}
         </View>
       </Secao>
       <Secao titulo="Renderização">

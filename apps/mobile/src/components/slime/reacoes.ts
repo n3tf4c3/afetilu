@@ -1,3 +1,5 @@
+import type { DataComemorativa } from "@afetilu/core";
+
 // Reações do mascote (docs/experiencia-avatar.md, seção 3.2). Lógica pura, sem dependência nativa.
 
 export type Reacao = "neutro" | "alimentacao" | "enjoo" | "desconforto" | "sono" | "banho" | "positivo" | "episodio" | "cutucada";
@@ -84,6 +86,14 @@ export const SOM_DA_REACAO: Record<Reacao, Som | null> = {
   positivo: "blop",
   episodio: null,
   cutucada: "boing",
+};
+
+/** Nó do slime.glb com o acessório de cada data comemorativa (packages/core/src/comemorativas.ts). */
+export const NO_DO_ACESSORIO: Record<DataComemorativa, string> = {
+  autismo: "acessorio_autismo",
+  orgulho: "acessorio_orgulho",
+  bruxas: "acessorio_bruxas",
+  natal: "acessorio_natal",
 };
 
 /** Transparência do corpo; igual a ALFA_CORPO em ferramentas/slime/gerar_slime.py. */
