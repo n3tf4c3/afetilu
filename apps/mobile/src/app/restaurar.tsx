@@ -95,7 +95,7 @@ export default function Restaurar() {
   const liberado = !restaurando && (!temDados || confirmacaoConfere(digitado, tr.palavra));
 
   return (
-    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 80 }} keyboardShouldPersistTaps="handled">
+    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 80 }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
       <Stack.Screen options={{ title: tr.titulo }} />
       <Text style={texto.corpo}>{tr.explicacao}</Text>
       <Botao

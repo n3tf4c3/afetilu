@@ -149,7 +149,7 @@ export default function Resumo() {
   return (
     <View style={{ flex: 1, backgroundColor: cor.fundo }}>
       <Stack.Screen options={{ title: tr.titulo }} />
-      <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
         <Secao titulo={tr.periodo}>
           <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={tr.periodo}>
             {PERIODOS.map((n) => (

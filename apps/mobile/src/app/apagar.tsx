@@ -64,7 +64,7 @@ export default function Apagar() {
     : ta.oQueApagaTudo;
 
   return (
-    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled">
+    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
       <Stack.Screen options={{ title: pessoa ? ta.tituloPessoa(pessoa.apelido) : ta.tituloTudo }} />
       <Text style={texto.corpo}>{descricao}</Text>
       <Aviso tipo="alerta" texto={ta.semVolta} />

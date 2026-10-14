@@ -41,7 +41,7 @@ export default function Mudanca() {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled">
+    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
       <Stack.Screen options={{ title: tm.titulo }} />
       <Text style={texto.corpo}>{tm.explicacao}</Text>
       <SeletorDia dia={dia} onChange={setDia} maximo={new Date()} />

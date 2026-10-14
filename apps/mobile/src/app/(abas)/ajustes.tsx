@@ -85,7 +85,7 @@ export default function Ajustes() {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 120 }}>
+    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 120 }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
       <Secao titulo={a.pessoas}>
         {pessoas.map((p) => (
           <EditarPessoa key={`${p.id}-${p.apelido}`} id={p.id} apelido={p.apelido} ativa={p.id === pessoaAtiva?.id} />

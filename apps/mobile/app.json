@@ -8,8 +8,11 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.afetilu.app"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.afetilu.app",
+      "config": {
+        "usesNonExemptEncryption": true
+      }
     },
     "android": {
       "package": "com.afetilu.app",

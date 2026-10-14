@@ -109,7 +109,7 @@ export default function FazerBackup() {
   const erroSenha = tentou && problema ? (problema === "curta" ? tb.senhaCurta(SENHA_MIN) : tb.senhaDiferente) : null;
 
   return (
-    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 80 }} keyboardShouldPersistTaps="handled">
+    <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 80 }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
       <Stack.Screen options={{ title: tb.titulo }} />
       <Text style={texto.corpo}>{tb.explicacao}</Text>
       <Aviso tipo="alerta" texto={tb.semRecuperacao} />
