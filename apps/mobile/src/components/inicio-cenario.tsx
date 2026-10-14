@@ -286,7 +286,9 @@ export function InicioCenario() {
   );
 }
 
-const sombra = { shadowColor: "#000", shadowOpacity: 0.12, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 3 };
+// boxShadow (e não elevation): no Android, elevation sob fundo translúcido deixa um retângulo claro
+// aparecendo no meio do cartão. A sombra externa do boxShadow não aparece através do fundo.
+const sombra = { boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.12)" };
 
 const estilos = StyleSheet.create({
   colunas: { position: "absolute", left: espaco.m, right: espaco.m, flexDirection: "row", justifyContent: "space-between" },
