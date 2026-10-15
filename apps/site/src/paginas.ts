@@ -33,9 +33,11 @@ export const BANDEIRAS: Record<IdiomaSite, string> = {
   en:
     `<svg class="bandeira" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/>${LISTRAS_EUA}` +
     '<rect width="12" height="10.77" fill="#3C3B6E"/></svg>',
+  // Espanhol neutro, latino-americano (o mesmo do app e da ficha es-MX): bandeira do México.
   es:
-    '<svg class="bandeira" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#AA151B"/>' +
-    '<rect y="5" width="30" height="10" fill="#F1BF00"/></svg>',
+    '<svg class="bandeira" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="20" fill="#fff"/>' +
+    '<rect width="10" height="20" fill="#006847"/><rect x="20" width="10" height="20" fill="#CE1126"/>' +
+    '<ellipse cx="15" cy="10" rx="2.6" ry="2.9" fill="#8C5A2B"/></svg>',
 };
 
 const LOGO_APPLE =
