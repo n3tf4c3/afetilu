@@ -2,6 +2,7 @@
    são mutáveis por design (o laço de render 3D lê e escreve neles, como o Animator da própria biblioteca). */
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { useFocusEffect } from "expo-router";
 import {
   Camera,
   DefaultLight,
@@ -81,6 +82,14 @@ function Cena({ reacao, disparo, suspeita = false, corBase = "azul", comemorativ
   useEffect(() => () => {
     if (desligar.current) clearTimeout(desligar.current);
   }, []);
+
+  // Volta à tela: no iOS a aba escondida sai da janela e os quadros desenhados nela se perdem (a cor,
+  // o acessório ou o movimento trocados em Ajustes só apareceriam na próxima reação).
+  useFocusEffect(
+    useCallback(() => {
+      renderizarPor(400);
+    }, [renderizarPor]),
+  );
 
   // Data comemorativa: o arquivo traz todos os acessórios visíveis; fica só o da data em vigor. Roda
   // antes do primeiro quadro (o efeito dos clipes, abaixo, é quem liga o render).
