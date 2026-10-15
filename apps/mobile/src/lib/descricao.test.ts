@@ -70,7 +70,8 @@ test("término com horário e demais categorias", () => {
   const outros: EntradaRegistro["detalhe"][] = [
     { categoria: "alimentacao", tipo: "bebida", item: "água", quantidade: "pouco" },
     { categoria: "higiene", tipo: "banho", aceitacao: "com_ajuda" },
-    { categoria: "evacuacao", aspecto: "normal" },
+    { categoria: "evacuacao", tipo: "coco", onde: "vaso", aspecto: "normal" },
+    { categoria: "evacuacao", tipo: "xixi" },
     { categoria: "positivo", tipo: "conquista", descricao: "subiu a escada" },
   ];
   for (const detalhe of outros) assert.ok(descrever({ ...base, detalhe }).length >= 3);

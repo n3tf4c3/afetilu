@@ -18,7 +18,7 @@ QUÉ PUEDES REGISTRAR
 • Dolor y molestias percibidos
 • Emociones y comportamientos, incluidos episodios difíciles, con duración, intensidad y lo que ayudó
 • Baño e higiene
-• Evacuación
+• Pipí y popó
 • Actividades, logros y momentos positivos
 • Cambios en la rutina, como cambio de escuela, viaje o vacaciones
 

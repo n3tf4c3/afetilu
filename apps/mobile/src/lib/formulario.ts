@@ -116,6 +116,12 @@ export function montarEntrada(f: Formulario, pessoaId: string, agora: Date): Res
   const detalhe = limpar(f.rascunho);
   // Detalhes de episódio só existem quando o comportamento foi marcado como episódio.
   if (categoria === "comportamento" && detalhe.ehEpisodio !== true) delete detalhe.episodio;
+  if (categoria === "evacuacao") {
+    // O core lê como cocô o que vem sem tipo (registros antigos); no formulário a escolha é obrigatória.
+    if (detalhe.tipo === undefined) return { ok: false, erro: "tipo" };
+    // Aspecto só existe no cocô.
+    if (detalhe.tipo !== "coco") delete detalhe.aspecto;
+  }
 
   const bruto = limpar({
     pessoaId,

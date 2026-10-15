@@ -16,7 +16,7 @@ export function chaveDoNome(d: Detalhe): ChaveNome {
     case "sono":
       return d.tipo === "cochilo" ? "cochilo" : "sono";
     case "evacuacao":
-      return "evacuacao";
+      return d.tipo === "xixi" ? "xixi" : "evacuacao";
     case "positivo":
       return d.tipo;
   }

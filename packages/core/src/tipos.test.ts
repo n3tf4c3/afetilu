@@ -61,3 +61,12 @@ test("mudança na rotina e pergunta: texto obrigatório, aparado e limitado", ()
   assert.equal(entradaPergunta.safeParse({ pessoaId: PESSOA, texto: "x".repeat(LIMITES.anotacao + 1) }).success, false);
   assert.equal(entradaPergunta.safeParse({ pessoaId: PESSOA, texto: "Como lidar com o barulho na escola?" }).success, true);
 });
+
+test("evacuação de antes do xixi (sem tipo) é lida como cocô; xixi e onde são aceitos", () => {
+  const antigo = entradaRegistro.parse({ ...base, detalhe: { categoria: "evacuacao", aspecto: "normal" } });
+  assert.deepEqual(antigo.detalhe, { categoria: "evacuacao", tipo: "coco", aspecto: "normal" });
+  const xixi = entradaRegistro.parse({ ...base, detalhe: { categoria: "evacuacao", tipo: "xixi", onde: "escape" } });
+  assert.deepEqual(xixi.detalhe, { categoria: "evacuacao", tipo: "xixi", onde: "escape" });
+  assert.equal(entradaRegistro.safeParse({ ...base, detalhe: { categoria: "evacuacao", tipo: "outro" } }).success, false);
+  assert.equal(entradaRegistro.safeParse({ ...base, detalhe: { categoria: "evacuacao", tipo: "xixi", onde: "chao" } }).success, false);
+});

@@ -163,7 +163,7 @@ Regras gerais:
 | Calma e momentos positivos | azul mais luminoso | piscadinha e sorriso, quique leve | "blop" alegre |
 | Conquista | azul mais luminoso | pulinho, sem pontos nem medalhas | "tum-tum" alegre |
 | Emoções e comportamentos difíceis, episódios | **não muda** | **permanece neutro**; aparece só o card "Registro salvo" | **nenhum** |
-| Evacuação | não muda | sem reação; só a confirmação textual | nenhum |
+| Xixi e cocô | não muda | sem reação; só a confirmação textual | nenhum |
 | Toque no slime (não é registro) | não muda | olhos "> <" e boca em "o" ao amassar; volta balançando, com piscadinha | "boing" suave |
 | Suspeita do responsável | igual ao tipo, em tom mais claro | igual | igual |
 
@@ -200,7 +200,7 @@ Na suspeita, a legenda diz, por exemplo, "Suspeita de enjoo registrada".
 │   e bebidas]       desconforto]  │
 │  [Emoções e       [Banho e       │  ← ícones com rótulo, 2 colunas,
 │   comportamentos]  higiene]      │    alvos ≥ 48 dp
-│  [Sono e          [Evacuação]    │
+│  [Sono e          [Xixi e cocô]  │
 │   descanso]                      │
 │  [Atividades e    [Dia sem       │
 │   conquistas]      crises]       │
@@ -229,7 +229,7 @@ O registro abre imediatamente, sem esperar animação.
 | Emoções e comportamentos | o que foi observado (calmo, choro, irritação, agitação, isolamento, agressividade, autoagressão, outro) | se for episódio: duração, intensidade com critérios, contexto anterior, o que o cuidador fez, desfecho, lesão (sim, não, não sei), o que ajudou |
 | Banho e higiene | banho, escovação, troca, outro | aceitação; observação |
 | Sono e descanso | dormiu ou acordou (ou o intervalo); cochilo ou noturno | despertares; observação |
-| Evacuação | ocorreu | aspecto (texto livre); observação |
+| Xixi e cocô | xixi ou cocô | onde (vaso ou penico, fralda, escape na roupa); aspecto, só no cocô (texto livre); observação |
 | Atividades e conquistas | comunicação, atividade, conquista, período tranquilo, estratégia que funcionou | descrição |
 
 **Contexto calculado, nunca causal:** ao registrar enjoo, dor ou desconforto, o app pode mostrar "Última refeição registrada: 12:30 (40 min antes)". A legenda fica "Enjoo registrado após a refeição", indicando só a ordem no tempo. O app não sugere causa nem cria sintomas.
@@ -248,8 +248,8 @@ Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertido
 
 | Cenário | Esquerda | Direita |
 |---|---|---|
-| Casa | Alimentação, Sono, Banho, Evacuação | Dor, Emoções, Conquistas, Sem crises |
-| Escola | Alimentação, Emoções, Conquistas | Dor, Evacuação, Todas |
+| Casa | Alimentação, Sono, Banho, Xixi e cocô | Dor, Emoções, Conquistas, Sem crises |
+| Escola | Alimentação, Emoções, Conquistas | Dor, Xixi e cocô, Todas |
 | Parque | Conquistas, Emoções, Alimentação | Dor, Todas |
 | Terapia | Emoções, Conquistas | Dor, Todas |
 
@@ -266,7 +266,7 @@ Referência visual do usuário: `docs/Painel de Slimes 3D em Ambientes Divertido
 - **Sons:**
   - **Desligados até a pessoa escolher.** Na primeira abertura, o app pergunta "Quer ativar sons suaves?". A escolha muda depois em Ajustes, separada do controle de movimento.
   - Respeitam o modo silencioso, duram menos de 1 s, tocam em volume baixo e nunca ao abrir o app.
-  - Não há som em episódios difíceis, enjoo, dor ou evacuação.
+  - Não há som em episódios difíceis, enjoo, dor, xixi ou cocô.
   - Motivo da cautela: muitas pessoas autistas têm sensibilidade sonora, e o registro pode ser feito com a criança por perto.
   - **Implementado (13/10/2026):**
     - Sons sintetizados por `ferramentas/sons/gerar_sons.mjs`, próprios e sem licença de terceiros: `nham` (alimentação), `ronco` (sono), `bolhas` (banho), `blop` (calma e momentos positivos) e `boing` (toque no slime). Bebida e conquista usam, por ora, o som de alimentação e o de momentos positivos.
@@ -323,6 +323,7 @@ Sem gráfico de correlação.
   - `regiao`: cabeça, boca/dentes, ouvido, garganta, peito, barriga, costas, braços, pernas, pele, outra, não sei.
 - `detalhe_comportamento(registro_id, observado[], eh_episodio, …detalhes de episódio)`.
 - `detalhe_higiene(registro_id, tipo, aceitacao?)`.
+- `evacuacao` (rótulo "Xixi e cocô"): `tipo` `xixi | coco`, `onde?` `vaso | fralda | escape`, `aspecto?` só no cocô. Registros de antes do xixi não têm `tipo` e são lidos como cocô.
 - `registro.em_aberto` e `registro.encerrado_em?`.
 - `preferencias(movimento, som, modo_visual)`, sendo `som` desligado até a escolha do responsável.
 - A tabela `avatar` e a foto de referência saem do modelo.

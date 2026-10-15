@@ -66,6 +66,8 @@ export function descreverRegistro(
       add(t.despertares, det.despertares !== undefined ? String(det.despertares) : undefined);
       break;
     case "evacuacao":
+      add(t.tipo, d.evacuacao[det.tipo]);
+      add(t.onde, det.onde && d.ondeEvacuacao[det.onde]);
       add(t.aspecto, det.aspecto);
       break;
     case "positivo":

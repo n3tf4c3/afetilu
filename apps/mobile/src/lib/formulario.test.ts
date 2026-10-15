@@ -7,6 +7,7 @@ const AGORA = new Date(2026, 9, 13, 14, 30);
 
 test("registro mínimo: tocar na categoria, preencher o essencial e salvar", () => {
   const f = formularioNovo("evacuacao", AGORA);
+  f.rascunho = { ...f.rascunho, tipo: "xixi" };
   const r = montarEntrada(f, "p1", AGORA);
   assert.ok(r.ok);
   assert.equal(r.entrada.precisao, "exato");
@@ -47,8 +48,21 @@ test("detalhes de episódio somem se o comportamento não for marcado como epis�
   assert.equal(r.entrada.detalhe.categoria === "comportamento" && r.entrada.detalhe.episodio, undefined);
 });
 
+test("xixi ou cocô é escolha obrigatória; aspecto só fica no cocô", () => {
+  const f = formularioNovo("evacuacao", AGORA);
+  assert.deepEqual(montarEntrada(f, "p1", AGORA), { ok: false, erro: "tipo" });
+  const coco = montarEntrada({ ...f, rascunho: { ...f.rascunho, tipo: "coco", onde: "fralda", aspecto: " pastoso " } }, "p1", AGORA);
+  assert.ok(coco.ok);
+  assert.deepEqual(coco.entrada.detalhe, { categoria: "evacuacao", tipo: "coco", onde: "fralda", aspecto: "pastoso" });
+  // Trocar para xixi depois de escrever o aspecto descarta o aspecto.
+  const xixi = montarEntrada({ ...f, rascunho: { ...f.rascunho, tipo: "xixi", aspecto: "pastoso" } }, "p1", AGORA);
+  assert.ok(xixi.ok);
+  assert.deepEqual(xixi.entrada.detalhe, { categoria: "evacuacao", tipo: "xixi" });
+});
+
 test("'me contaram' guarda quem contou; outras origens descartam", () => {
   const f = { ...formularioNovo("evacuacao", AGORA), origem: "me_contaram" as const, origemQuem: " escola " };
+  f.rascunho = { ...f.rascunho, tipo: "xixi" };
   const r = montarEntrada(f, "p1", AGORA);
   assert.ok(r.ok && r.entrada.origemQuem === "escola");
   const s = montarEntrada({ ...f, origem: "suspeita" }, "p1", AGORA);
@@ -69,7 +83,7 @@ test("abrir para correção reconstrói o formulário com a mesma precisão", ()
         ocorreuDia: "2026-10-12",
         emAberto: false,
         origem: "vi",
-        detalhe: { categoria: "evacuacao" },
+        detalhe: { categoria: "evacuacao", tipo: "coco" },
         ...extra,
       },
       "r1",

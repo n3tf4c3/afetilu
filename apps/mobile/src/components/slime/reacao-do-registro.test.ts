@@ -17,8 +17,9 @@ test("rotina tem reação, inclusive retroativa", () => {
   assert.equal(reacaoDoRegistro(r({ categoria: "positivo", tipo: "conquista" }), AGORA), "positivo");
 });
 
-test("evacuação não anima o slime", () => {
-  assert.equal(reacaoDoRegistro(r({ categoria: "evacuacao" }), AGORA), null);
+test("xixi e cocô não animam o slime", () => {
+  assert.equal(reacaoDoRegistro(r({ categoria: "evacuacao", tipo: "xixi" }), AGORA), null);
+  assert.equal(reacaoDoRegistro(r({ categoria: "evacuacao", tipo: "coco" }), AGORA), null);
 });
 
 test("dor e enjoo só reagem quando recentes e com horário", () => {

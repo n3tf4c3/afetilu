@@ -39,8 +39,9 @@ test("linha do tempo vem do dia mais recente ao mais antigo", () => {
 
 test("filtrar por categoria não transforma o dia em 'sem informação'", () => {
   const { registros } = registrosFicticios();
-  const dia = registros.find((r) => r.detalhe.categoria === "alimentacao")!.ocorreuDia;
-  const linha = montarLinhaDoTempo({ inicio: dia, fim: dia, registros, diasAnotados: [], filtro: "evacuacao" });
+  // Um dia com registros, mas nenhum momento positivo.
+  const dia = registros.find((r) => !registros.some((o) => o.ocorreuDia === r.ocorreuDia && o.detalhe.categoria === "positivo"))!.ocorreuDia;
+  const linha = montarLinhaDoTempo({ inicio: dia, fim: dia, registros, diasAnotados: [], filtro: "positivo" });
   assert.equal(linha[0]?.registros.length, 0);
   assert.equal(linha[0]?.situacao.semInformacao, false);
 });

@@ -87,6 +87,8 @@ export function gerarDadosFicticios(
     em(dia, 12, 15, { categoria: "alimentacao", tipo: "comida", item: ALIMENTOS[Math.floor(sortear() * ALIMENTOS.length)]!, quantidade: "tudo" });
     em(dia, 21, 0, { categoria: "sono", tipo: "noturno", despertares: Math.floor(sortear() * 3) }, { precisao: "aproximado" });
     if (sortear() < 0.5) em(dia, 19, 0, { categoria: "higiene", tipo: "banho", aceitacao: "com_ajuda" });
+    em(dia, 10, 40, { categoria: "evacuacao", tipo: "xixi", onde: "vaso" });
+    if (sortear() < 0.4) em(dia, 15, 10, { categoria: "evacuacao", tipo: "coco", onde: "vaso" });
 
     const sorte = sortear();
     if (sorte < 0.25) {

@@ -121,6 +121,7 @@ export interface TextosApp {
     tipo: string;
     despertares: string;
     quatroOuMais: string;
+    onde: string;
     aspecto: string;
     descricao: string;
     observadoTitulo: string;
@@ -161,6 +162,7 @@ export interface TextosApp {
     oQueAjudou: string;
     aceitacao: string;
     despertares: string;
+    onde: string;
     aspecto: string;
     descricao: string;
     termino: string;

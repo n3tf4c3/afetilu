@@ -2,9 +2,11 @@ import {
   INTENSIDADES,
   LIMITES,
   OBSERVADOS,
+  ONDE_EVACUACAO,
   QUANTIDADES,
   REGIOES,
   TIPOS_DESCONFORTO,
+  TIPOS_EVACUACAO,
   TIPOS_HIGIENE,
   TIPOS_POSITIVO,
   type Intensidade,
@@ -118,9 +120,15 @@ export function CamposCategoria({ rascunho: r, alterar, sugestoesAjudou }: Props
 
     case "evacuacao":
       return (
-        <Recolhivel titulo={c.maisDetalhes}>
-          <Campo rotulo={c.aspecto} multilinha valor={ler<string>(r, "aspecto") ?? ""} onChange={(v) => alterar(com(r, "aspecto", v))} max={LIMITES.observacao} />
-        </Recolhivel>
+        <View style={{ gap: espaco.l }}>
+          <Escolha rotulo={c.oQue} opcoes={TIPOS_EVACUACAO} rotulos={d.evacuacao} valor={ler(r, "tipo")} onChange={(v) => v && alterar(com(r, "tipo", v))} />
+          <Escolha opcional rotulo={c.onde} opcoes={ONDE_EVACUACAO} rotulos={d.ondeEvacuacao} valor={ler(r, "onde")} onChange={(v) => alterar(com(r, "onde", v))} />
+          {ler(r, "tipo") === "coco" ? (
+            <Recolhivel titulo={c.maisDetalhes}>
+              <Campo rotulo={c.aspecto} multilinha valor={ler<string>(r, "aspecto") ?? ""} onChange={(v) => alterar(com(r, "aspecto", v))} max={LIMITES.observacao} />
+            </Recolhivel>
+          ) : null}
+        </View>
       );
 
     case "positivo":

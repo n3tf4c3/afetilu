@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { comida, enjoo, episodio, registro, sono } from "./fixtures.test-util";
 import { dominio, IDIOMAS, type ChaveNome } from "./i18n";
 import { chaveDoNome, horarioLegivel, legendaDoRegistro, nomeDoRegistro } from "./legenda";
-import { TIPOS_POSITIVO, type Detalhe } from "./tipos";
+import { TIPOS_EVACUACAO, TIPOS_POSITIVO, type Detalhe } from "./tipos";
 
 const HOJE = "2026-10-13";
 const pt = dominio("pt-BR");
@@ -53,7 +53,8 @@ test("concordância de gênero em português e espanhol", () => {
     [{ categoria: "higiene", tipo: "banho" }, "Banho registrado", "Baño registrado"],
     [{ categoria: "higiene", tipo: "escovacao" }, "Escovação registrada", "Cepillado registrado"],
     [{ categoria: "sono", tipo: "cochilo" }, "Cochilo registrado", "Siesta registrada"],
-    [{ categoria: "evacuacao" }, "Evacuação registrada", "Evacuación registrada"],
+    [{ categoria: "evacuacao", tipo: "xixi" }, "Xixi registrado", "Pipí registrado"],
+    [{ categoria: "evacuacao", tipo: "coco" }, "Cocô registrado", "Popó registrado"],
     [{ categoria: "positivo", tipo: "conquista" }, "Conquista registrada", "Logro registrado"],
     [{ categoria: "positivo", tipo: "tranquilo" }, "Período tranquilo registrado", "Periodo tranquilo registrado"],
   ];
@@ -71,7 +72,8 @@ test("todo tipo de registro tem nome em todos os idiomas", () => {
     ...(["dor", "enjoo", "coceira", "tontura", "outro"] as const).map((tipo): Detalhe => ({ categoria: "dor_desconforto", tipo })),
     episodio, { categoria: "comportamento", observado: ["calmo"], ehEpisodio: false },
     ...(["banho", "escovacao", "troca", "outro"] as const).map((tipo): Detalhe => ({ categoria: "higiene", tipo })),
-    sono, { categoria: "sono", tipo: "cochilo" }, { categoria: "evacuacao" },
+    sono, { categoria: "sono", tipo: "cochilo" },
+    ...TIPOS_EVACUACAO.map((tipo): Detalhe => ({ categoria: "evacuacao", tipo })),
     ...TIPOS_POSITIVO.map((tipo): Detalhe => ({ categoria: "positivo", tipo })),
   ];
   const chaves = new Set<ChaveNome>(detalhes.map(chaveDoNome));

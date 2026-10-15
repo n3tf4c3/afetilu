@@ -7,7 +7,9 @@ import type {
   PeriodoDoDia,
   QUANTIDADES,
   REGIOES,
+  ONDE_EVACUACAO,
   TIPOS_DESCONFORTO,
+  TIPOS_EVACUACAO,
   TIPOS_HIGIENE,
   TIPOS_POSITIVO,
 } from "../tipos";
@@ -32,7 +34,7 @@ export type ChaveNome =
   | "dor" | "enjoo" | "coceira" | "tontura" | "desconforto"
   | "episodio" | "comportamento"
   | "banho" | "escovacao" | "troca" | "higiene"
-  | "sono" | "cochilo" | "evacuacao"
+  | "sono" | "cochilo" | "xixi" | "evacuacao"
   | "comunicacao" | "atividade" | "conquista" | "tranquilo" | "estrategia" | "sem_ajuda" | "interacao";
 
 /**
@@ -50,6 +52,8 @@ export interface DicionarioDominio {
   regiao: Rotulos<typeof REGIOES>;
   observado: Rotulos<typeof OBSERVADOS>;
   higiene: Rotulos<typeof TIPOS_HIGIENE>;
+  evacuacao: Rotulos<typeof TIPOS_EVACUACAO>;
+  ondeEvacuacao: Rotulos<typeof ONDE_EVACUACAO>;
   positivo: Rotulos<typeof TIPOS_POSITIVO>;
   quantidade: Rotulos<typeof QUANTIDADES>;
   aceitacao: Record<"aceitou" | "com_ajuda" | "recusou", string>;

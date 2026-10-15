@@ -62,6 +62,10 @@ export const OBSERVADOS = [
   "outro",
 ] as const;
 export const TIPOS_HIGIENE = ["banho", "escovacao", "troca", "outro"] as const;
+/** Xixi ou cocô (a categoria se chama "evacuacao" desde antes do xixi; registros antigos são cocô). */
+export const TIPOS_EVACUACAO = ["xixi", "coco"] as const;
+/** Onde foi: descritivo, útil no desfralde; nunca uma avaliação. */
+export const ONDE_EVACUACAO = ["vaso", "fralda", "escape"] as const;
 export const TIPOS_POSITIVO = ["comunicacao", "atividade", "conquista", "tranquilo", "estrategia", "sem_ajuda", "interacao"] as const;
 export const QUANTIDADES = ["pouco", "metade", "tudo", "recusou"] as const;
 
@@ -121,6 +125,10 @@ export const detalheSono = z.object({
 
 export const detalheEvacuacao = z.object({
   categoria: z.literal("evacuacao"),
+  // Registros e backups de antes do xixi não têm tipo: eram cocô. O formulário exige a escolha.
+  tipo: z.enum(TIPOS_EVACUACAO).default("coco"),
+  onde: z.enum(ONDE_EVACUACAO).optional(),
+  /** Só no cocô. */
   aspecto: textoLivre.optional(),
 });
 

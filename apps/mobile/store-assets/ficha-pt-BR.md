@@ -18,7 +18,7 @@ O QUE DÁ PARA REGISTRAR
 • Dor e desconforto percebidos
 • Emoções e comportamentos, incluindo episódios difíceis, com duração, intensidade e o que ajudou
 • Banho e higiene
-• Evacuação
+• Xixi e cocô
 • Atividades, conquistas e momentos positivos
 • Mudanças na rotina, como troca de escola, viagem ou férias
 

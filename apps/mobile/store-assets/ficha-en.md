@@ -18,7 +18,7 @@ WHAT YOU CAN LOG
 • Perceived pain and discomfort
 • Feelings and behavior, including difficult episodes, with duration, intensity and what helped
 • Bathing and hygiene
-• Bowel movements
+• Pee and poop
 • Activities, achievements and positive moments
 • Changes in routine, such as a new school, a trip or holidays
 

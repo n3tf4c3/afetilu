@@ -1,6 +1,6 @@
 # Afetilu — guia do projeto
 
-App Android/iOS para familiares e cuidadores de pessoas autistas registrarem observações do dia a dia (alimentação, sono, desconfortos, comportamentos, higiene, evacuação e momentos positivos) e levarem um resumo descritivo às consultas.
+App Android/iOS para familiares e cuidadores de pessoas autistas registrarem observações do dia a dia (alimentação, sono, desconfortos, comportamentos, higiene, xixi e cocô e momentos positivos) e levarem um resumo descritivo às consultas.
 
 Documentos de decisão: `docs/viabilidade-e-escopo.md` (lojas, privacidade, arquitetura) e `docs/experiencia-avatar.md` (mascote slime, reações, etapas). Quando divergirem, vale o segundo.
 
