@@ -68,6 +68,9 @@ function Navegacao() {
           headerStyle: { backgroundColor: cor.fundo },
           headerTintColor: cor.primaria,
           headerTitleStyle: { color: cor.texto },
+          // No iOS o botão voltar mostraria o título da tela anterior; o grupo das abas não tem título
+          // e apareceria "(abas)". Só a seta (o leitor de tela continua lendo "Voltar").
+          headerBackButtonDisplayMode: "minimal",
           contentStyle: { backgroundColor: cor.fundo },
         }}
       >
