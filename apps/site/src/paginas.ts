@@ -9,14 +9,8 @@ export function esc(valor: string): string {
   return valor.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
-/** Mascote em gota (o mesmo do cabeçalho do PDF), só decorativo. */
-export const SLIME_SVG =
-  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-  '<path d="M12 3C8.2 3 4 9 4 14c0 4.4 3.6 7 8 7s8-2.6 8-7c0-5-4.2-11-8-11z" fill="#79AEE0"/>' +
-  '<ellipse cx="7.2" cy="16.2" rx="1.3" ry=".8" fill="#E58AA8"/><ellipse cx="16.8" cy="16.2" rx="1.3" ry=".8" fill="#E58AA8"/>' +
-  '<circle cx="9.2" cy="14.2" r="1.35" fill="#1B2A40"/><circle cx="14.8" cy="14.2" r="1.35" fill="#1B2A40"/>' +
-  '<path d="M10.5 16.9q.75.8 1.5 0q.75.8 1.5 0" fill="none" stroke="#1B2A40" stroke-width=".8" stroke-linecap="round"/>' +
-  "</svg>";
+/** Ícone do app (o mesmo das lojas, gerado por ferramentas/icone), só decorativo: o nome vem ao lado. */
+export const ICONE_APP = '<img class="marca-icone" src="/favicon.svg" alt="" width="36" height="36">';
 
 /** Listras vermelhas da bandeira dos EUA: 13 listras numa altura de 20, as pares em vermelho. */
 const LISTRAS_EUA = Array.from({ length: 7 }, (_, k) => `<rect y="${((k * 2 * 20) / 13).toFixed(2)}" width="30" height="1.54" fill="#B22234"/>`).join("");
@@ -108,7 +102,7 @@ ${alternativas}
 <body>
 <a class="pular" href="#conteudo">${esc(t.nav.pularParaConteudo)}</a>
 <header class="topo">
-  <a class="marca" href="${caminhoInicial(o.idioma)}">${SLIME_SVG}<span>Afetilu</span></a>
+  <a class="marca" href="${caminhoInicial(o.idioma)}">${ICONE_APP}<span>Afetilu</span></a>
   <div class="topo-acoes">
     <nav aria-label="${esc(t.nav.idiomas)}"><ul class="idiomas">${seletor}</ul></nav>
     ${temLoja() ? `<a class="botao" href="${caminhoInicial(o.idioma)}#baixar">${esc(t.nav.baixar)}</a>` : ""}
@@ -120,7 +114,7 @@ ${o.corpo}
 <footer class="rodape">
   <div class="rodape-linha">
     <div class="rodape-marca">
-      <p class="marca">${SLIME_SVG}<span>Afetilu</span></p>
+      <p class="marca">${ICONE_APP}<span>Afetilu</span></p>
       <p>${esc(t.rodape.descricao)}</p>
     </div>
     ${lojas(t, true)}
