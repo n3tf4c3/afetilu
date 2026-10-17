@@ -5,7 +5,7 @@ import { cpSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { CAMINHO_POLITICA, caminhoInicial, SITE } from "./config.ts";
-import { esc, paginaInicial, paginaPolitica, SLIME_SVG } from "./paginas.ts";
+import { esc, paginaInicial, paginaPolitica } from "./paginas.ts";
 import { IDIOMAS_SITE } from "./textos/tipo.ts";
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -30,7 +30,6 @@ export function gerarSite(): string[] {
     caminhos.push(caminhoInicial(idioma), CAMINHO_POLITICA[idioma]);
   }
 
-  writeFileSync(join(DIST, "favicon.svg"), SLIME_SVG.replace('aria-hidden="true"', 'width="64" height="64"'));
   writeFileSync(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE.url}/sitemap.xml\n`);
   writeFileSync(
     join(DIST, "sitemap.xml"),

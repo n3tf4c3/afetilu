@@ -3,9 +3,9 @@
 // Uso (na raiz, Windows com Microsoft Edge):
 //   node ferramentas/icone/gerar_icone.mjs
 //
-// Grava os SVGs em ferramentas/icone/ (fonte versionada) e os PNGs em apps/mobile/assets/ (app) e
-// apps/mobile/store-assets/ (ícone 512 e imagem de destaque da Google Play),
-// rasterizados pelo Edge sem interface. Não editar os PNGs à mão: mudar aqui e gerar de novo.
+// Grava os SVGs em ferramentas/icone/ (fonte versionada) e os PNGs em apps/mobile/assets/ (app),
+// apps/mobile/store-assets/ (ícone 512 e imagem de destaque da Google Play) e apps/site/publico/
+// (favicon e ícone da tela inicial do iOS, iguais ao das lojas), rasterizados pelo Edge sem interface. Não editar os PNGs à mão: mudar aqui e gerar de novo.
 
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
@@ -16,6 +16,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const AQUI = dirname(fileURLToPath(import.meta.url));
 const ASSETS = resolve(AQUI, "../../apps/mobile/assets");
 const LOJA = resolve(AQUI, "../../apps/mobile/store-assets");
+const SITE = resolve(AQUI, "../../apps/site/publico");
 
 // Cores do app (apps/mobile/src/lib/tema.ts) e do mascote.
 const COR = {
@@ -112,6 +113,14 @@ const SAIDAS = {
     opaco: true,
   },
   "destaque-1024x500": { svg: destaque(), largura: 1024, altura: 500, pasta: LOJA, opaco: true },
+  // Site: ícone da tela inicial do iOS (o favicon é o próprio SVG do ícone, gravado abaixo).
+  "apple-touch-icon": {
+    svg: svg({ fundo: true, escala: 700 }).replace('width="1024" height="1024"', 'width="180" height="180"'),
+    largura: 180,
+    altura: 180,
+    pasta: SITE,
+    opaco: true,
+  },
 };
 
 /** Regrava o PNG em RGB de 24 bits: a App Store recusa ícone com canal alfa, mesmo opaco. */
@@ -134,6 +143,10 @@ function edge() {
   if (!achado) throw new Error("Microsoft Edge não encontrado (usado para rasterizar os SVGs).");
   return achado;
 }
+
+// Favicon do site: o mesmo ícone das lojas, em SVG.
+writeFileSync(join(SITE, "favicon.svg"), SAIDAS.icon.svg);
+process.stdout.write("favicon.svg\n");
 
 const temp = mkdtempSync(join(tmpdir(), "afetilu-icone-"));
 try {

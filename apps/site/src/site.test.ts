@@ -20,7 +20,7 @@ test("nenhum script, cookie, fonte ou recurso de terceiros", () => {
     assert.ok(!/<iframe/i.test(p.html), `${p.nome}: iframe`);
     // Recursos carregados pela página (src, stylesheet, ícone) só do próprio site.
     for (const [, url] of p.html.matchAll(/\ssrc="([^"]+)"/g)) assert.ok(url!.startsWith("/"), `${p.nome}: src externo ${url}`);
-    for (const [, url] of p.html.matchAll(/<link rel="(?:stylesheet|icon)" href="([^"]+)"/g)) assert.ok(url!.startsWith("/"), `${p.nome}: ${url}`);
+    for (const [, url] of p.html.matchAll(/<link rel="(?:stylesheet|icon|apple-touch-icon)" href="([^"]+)"/g)) assert.ok(url!.startsWith("/"), `${p.nome}: ${url}`);
     // Links externos permitidos: o repositório, a página de doações e, depois da publicação, as lojas.
     const permitidos = [SITE.repositorio, SITE.url, SITE.apoio, SITE.lojas.googlePlay, SITE.lojas.appStore].filter((x): x is string => !!x);
     for (const [, url] of p.html.matchAll(/href="(https?:\/\/[^"]+)"/g)) {
@@ -42,6 +42,10 @@ test("todas as capturas referenciadas existem em publico/", () => {
       assert.ok(existsSync(join(PUBLICO, nomeDaCaptura(r.imagem, idioma))), `${idioma}: ${r.imagem}`);
     }
   }
+});
+
+test("ícones do site (os mesmos das lojas, de ferramentas/icone) existem em publico/", () => {
+  for (const arquivo of ["favicon.svg", "apple-touch-icon.png"]) assert.ok(existsSync(join(PUBLICO, arquivo)), arquivo);
 });
 
 test("a página inicial leva à política de privacidade do mesmo idioma", () => {
