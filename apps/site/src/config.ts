@@ -13,7 +13,7 @@ export const SITE = {
    */
   lojas: {
     googlePlay: null as string | null,
-    appStore: null as string | null,
+    appStore: "https://apps.apple.com/app/id6822813409" as string | null,
   },
 } as const;
 
