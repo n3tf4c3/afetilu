@@ -3,7 +3,17 @@ import type { CorSlime } from "../components/slime/reacoes";
 import type { FalhaBackup } from "../lib/backup";
 /** Textos das telas. Todos os idiomas implementam este tipo: faltar uma chave é erro de compilação. */
 export interface TextosApp {
-  geral: { cancelar: string; apagar: string; marcar: string; abrindoDados: string };
+  geral: {
+    cancelar: string;
+    apagar: string;
+    marcar: string;
+    abrindoDados: string;
+    /** Leitura do banco falhou: não é o mesmo que "sem informação". */
+    falhaCarregar: string;
+    tentarDeNovo: string;
+    /** Gravação disparada por um toque (chip, botão) falhou. */
+    falhaSalvar: string;
+  };
   erroBanco: {
     semCifraTitulo: string;
     semCifraTexto: string;
@@ -269,6 +279,10 @@ export interface TextosApp {
     confirmarPessoa: (apelido: string) => string;
     confirmarTudo: string;
     falhou: string;
+    /** Falha em "apagar tudo": o arquivo pode ter saído antes da chave, então não promete que nada mudou. */
+    falhouTudo: string;
+    /** A pessoa já foi apagada; só a atualização da tela falhou. */
+    apagadaSemAtualizar: string;
   };
   /** Backup cifrado com senha, salvo onde o responsável escolher. */
   backup: {
@@ -314,6 +328,8 @@ export interface TextosApp {
     confirmar: string;
     restaurando: string;
     falhou: string;
+    /** Os dados já são os do backup; só a atualização da tela falhou. */
+    restauradoSemAtualizar: string;
   };
   /** Resumo para consulta: tela e documento PDF. */
   resumo: {

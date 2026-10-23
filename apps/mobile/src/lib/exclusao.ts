@@ -36,3 +36,12 @@ export async function apagarArquivoEChave(op: OperacoesApagarBanco): Promise<voi
   }
   await op.apagarChave();
 }
+
+/**
+ * Restaurar substitui tudo. Sem dados no aparelho, dispensa a palavra digitada; enquanto a contagem
+ * não chegou (ou se falhou), não se sabe se há dados, e o botão fica travado.
+ */
+export function restauracaoLiberada(atuais: { pessoas: number } | null, digitado: string, palavra: string): boolean {
+  if (!atuais) return false;
+  return atuais.pessoas === 0 || confirmacaoConfere(digitado, palavra);
+}

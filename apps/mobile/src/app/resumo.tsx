@@ -15,9 +15,10 @@ import { File, Paths } from "expo-file-system";
 import * as Print from "expo-print";
 import { Stack } from "expo-router";
 import * as Sharing from "expo-sharing";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FalhaAoCarregar } from "../components/falha-ao-carregar";
 import { Aviso, Botao, Campo, Chip, Secao, estilos as ui } from "../components/ui";
 import { useApp, useTextos } from "../lib/estado";
 import {
@@ -30,6 +31,7 @@ import {
 } from "../lib/repositorio";
 import { montarResumoHtml, nomeDoArquivoDoResumo } from "../lib/resumo-html";
 import { ALVO_MINIMO, cor, espaco, raio, texto } from "../lib/tema";
+import { useConsulta } from "../lib/usar-consulta";
 
 const PERIODOS = [7, 30, 90] as const;
 // A4 a 72 pontos por polegada: sem isto o expo-print usa o formato Carta.
@@ -40,39 +42,33 @@ const PAGINA_A4 = { width: 595, height: 842 };
  * folha do sistema por escolha do responsável (docs/viabilidade-e-escopo.md, fluxo 5).
  */
 export default function Resumo() {
-  const { db, pessoaAtiva, versaoDados, notificarMudanca } = useApp();
+  const { db, pessoaAtiva, versaoDados, notificarMudanca, tentar } = useApp();
   const { t, d, idioma } = useTextos();
   const tr = t.resumo;
   const insets = useSafeAreaInsets();
   const [dias, setDias] = useState<(typeof PERIODOS)[number]>(30);
   const [categorias, setCategorias] = useState<Categoria[]>([...CATEGORIAS]);
-  const [dados, setDados] = useState<{
-    registros: Registro[];
-    anotados: DiaAnotado[];
-    mudancas: MudancaRotina[];
-    perguntas: PerguntaConsulta[];
-  } | null>(null);
   const [novaPergunta, setNovaPergunta] = useState("");
   const [ocupado, setOcupado] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const hoje = chaveDoDia(new Date());
   const inicio = somarDias(hoje, -(dias - 1));
 
-  useEffect(() => {
-    if (!pessoaAtiva) return;
-    let ativo = true;
-    void Promise.all([
-      listarRegistros(db, pessoaAtiva.id, inicio, hoje),
-      listarDiasAnotados(db, pessoaAtiva.id, inicio, hoje),
-      listarMudancas(db, pessoaAtiva.id, inicio, hoje),
-      listarPerguntas(db, pessoaAtiva.id),
-    ]).then(([registros, anotados, mudancas, perguntas]) => {
-      if (ativo) setDados({ registros, anotados, mudancas, perguntas });
-    });
-    return () => {
-      ativo = false;
-    };
-  }, [db, pessoaAtiva, versaoDados, inicio, hoje]);
+  const consulta = useConsulta(
+    pessoaAtiva ? `${pessoaAtiva.id}|${inicio}|${hoje}` : null,
+    async (): Promise<{ registros: Registro[]; anotados: DiaAnotado[]; mudancas: MudancaRotina[]; perguntas: PerguntaConsulta[] }> => {
+      const id = pessoaAtiva!.id;
+      const [registros, anotados, mudancas, perguntas] = await Promise.all([
+        listarRegistros(db, id, inicio, hoje),
+        listarDiasAnotados(db, id, inicio, hoje),
+        listarMudancas(db, id, inicio, hoje),
+        listarPerguntas(db, id),
+      ]);
+      return { registros, anotados, mudancas, perguntas };
+    },
+    versaoDados,
+  );
+  const dados = consulta.dados;
 
   const resumo = useMemo(
     () =>
@@ -173,7 +169,7 @@ export default function Resumo() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={tr.apagarPergunta(p.texto)}
-                onPress={() => void removerPergunta(p.id)}
+                onPress={() => tentar(() => removerPergunta(p.id))}
                 style={estilos.apagar}
               >
                 <MaterialCommunityIcons name="trash-can-outline" size={22} color={cor.textoSuave} />
@@ -186,9 +182,10 @@ export default function Resumo() {
             icone="plus"
             rotulo={tr.acrescentarPergunta}
             desabilitado={!novaPergunta.trim()}
-            onPress={() => void acrescentarPergunta()}
+            onPress={() => tentar(acrescentarPergunta)}
           />
         </Secao>
+        {consulta.falhou ? <FalhaAoCarregar tentarDeNovo={consulta.tentarDeNovo} /> : null}
         {cob ? (
           <View style={estilos.previa} accessible accessibilityLiveRegion="polite">
             <Text style={texto.corpo}>{tr.previa(cob.diasComRegistro, cob.totalDias, totalRegistros, cob.episodios)}</Text>

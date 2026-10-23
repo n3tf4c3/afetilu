@@ -1,7 +1,15 @@
 import type { TextosApp } from "./tipo";
 
 export const ptBR: TextosApp = {
-  geral: { cancelar: "Cancelar", apagar: "Apagar", marcar: "Marcar", abrindoDados: "Abrindo os dados" },
+  geral: {
+    cancelar: "Cancelar",
+    apagar: "Apagar",
+    marcar: "Marcar",
+    abrindoDados: "Abrindo os dados",
+    falhaCarregar: "Não foi possível carregar os dados.",
+    tentarDeNovo: "Tentar de novo",
+    falhaSalvar: "Não foi possível salvar. Tente de novo.",
+  },
   erroBanco: {
     semCifraTitulo: "Proteção dos dados indisponível",
     semCifraTexto: "Esta versão do app não tem a cifra do banco de dados. Por segurança, nada será gravado.",
@@ -287,6 +295,8 @@ export const ptBR: TextosApp = {
     confirmarPessoa: (a) => `Apagar ${a} definitivamente`,
     confirmarTudo: "Apagar tudo definitivamente",
     falhou: "Não foi possível apagar. Nada foi alterado.",
+    falhouTudo: "Não foi possível concluir a exclusão. Tente de novo.",
+    apagadaSemAtualizar: "Os dados foram apagados, mas a tela não atualizou. Feche e abra o app.",
   },
   backup: {
     titulo: "Fazer backup",
@@ -343,6 +353,7 @@ export const ptBR: TextosApp = {
     confirmar: "Restaurar este backup",
     restaurando: "Restaurando…",
     falhou: "Não foi possível restaurar. Os dados do aparelho continuam como estavam.",
+    restauradoSemAtualizar: "O backup foi restaurado, mas a tela não atualizou. Feche e abra o app.",
   },
   resumo: {
     titulo: "Resumo para consulta",

@@ -3,7 +3,7 @@ import Constants from "expo-constants";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { Botao, Campo, Chip, Escolha, EscolhaMultipla, Secao, estilos as ui } from "../../components/ui";
+import { Aviso, Botao, Campo, Chip, Escolha, EscolhaMultipla, Secao, estilos as ui } from "../../components/ui";
 import { CORES_SLIME } from "../../components/slime/reacoes";
 import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
 import { diasDesde, PREF_ULTIMO_BACKUP } from "../../lib/backup";
@@ -17,7 +17,7 @@ import { espaco, texto } from "../../lib/tema";
 const OPCOES_SOM = ["ligado", "desligado"] as const;
 
 function EditarPessoa(props: { id: string; apelido: string; ativa: boolean }) {
-  const { db, recarregarPessoas, escolherPessoa } = useApp();
+  const { db, recarregarPessoas, escolherPessoa, tentar } = useApp();
   const { t } = useTextos();
   const [valor, setValor] = useState(props.apelido);
   const mudou = valor.trim() !== props.apelido && valor.trim().length > 0;
@@ -26,9 +26,9 @@ function EditarPessoa(props: { id: string; apelido: string; ativa: boolean }) {
       <Campo rotulo={props.ativa ? t.ajustes.apelidoEmUso : t.ajustes.apelido} valor={valor} onChange={setValor} max={LIMITES.apelido} />
       <View style={{ flexDirection: "row", gap: espaco.s, flexWrap: "wrap" }}>
         {mudou ? (
-          <Botao variante="secundaria" rotulo={t.ajustes.salvarApelido} onPress={() => void renomearPessoa(db, props.id, valor).then(recarregarPessoas)} />
+          <Botao variante="secundaria" rotulo={t.ajustes.salvarApelido} onPress={() => tentar(() => renomearPessoa(db, props.id, valor).then(recarregarPessoas))} />
         ) : null}
-        {!props.ativa ? <Botao variante="texto" rotulo={t.ajustes.acompanharAgora} onPress={() => void escolherPessoa(props.id)} /> : null}
+        {!props.ativa ? <Botao variante="texto" rotulo={t.ajustes.acompanharAgora} onPress={() => tentar(() => escolherPessoa(props.id))} /> : null}
       </View>
     </View>
   );
@@ -46,19 +46,26 @@ export default function Ajustes() {
     definirIdioma,
     aparencia,
     definirAparencia,
+    tentar,
   } = useApp();
   const { t, idioma } = useTextos();
   const a = t.ajustes;
   const [novo, setNovo] = useState("");
-  const [ultimoBackup, setUltimoBackup] = useState<string | null>(null);
+  // `null` enquanto lê; "falhou" não pode virar "nunca fez backup".
+  const [ultimoBackup, setUltimoBackup] = useState<{ valor: string | null } | "falhou" | null>(null);
 
   // Relido ao voltar para a aba (depois de fazer ou restaurar um backup).
   useFocusEffect(
     useCallback(() => {
       let ativo = true;
-      void lerPreferencia(db, PREF_ULTIMO_BACKUP).then((v) => {
-        if (ativo) setUltimoBackup(v);
-      });
+      lerPreferencia(db, PREF_ULTIMO_BACKUP).then(
+        (valor) => {
+          if (ativo) setUltimoBackup({ valor });
+        },
+        () => {
+          if (ativo) setUltimoBackup("falhou");
+        },
+      );
       return () => {
         ativo = false;
       };
@@ -92,7 +99,7 @@ export default function Ajustes() {
           <EditarPessoa key={`${p.id}-${p.apelido}`} id={p.id} apelido={p.apelido} ativa={p.id === pessoaAtiva?.id} />
         ))}
         <Campo rotulo={a.acrescentarPessoa} valor={novo} onChange={setNovo} max={LIMITES.apelido} dica={a.apelido} />
-        <Botao variante="secundaria" rotulo={a.acrescentar} desabilitado={!novo.trim()} onPress={() => void adicionar()} />
+        <Botao variante="secundaria" rotulo={a.acrescentar} desabilitado={!novo.trim()} onPress={() => tentar(adicionar)} />
       </Secao>
 
       <Secao titulo={a.aparencia}>
@@ -100,14 +107,14 @@ export default function Ajustes() {
           opcoes={MODOS_VISUAIS}
           rotulos={{ cenario: a.modoCenario, simples: a.modoSimples }}
           valor={aparencia.modoVisual}
-          onChange={(v) => v && void definirAparencia({ modoVisual: v })}
+          onChange={(v) => v && tentar(() => definirAparencia({ modoVisual: v }))}
         />
         <Escolha
           rotulo={a.corSlime}
           opcoes={CORES_SLIME}
           rotulos={a.cores}
           valor={aparencia.corSlime}
-          onChange={(v) => v && void definirAparencia({ corSlime: v })}
+          onChange={(v) => v && tentar(() => definirAparencia({ corSlime: v }))}
         />
         <Text style={texto.suave}>{a.corSlimeAjuda}</Text>
         <EscolhaMultipla
@@ -115,7 +122,7 @@ export default function Ajustes() {
           opcoes={DATAS_COMEMORATIVAS}
           rotulos={a.datasComemorativas}
           valor={DATAS_COMEMORATIVAS.filter((data) => !comemorativasDesligadas(aparencia.comemorativas).includes(data))}
-          onChange={(ligadas) => void definirAparencia({ comemorativas: DATAS_COMEMORATIVAS.filter((data) => !ligadas.includes(data)).join(",") })}
+          onChange={(ligadas) => tentar(() => definirAparencia({ comemorativas: DATAS_COMEMORATIVAS.filter((data) => !ligadas.includes(data)).join(",") }))}
         />
         <Text style={texto.suave}>{a.comemorativasAjuda}</Text>
         <Escolha
@@ -123,7 +130,7 @@ export default function Ajustes() {
           opcoes={PREFERENCIAS_MOVIMENTO}
           rotulos={{ auto: a.movAuto, completo: a.movCompleto, reduzido: a.movReduzido, nenhum: a.movNenhum }}
           valor={aparencia.movimento}
-          onChange={(v) => v && void definirAparencia({ movimento: v })}
+          onChange={(v) => v && tentar(() => definirAparencia({ movimento: v }))}
         />
         <Text style={texto.suave}>{a.movimentoAjuda}</Text>
         <Escolha
@@ -131,16 +138,16 @@ export default function Ajustes() {
           opcoes={OPCOES_SOM}
           rotulos={{ ligado: a.somLigado, desligado: a.somDesligado }}
           valor={aparencia.som === "ligado" ? "ligado" : "desligado"}
-          onChange={(v) => v && void definirAparencia({ som: v })}
+          onChange={(v) => v && tentar(() => definirAparencia({ som: v }))}
         />
         <Text style={texto.suave}>{a.sonsAjuda}</Text>
       </Secao>
 
       <Secao titulo={a.idioma}>
         <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={a.idioma}>
-          <Chip rotulo={a.idiomaAutomatico} selecionado={preferenciaIdioma === "auto"} onPress={() => void definirIdioma("auto")} />
+          <Chip rotulo={a.idiomaAutomatico} selecionado={preferenciaIdioma === "auto"} onPress={() => tentar(() => definirIdioma("auto"))} />
           {IDIOMAS.map((i) => (
-            <Chip key={i} rotulo={NOME_DO_IDIOMA[i]} selecionado={preferenciaIdioma === i} onPress={() => void definirIdioma(i)} />
+            <Chip key={i} rotulo={NOME_DO_IDIOMA[i]} selecionado={preferenciaIdioma === i} onPress={() => tentar(() => definirIdioma(i))} />
           ))}
         </View>
       </Secao>
@@ -148,7 +155,11 @@ export default function Ajustes() {
       <Secao titulo={a.seusDados}>
         <Text style={texto.corpo}>{a.seusDadosTexto}</Text>
         <Text style={texto.corpo}>{a.backupTexto}</Text>
-        <Text style={texto.subtitulo}>{a.ultimoBackup(diasDesde(ultimoBackup, new Date()))}</Text>
+        {ultimoBackup === "falhou" ? (
+          <Aviso tipo="alerta" texto={t.geral.falhaCarregar} />
+        ) : ultimoBackup ? (
+          <Text style={texto.subtitulo}>{a.ultimoBackup(diasDesde(ultimoBackup.valor, new Date()))}</Text>
+        ) : null}
         <Botao rotulo={a.fazerBackup} onPress={() => router.push("/backup")} />
         <Botao variante="secundaria" rotulo={a.restaurarBackup} onPress={() => router.push("/restaurar")} />
         <Text style={texto.suave}>{a.apagarAjuda}</Text>
@@ -166,7 +177,7 @@ export default function Ajustes() {
       {__DEV__ ? (
         <Secao titulo={a.devTitulo}>
           <Text style={texto.suave}>{a.devAjuda}</Text>
-          <Botao variante="secundaria" rotulo={a.devGerar} onPress={() => void gerarFicticios()} />
+          <Botao variante="secundaria" rotulo={a.devGerar} onPress={() => tentar(gerarFicticios)} />
           <Botao variante="secundaria" rotulo="Prova técnica: slime 3D" onPress={() => router.push("/prova-slime")} />
         </Secao>
       ) : null}

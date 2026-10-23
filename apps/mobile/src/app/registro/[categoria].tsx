@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { CamposCategoria } from "../../components/campos-categoria";
+import { FalhaAoCarregar } from "../../components/falha-ao-carregar";
 import { extrasDaReacao, reacaoDoRegistro } from "../../components/slime/reacao-do-registro";
 import { SeletorDataHora } from "../../components/seletor-data";
 import { SeletorQuando } from "../../components/seletor-quando";
@@ -45,30 +46,42 @@ export default function TelaRegistro() {
   const [recentes, setRecentes] = useState<Registro[]>([]);
   const [erro, setErro] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
+  // Sem os registros recentes, faltam as sugestões e o contexto da última refeição; na correção, o próprio registro.
+  const [falhouCarregar, setFalhouCarregar] = useState(false);
+  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
     if (!pessoaAtiva) return;
     let ativo = true;
     void (async () => {
-      const hoje = chaveDoDia(new Date());
-      const lista = await listarRegistros(db, pessoaAtiva.id, somarDias(hoje, -DIAS_SUGESTOES), hoje);
-      if (!ativo) return;
-      setRecentes(lista);
-      if (params.id) {
-        const r = await obterRegistro(db, params.id);
+      try {
+        const hoje = chaveDoDia(new Date());
+        const lista = await listarRegistros(db, pessoaAtiva.id, somarDias(hoje, -DIAS_SUGESTOES), hoje);
         if (!ativo) return;
-        if (r) {
-          setOriginal(r);
-          setForm(formularioDoRegistro(r, new Date()));
-        } else {
-          setErro(tr.erros.naoEncontrado);
+        setRecentes(lista);
+        if (params.id) {
+          const r = await obterRegistro(db, params.id);
+          if (!ativo) return;
+          if (r) {
+            setOriginal(r);
+            setForm(formularioDoRegistro(r, new Date()));
+          } else {
+            setErro(tr.erros.naoEncontrado);
+          }
         }
+      } catch {
+        if (ativo) setFalhouCarregar(true);
       }
     })();
     return () => {
       ativo = false;
     };
-  }, [db, pessoaAtiva, params.id, tr]);
+  }, [db, pessoaAtiva, params.id, tr, tentativa]);
+
+  const tentarDeNovo = () => {
+    setFalhouCarregar(false);
+    setTentativa((n) => n + 1);
+  };
 
   const sugestoesAjudou = useMemo(() => {
     const todas = recentes.flatMap((r) => (r.detalhe.categoria === "comportamento" ? (r.detalhe.episodio?.ajudou ?? []) : []));
@@ -85,7 +98,12 @@ export default function TelaRegistro() {
     return <Aviso tipo="alerta" texto={tr.categoriaInvalida} />;
   }
   if (!form) {
-    return <View style={{ flex: 1 }}>{erro ? <Aviso tipo="alerta" texto={erro} /> : null}</View>;
+    return (
+      <View style={{ flex: 1, padding: espaco.l }}>
+        {falhouCarregar ? <FalhaAoCarregar tentarDeNovo={tentarDeNovo} /> : null}
+        {erro ? <Aviso tipo="alerta" texto={erro} /> : null}
+      </View>
+    );
   }
 
   const atualizar = (parcial: Partial<Formulario>) => {
@@ -132,6 +150,7 @@ export default function TelaRegistro() {
         <Secao>
           <CamposCategoria rascunho={form.rascunho} alterar={(rascunho) => atualizar({ rascunho })} sugestoesAjudou={sugestoesAjudou} />
           {contexto ? <Aviso texto={tr.contexto(contexto)} /> : null}
+          {falhouCarregar ? <FalhaAoCarregar tentarDeNovo={tentarDeNovo} /> : null}
         </Secao>
 
         {TEM_TERMINO.has(categoria) ? (

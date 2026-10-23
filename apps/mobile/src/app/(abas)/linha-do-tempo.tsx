@@ -11,8 +11,9 @@ import {
   type Registro,
 } from "@afetilu/core";
 import { router } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
-import { Alert, FlatList, Pressable, ScrollView, Text, View } from "react-native";
+import { useMemo, useState } from "react";
+import { ActivityIndicator, Alert, FlatList, Pressable, ScrollView, Text, View } from "react-native";
+import { FalhaAoCarregar } from "../../components/falha-ao-carregar";
 import { ItemRegistro } from "../../components/item-registro";
 import { Aviso, Botao, Chip, estilos as ui } from "../../components/ui";
 import { useApp, useTextos } from "../../lib/estado";
@@ -26,6 +27,7 @@ import {
   marcarSemCrises,
 } from "../../lib/repositorio";
 import { ALVO_MINIMO, cor, espaco, raio, texto } from "../../lib/tema";
+import { useConsulta } from "../../lib/usar-consulta";
 import type { TextosApp } from "../../i18n";
 
 const PERIODOS = [7, 30] as const;
@@ -37,46 +39,40 @@ function tituloDoDia(dia: string, hoje: string, d: DicionarioDominio, t: TextosA
 }
 
 export default function LinhaDoTempo() {
-  const { db, pessoaAtiva, versaoDados, notificarMudanca } = useApp();
+  const { db, pessoaAtiva, versaoDados, notificarMudanca, tentar } = useApp();
   const { t, d } = useTextos();
   const tl = t.linha;
   const [dias, setDias] = useState<(typeof PERIODOS)[number]>(7);
   const [filtro, setFiltro] = useState<FiltroCategoria>("todas");
-  const [registros, setRegistros] = useState<Registro[]>([]);
-  const [anotados, setAnotados] = useState<DiaAnotado[]>([]);
-  const [mudancas, setMudancas] = useState<MudancaRotina[]>([]);
   const hoje = chaveDoDia(new Date());
   const inicio = somarDias(hoje, -(dias - 1));
 
-  useEffect(() => {
-    if (!pessoaAtiva) return;
-    let ativo = true;
-    void (async () => {
-      const [r, a, m] = await Promise.all([
-        listarRegistros(db, pessoaAtiva.id, inicio, hoje),
-        listarDiasAnotados(db, pessoaAtiva.id, inicio, hoje),
-        listarMudancas(db, pessoaAtiva.id, inicio, hoje),
+  const consulta = useConsulta(
+    pessoaAtiva ? `${pessoaAtiva.id}|${inicio}|${hoje}` : null,
+    async (): Promise<{ registros: Registro[]; anotados: DiaAnotado[]; mudancas: MudancaRotina[] }> => {
+      const id = pessoaAtiva!.id;
+      const [registros, anotados, mudancas] = await Promise.all([
+        listarRegistros(db, id, inicio, hoje),
+        listarDiasAnotados(db, id, inicio, hoje),
+        listarMudancas(db, id, inicio, hoje),
       ]);
-      if (!ativo) return;
-      setRegistros(r);
-      setAnotados(a);
-      setMudancas(m);
-    })();
-    return () => {
-      ativo = false;
-    };
-  }, [db, pessoaAtiva, versaoDados, inicio, hoje]);
+      return { registros, anotados, mudancas };
+    },
+    versaoDados,
+  );
+  const dados = consulta.dados;
 
+  // Sem os dados (carregando ou falha), nenhum dia aparece: ausência de leitura não é "sem informação".
   const linha = useMemo(
-    () => montarLinhaDoTempo({ inicio, fim: hoje, registros, diasAnotados: anotados, filtro }),
-    [inicio, hoje, registros, anotados, filtro],
+    () => (dados ? montarLinhaDoTempo({ inicio, fim: hoje, registros: dados.registros, diasAnotados: dados.anotados, filtro }) : []),
+    [inicio, hoje, dados, filtro],
   );
 
   const mudancasDoDia = useMemo(() => {
     const porDia = new Map<string, MudancaRotina[]>();
-    for (const m of mudancas) porDia.set(m.dia, [...(porDia.get(m.dia) ?? []), m]);
+    for (const m of dados?.mudancas ?? []) porDia.set(m.dia, [...(porDia.get(m.dia) ?? []), m]);
     return porDia;
-  }, [mudancas]);
+  }, [dados]);
 
   if (!pessoaAtiva) return null;
 
@@ -86,7 +82,7 @@ export default function LinhaDoTempo() {
       {
         text: t.geral.apagar,
         style: "destructive",
-        onPress: () => void apagarMudanca(db, m.id).then(notificarMudanca),
+        onPress: () => tentar(() => apagarMudanca(db, m.id).then(notificarMudanca)),
       },
     ]);
 
@@ -119,6 +115,13 @@ export default function LinhaDoTempo() {
       data={linha}
       keyExtractor={(dia) => dia.situacao.dia}
       ListHeaderComponent={cabecalho}
+      ListEmptyComponent={
+        consulta.falhou ? (
+          <FalhaAoCarregar tentarDeNovo={consulta.tentarDeNovo} />
+        ) : (
+          <ActivityIndicator color={cor.primaria} accessibilityLabel={t.geral.abrindoDados} />
+        )
+      }
       contentContainerStyle={{ padding: espaco.l, gap: espaco.m, paddingBottom: 120 }}
       renderItem={({ item: dia }) => (
         <View
@@ -168,7 +171,7 @@ export default function LinhaDoTempo() {
             variante="texto"
             icone={dia.situacao.semCrisesAnotado ? "close-circle-outline" : "check-circle-outline"}
             rotulo={dia.situacao.semCrisesAnotado ? tl.desmarcarSemCrises : tl.marcarSemCrises}
-            onPress={() => void alternar(dia)}
+            onPress={() => tentar(() => alternar(dia))}
           />
         </View>
       )}

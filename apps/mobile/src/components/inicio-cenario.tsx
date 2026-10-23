@@ -71,10 +71,10 @@ function Pilula(props: {
 
 /** Tela inicial com cenário: o lugar onde a pessoa está, as ações daquele momento e o slime. */
 export function InicioCenario() {
-  const { pessoaAtiva, aparencia, definirAparencia, reacaoSlime, reagir } = useApp();
+  const { pessoaAtiva, aparencia, definirAparencia, reacaoSlime, reagir, tentar } = useApp();
   const { t, d } = useTextos();
   const ti = t.inicio;
-  const { hoje, hojeRegistros, emAberto, anotacaoHoje, abrirRegistro, alternarSemCrises } = useHoje();
+  const { hoje, hojeRegistros, emAberto, anotacaoHoje, carregado, falhou, tentarDeNovo, abrirRegistro, alternarSemCrises } = useHoje();
   const movimento = useMovimento();
   useSonsDoSlime(reacaoSlime.reacao, reacaoSlime.disparo, aparencia.som === "ligado");
   const { width, height } = useWindowDimensions();
@@ -91,16 +91,16 @@ export function InicioCenario() {
       const alvo = (i + CENARIOS.length) % CENARIOS.length;
       lista.current?.scrollToIndex({ index: alvo, animated: movimento === "completo" });
       setIndice(alvo);
-      void definirAparencia({ local: CENARIOS[alvo]!.local });
+      tentar(() => definirAparencia({ local: CENARIOS[alvo]!.local }));
     },
-    [definirAparencia, movimento],
+    [definirAparencia, movimento, tentar],
   );
 
   const aoTerminarDeslize = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const i = Math.round(e.nativeEvent.contentOffset.x / width);
     if (i !== indice && CENARIOS[i]) {
       setIndice(i);
-      void definirAparencia({ local: CENARIOS[i]!.local });
+      tentar(() => definirAparencia({ local: CENARIOS[i]!.local }));
     }
   };
 
@@ -219,9 +219,15 @@ export function InicioCenario() {
         </Pressable>
       </View>
       <View style={[estilos.resumo, { top: insets.top + 78 }]}>
-        <Pressable accessibilityRole="button" onPress={() => router.push("/linha-do-tempo")} style={estilos.resumoBotao}>
-          <Text style={estilos.resumoTexto}>{ti.hojeResumo(hojeRegistros.length)}</Text>
-        </Pressable>
+        {falhou ? (
+          <Pressable accessibilityRole="button" accessibilityHint={t.geral.tentarDeNovo} onPress={tentarDeNovo} style={estilos.resumoBotao}>
+            <Text style={estilos.resumoTexto}>{t.geral.falhaCarregar}</Text>
+          </Pressable>
+        ) : carregado ? (
+          <Pressable accessibilityRole="button" onPress={() => router.push("/linha-do-tempo")} style={estilos.resumoBotao}>
+            <Text style={estilos.resumoTexto}>{ti.hojeResumo(hojeRegistros.length)}</Text>
+          </Pressable>
+        ) : null}
         {emAberto.length > 0 ? (
           <Pressable accessibilityRole="button" onPress={() => router.push("/linha-do-tempo")} style={estilos.resumoBotao}>
             <Text style={estilos.resumoTexto}>{ti.emAbertoResumo(emAberto.length)}</Text>
@@ -242,12 +248,12 @@ export function InicioCenario() {
           <Text style={estilos.perguntaTitulo}>{ti.somPergunta}</Text>
           <Text style={estilos.perguntaTexto}>{ti.somPerguntaAjuda}</Text>
           <View style={estilos.perguntaBotoes}>
-            <Pressable accessibilityRole="button" onPress={() => void definirAparencia({ som: "desligado" })} style={estilos.perguntaBotao}>
+            <Pressable accessibilityRole="button" onPress={() => tentar(() => definirAparencia({ som: "desligado" }))} style={estilos.perguntaBotao}>
               <Text style={estilos.fecharTexto}>{ti.somAgoraNao}</Text>
             </Pressable>
             <Pressable
               accessibilityRole="button"
-              onPress={() => void definirAparencia({ som: "ligado" })}
+              onPress={() => tentar(() => definirAparencia({ som: "ligado" }))}
               style={[estilos.perguntaBotao, estilos.perguntaBotaoPrincipal]}
             >
               <Text style={[estilos.fecharTexto, { color: cor.sobrePrimaria }]}>{ti.somAtivar}</Text>

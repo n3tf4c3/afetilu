@@ -32,6 +32,10 @@ interface EstadoApp {
   desfazer: Desfazer | null;
   oferecerDesfazer: (texto: string, acao: () => Promise<void>) => void;
   executarDesfazer: () => Promise<void>;
+  /** Aviso de gravação que falhou, mostrado por alguns segundos. */
+  falhaAoSalvar: boolean;
+  /** Executa uma gravação disparada por um toque; se falhar, mostra o aviso em vez de falhar calada. */
+  tentar: (acao: () => Promise<unknown>) => void;
   apagarTudo: () => Promise<void>;
   preferenciaIdioma: PreferenciaIdioma;
   definirIdioma: (p: PreferenciaIdioma) => Promise<void>;
@@ -102,6 +106,7 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
   const [tentativa, setTentativa] = useState(0);
   const [versaoDados, setVersao] = useState(0);
   const [desfazer, setDesfazer] = useState<Desfazer | null>(null);
+  const [falhaAoSalvar, setFalhaAoSalvar] = useState(false);
   const [reacaoSlime, setReacaoSlime] = useState<ReacaoSlime>({ reacao: null, disparo: 0, suspeita: false });
   const [idiomaAparelho] = useState<Idioma>(() => resolverIdioma(getLocales().map((l) => l.languageTag)));
 
@@ -121,6 +126,19 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
     const t = setTimeout(() => setDesfazer(null), DURACAO_DESFAZER_MS);
     return () => clearTimeout(t);
   }, [desfazer]);
+
+  useEffect(() => {
+    if (!falhaAoSalvar) return;
+    const t = setTimeout(() => setFalhaAoSalvar(false), DURACAO_DESFAZER_MS);
+    return () => clearTimeout(t);
+  }, [falhaAoSalvar]);
+
+  const tentar = useCallback((acao: () => Promise<unknown>) => {
+    void acao().catch(() => {
+      setDesfazer(null);
+      setFalhaAoSalvar(true);
+    });
+  }, []);
 
   const db = abertura.tipo === "pronto" ? abertura.db : null;
 
@@ -153,13 +171,18 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
         setAbertura((a) => (a.tipo === "pronto" ? { ...a, ativaId: id } : a));
       },
       desfazer,
-      oferecerDesfazer: (texto, acao) => setDesfazer({ texto, acao }),
+      oferecerDesfazer: (texto, acao) => {
+        setFalhaAoSalvar(false);
+        setDesfazer({ texto, acao });
+      },
       executarDesfazer: async () => {
         if (!desfazer) return;
         setDesfazer(null);
         await desfazer.acao();
         setVersao((v) => v + 1);
       },
+      falhaAoSalvar,
+      tentar,
       apagarTudo: recomecar,
       preferenciaIdioma: abertura.idioma,
       definirIdioma: async (p) => {
@@ -176,7 +199,7 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
       reacaoSlime,
       reagir: (reacao, extras) => setReacaoSlime((r) => ({ reacao, disparo: r.disparo + 1, suspeita: false, ...extras })),
     };
-  }, [abertura, versaoDados, desfazer, recomecar, reacaoSlime]);
+  }, [abertura, versaoDados, desfazer, falhaAoSalvar, tentar, recomecar, reacaoSlime]);
 
   const idioma = abertura.tipo === "pronto" && abertura.idioma !== "auto" ? abertura.idioma : idiomaAparelho;
   const valorTextos = useMemo(() => textos(idioma), [idioma]);

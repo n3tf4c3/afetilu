@@ -4,9 +4,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useApp, useTextos } from "../lib/estado";
 import { ALVO_MINIMO, cor, espaco, raio } from "../lib/tema";
 
-/** Confirmação textual do registro salvo, com "Desfazer" por alguns segundos. */
+/**
+ * Confirmação textual do registro salvo, com "Desfazer" por alguns segundos. No mesmo lugar, o aviso
+ * de uma gravação que falhou.
+ */
 export function AvisoDesfazer() {
-  const { desfazer, executarDesfazer } = useApp();
+  const { desfazer, executarDesfazer, falhaAoSalvar, tentar } = useApp();
   const { t } = useTextos();
   const insets = useSafeAreaInsets();
 
@@ -14,6 +17,19 @@ export function AvisoDesfazer() {
     if (desfazer) AccessibilityInfo.announceForAccessibility(desfazer.texto);
   }, [desfazer]);
 
+  useEffect(() => {
+    if (falhaAoSalvar) AccessibilityInfo.announceForAccessibility(t.geral.falhaSalvar);
+  }, [falhaAoSalvar, t]);
+
+  if (falhaAoSalvar) {
+    return (
+      <View style={[estilos.barra, { bottom: insets.bottom + 72, paddingRight: espaco.l }]} accessibilityRole="alert" accessibilityLiveRegion="assertive">
+        <Text style={estilos.texto} numberOfLines={2}>
+          {t.geral.falhaSalvar}
+        </Text>
+      </View>
+    );
+  }
   if (!desfazer) return null;
   return (
     <View style={[estilos.barra, { bottom: insets.bottom + 72 }]} accessibilityLiveRegion="polite">
@@ -23,7 +39,7 @@ export function AvisoDesfazer() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t.desfazer.rotulo}
-        onPress={() => void executarDesfazer()}
+        onPress={() => tentar(executarDesfazer)}
         style={estilos.botao}
       >
         <Text style={estilos.botaoTexto}>{t.desfazer.botao}</Text>

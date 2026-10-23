@@ -102,8 +102,10 @@ export default function FazerBackup() {
   };
 
   const concluir = async (destino: Destino, ignorados: number) => {
-    await gravarPreferencia(db, PREF_ULTIMO_BACKUP, new Date().toISOString());
     setResultado({ tipo: "ok", destino, ignorados });
+    // O arquivo já saiu: uma falha aqui não pode virar "nada foi enviado". Sem gravar a data, o
+    // lembrete de backup só aparece antes da hora.
+    await gravarPreferencia(db, PREF_ULTIMO_BACKUP, new Date().toISOString()).catch(() => undefined);
   };
 
   const erroSenha = tentou && problema ? (problema === "curta" ? tb.senhaCurta(SENHA_MIN) : tb.senhaDiferente) : null;

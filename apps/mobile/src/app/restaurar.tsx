@@ -1,14 +1,16 @@
 import { chaveDoDia, previaDoBackup, type ConteudoBackup, type EnvelopeBackup } from "@afetilu/core";
 import { File } from "expo-file-system";
 import { router, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { FalhaAoCarregar } from "../components/falha-ao-carregar";
 import { Aviso, Botao, Campo, Secao } from "../components/ui";
 import { decifrarBackup, ErroBackup, lerArquivoDeBackup, nomeLegivel, PREF_ULTIMO_BACKUP, TAMANHO_MAX_BACKUP } from "../lib/backup";
 import { useApp, useTextos } from "../lib/estado";
-import { confirmacaoConfere } from "../lib/exclusao";
+import { restauracaoLiberada } from "../lib/exclusao";
 import { contarTudo, gravarPreferencia, lerPreferencia, substituirPorBackup } from "../lib/repositorio";
 import { cor, espaco, texto } from "../lib/tema";
+import { useConsulta } from "../lib/usar-consulta";
 
 /**
  * Restauração de um backup: escolher o arquivo, digitar a senha, conferir a prévia e só então
@@ -22,20 +24,12 @@ export default function Restaurar() {
   const [senha, setSenha] = useState("");
   const [progresso, setProgresso] = useState<number | null>(null);
   const [conteudo, setConteudo] = useState<ConteudoBackup | null>(null);
-  const [atuais, setAtuais] = useState<{ pessoas: number; registros: number } | null>(null);
   const [digitado, setDigitado] = useState("");
   const [restaurando, setRestaurando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
-  useEffect(() => {
-    let ativo = true;
-    void contarTudo(db).then((c) => {
-      if (ativo) setAtuais(c);
-    });
-    return () => {
-      ativo = false;
-    };
-  }, [db]);
+  const contagem = useConsulta("atuais", () => contarTudo(db));
+  const atuais = contagem.dados;
 
   const dataCurta = (chave: string) => {
     const [a, m, d] = chave.split("-").map(Number);
@@ -47,7 +41,11 @@ export default function Restaurar() {
     setConteudo(null);
     setSenha("");
     setDigitado("");
-    const r = await File.pickFileAsync();
+    const r = await File.pickFileAsync().catch(() => null);
+    if (!r) {
+      setErro(tr.falhouLer);
+      return;
+    }
     if (r.canceled) return;
     setArquivo(null);
     try {
@@ -78,21 +76,30 @@ export default function Restaurar() {
     setRestaurando(true);
     try {
       await substituirPorBackup(db, conteudo);
-      // Os dados agora são os do backup: "último backup" passa a contar a partir dele, se for mais recente.
-      const ultimo = await lerPreferencia(db, PREF_ULTIMO_BACKUP);
-      if (!ultimo || ultimo < conteudo.criadoEm) await gravarPreferencia(db, PREF_ULTIMO_BACKUP, conteudo.criadoEm);
-      notificarMudanca();
-      router.back();
-      await recarregarPessoas();
     } catch {
       setErro(tr.falhou);
       setRestaurando(false);
+      return;
     }
+    // Daqui em diante os dados já são os do backup: uma falha não pode dizer que nada mudou.
+    notificarMudanca();
+    try {
+      // "Último backup" passa a contar a partir do restaurado, se for mais recente.
+      const ultimo = await lerPreferencia(db, PREF_ULTIMO_BACKUP);
+      if (!ultimo || ultimo < conteudo.criadoEm) await gravarPreferencia(db, PREF_ULTIMO_BACKUP, conteudo.criadoEm);
+      await recarregarPessoas();
+    } catch {
+      setConteudo(null);
+      setErro(tr.restauradoSemAtualizar);
+      setRestaurando(false);
+      return;
+    }
+    router.back();
   };
 
   const previa = conteudo ? previaDoBackup(conteudo) : null;
   const temDados = (atuais?.pessoas ?? 0) > 0;
-  const liberado = !restaurando && (!temDados || confirmacaoConfere(digitado, tr.palavra));
+  const liberado = !restaurando && restauracaoLiberada(atuais, digitado, tr.palavra);
 
   return (
     <ScrollView contentContainerStyle={{ padding: espaco.l, gap: espaco.l, paddingBottom: 80 }} keyboardShouldPersistTaps="handled" automaticallyAdjustKeyboardInsets>
@@ -130,6 +137,7 @@ export default function Restaurar() {
           ))}
           <Text style={texto.corpo}>{tr.totais(previa.registros, previa.diasSemCrises)}</Text>
           {previa.periodo ? <Text style={texto.corpo}>{tr.periodo(dataCurta(previa.periodo.inicio), dataCurta(previa.periodo.fim))}</Text> : null}
+          {contagem.falhou ? <FalhaAoCarregar tentarDeNovo={contagem.tentarDeNovo} /> : null}
           {temDados && atuais ? (
             <>
               <Aviso tipo="alerta" texto={tr.substitui(atuais.pessoas, atuais.registros)} />

@@ -1,37 +1,38 @@
-import { chaveDoDia, legendaDoRegistro, rotuloDoDia, type Registro, type RevisaoRegistro } from "@afetilu/core";
+import { chaveDoDia, legendaDoRegistro, rotuloDoDia } from "@afetilu/core";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
+import { FalhaAoCarregar } from "../../components/falha-ao-carregar";
 import { Aviso, Botao, Secao } from "../../components/ui";
 import { descreverRegistro } from "../../lib/descricao";
 import { useApp, useTextos } from "../../lib/estado";
 import { apagarRegistro, listarRevisoes, obterRegistro } from "../../lib/repositorio";
 import { cor, espaco, texto } from "../../lib/tema";
+import { useConsulta } from "../../lib/usar-consulta";
 
 export default function Detalhe() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { db, versaoDados, notificarMudanca } = useApp();
+  const { db, versaoDados, notificarMudanca, tentar } = useApp();
   const { t, d } = useTextos();
   const td = t.detalhe;
-  const [registro, setRegistro] = useState<Registro | null | undefined>(undefined);
-  const [revisoes, setRevisoes] = useState<RevisaoRegistro[]>([]);
+  const consulta = useConsulta(
+    id,
+    async () => {
+      const r = await obterRegistro(db, id);
+      return { registro: r, revisoes: r ? await listarRevisoes(db, id) : [] };
+    },
+    versaoDados,
+  );
   const hoje = chaveDoDia(new Date());
 
-  useEffect(() => {
-    let ativo = true;
-    void (async () => {
-      const r = await obterRegistro(db, id);
-      const h = r ? await listarRevisoes(db, id) : [];
-      if (!ativo) return;
-      setRegistro(r);
-      setRevisoes(h);
-    })();
-    return () => {
-      ativo = false;
-    };
-  }, [db, id, versaoDados]);
-
-  if (registro === undefined) return null;
+  if (consulta.falhou) {
+    return (
+      <View style={{ padding: espaco.l }}>
+        <FalhaAoCarregar tentarDeNovo={consulta.tentarDeNovo} />
+      </View>
+    );
+  }
+  if (!consulta.dados) return null;
+  const { registro, revisoes } = consulta.dados;
   if (registro === null) {
     return (
       <View style={{ padding: espaco.l }}>
@@ -52,10 +53,12 @@ export default function Detalhe() {
         text: t.geral.apagar,
         style: "destructive",
         onPress: () =>
-          void apagarRegistro(db, registro.id).then(() => {
-            notificarMudanca();
-            router.back();
-          }),
+          tentar(() =>
+            apagarRegistro(db, registro.id).then(() => {
+              notificarMudanca();
+              router.back();
+            }),
+          ),
       },
     ]);
 

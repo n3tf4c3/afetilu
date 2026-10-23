@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { apagarArquivoEChave, confirmacaoConfere } from "./exclusao";
+import { apagarArquivoEChave, confirmacaoConfere, restauracaoLiberada } from "./exclusao";
 
 test("confirmação aceita maiúsculas e espaços diferentes", () => {
   assert.equal(confirmacaoConfere("apagar", "APAGAR"), true);
@@ -64,4 +64,15 @@ test("apagar tudo: falha ao fechar não impede a exclusão", async () => {
   const { passos, op } = operacoes(false, false);
   await apagarArquivoEChave({ ...op, fechar: () => Promise.reject(new Error("já fechado")) });
   assert.deepEqual(passos, ["arquivo apagado", "chave apagada"]);
+});
+
+test("restauração sem a contagem dos dados atuais fica travada", () => {
+  assert.equal(restauracaoLiberada(null, "", "SUBSTITUIR"), false);
+  assert.equal(restauracaoLiberada(null, "substituir", "SUBSTITUIR"), false);
+});
+
+test("restauração: aparelho vazio dispensa a palavra; com dados, exige", () => {
+  assert.equal(restauracaoLiberada({ pessoas: 0 }, "", "SUBSTITUIR"), true);
+  assert.equal(restauracaoLiberada({ pessoas: 2 }, "", "SUBSTITUIR"), false);
+  assert.equal(restauracaoLiberada({ pessoas: 2 }, "substituir", "SUBSTITUIR"), true);
 });

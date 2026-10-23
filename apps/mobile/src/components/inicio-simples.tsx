@@ -6,6 +6,7 @@ import { useApp, useTextos } from "../lib/estado";
 import { cor, espaco, raio, texto } from "../lib/tema";
 import { useHoje } from "../lib/usar-hoje";
 import { ICONE_CATEGORIA, ICONE_SEM_CRISES } from "./icones";
+import { FalhaAoCarregar } from "./falha-ao-carregar";
 import { ItemRegistro } from "./item-registro";
 import { Chip, Secao, estilos as ui, type NomeIcone } from "./ui";
 
@@ -26,10 +27,10 @@ function BotaoCategoria(props: { rotulo: string; icone: NomeIcone; onPress: () =
 
 /** Tela inicial sem o mascote: grade de categorias e lista do dia. O app inteiro funciona nela. */
 export function InicioSimples() {
-  const { pessoas, pessoaAtiva, escolherPessoa } = useApp();
+  const { pessoas, pessoaAtiva, escolherPessoa, tentar } = useApp();
   const { t, d } = useTextos();
   const ti = t.inicio;
-  const { hoje, hojeRegistros, emAberto, anotacaoHoje, abrirRegistro, alternarSemCrises } = useHoje();
+  const { hoje, hojeRegistros, emAberto, anotacaoHoje, carregado, falhou, tentarDeNovo, abrirRegistro, alternarSemCrises } = useHoje();
   if (!pessoaAtiva) return null;
 
   return (
@@ -45,7 +46,7 @@ export function InicioSimples() {
         {pessoas.length > 1 ? (
           <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={ti.pessoaAcompanhada}>
             {pessoas.map((p) => (
-              <Chip key={p.id} rotulo={p.apelido} selecionado={p.id === pessoaAtiva.id} onPress={() => void escolherPessoa(p.id)} />
+              <Chip key={p.id} rotulo={p.apelido} selecionado={p.id === pessoaAtiva.id} onPress={() => tentar(() => escolherPessoa(p.id))} />
             ))}
           </View>
         ) : null}
@@ -72,7 +73,8 @@ export function InicioSimples() {
         ) : null}
 
         <Secao titulo={ti.hojeTitulo}>
-          {hojeRegistros.length === 0 && !anotacaoHoje ? <Text style={texto.suave}>{ti.nenhumHoje}</Text> : null}
+          {falhou ? <FalhaAoCarregar tentarDeNovo={tentarDeNovo} /> : null}
+          {carregado && hojeRegistros.length === 0 && !anotacaoHoje ? <Text style={texto.suave}>{ti.nenhumHoje}</Text> : null}
           {anotacaoHoje ? <Text style={texto.corpo}>{ti.marcadoSemCrises}</Text> : null}
           {hojeRegistros.map((r) => (
             <ItemRegistro key={r.id} registro={r} hoje={hoje} />

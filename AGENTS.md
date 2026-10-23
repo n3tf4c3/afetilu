@@ -40,6 +40,7 @@ Documentos de decisão: `docs/viabilidade-e-escopo.md` (lojas, privacidade, arqu
 - `apps/site` — landing page e política de privacidade (pt-BR na raiz, `/en`, `/es`): HTML estático gerado por `src/gerar.ts`, que roda direto no Node 24 (sem dependências, sem JavaScript na página, sem cookies nem analytics). Textos tipados em `src/textos`; capturas em `publico/telas` (só dados fictícios, uma por idioma). Publicado na Vercel pelo `vercel.json` da raiz a cada push na `main` que mexa em `apps/site`. Links das lojas em `src/config.ts` (`null` mostra "em breve").
 - O conteúdo do registro fica em JSON na coluna `conteudo`, validado pelo core na leitura; as colunas `categoria`, `ocorreu_em` e `ocorreu_dia` existem para filtro e ordenação. Migrações em `src/lib/migracoes.ts`: só acrescentar ao fim.
 - Lógica de tela fica em helpers puros (`src/lib/*.ts`) testados com `tsx --test`; componentes não têm teste de renderização ainda.
+- Leitura do banco nas telas passa por `useConsulta` (`src/lib/usar-consulta.ts`): falha aparece como falha, com "Tentar de novo", nunca como "sem informação". Gravação disparada por toque passa por `tentar` (do `useApp`), que mostra o aviso de falha. Depois de uma operação confirmada no banco, falha posterior nunca diz que nada mudou.
 
 ## Comandos (na raiz)
 

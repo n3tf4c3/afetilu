@@ -1,7 +1,15 @@
 import type { TextosApp } from "./tipo";
 
 export const en: TextosApp = {
-  geral: { cancelar: "Cancel", apagar: "Delete", marcar: "Mark", abrindoDados: "Opening your data" },
+  geral: {
+    cancelar: "Cancel",
+    apagar: "Delete",
+    marcar: "Mark",
+    abrindoDados: "Opening your data",
+    falhaCarregar: "Couldn't load the data.",
+    tentarDeNovo: "Try again",
+    falhaSalvar: "Couldn't save. Please try again.",
+  },
   erroBanco: {
     semCifraTitulo: "Data protection unavailable",
     semCifraTexto: "This version of the app lacks database encryption. For safety, nothing will be saved.",
@@ -287,6 +295,8 @@ export const en: TextosApp = {
     confirmarPessoa: (a) => `Delete ${a} permanently`,
     confirmarTudo: "Delete everything permanently",
     falhou: "Could not delete. Nothing was changed.",
+    falhouTudo: "Couldn't finish deleting. Please try again.",
+    apagadaSemAtualizar: "The data was deleted, but the screen didn't update. Close and reopen the app.",
   },
   backup: {
     titulo: "Make a backup",
@@ -343,6 +353,7 @@ export const en: TextosApp = {
     confirmar: "Restore this backup",
     restaurando: "Restoring…",
     falhou: "Could not restore. The data on this device is unchanged.",
+    restauradoSemAtualizar: "The backup was restored, but the screen didn't update. Close and reopen the app.",
   },
   resumo: {
     titulo: "Summary for appointments",

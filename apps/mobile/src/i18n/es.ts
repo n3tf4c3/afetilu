@@ -3,7 +3,15 @@ import type { TextosApp } from "./tipo";
 // Español neutro (latinoamericano). Revisar con hablantes nativos antes de publicar.
 
 export const es: TextosApp = {
-  geral: { cancelar: "Cancelar", apagar: "Eliminar", marcar: "Marcar", abrindoDados: "Abriendo los datos" },
+  geral: {
+    cancelar: "Cancelar",
+    apagar: "Eliminar",
+    marcar: "Marcar",
+    abrindoDados: "Abriendo los datos",
+    falhaCarregar: "No se pudieron cargar los datos.",
+    tentarDeNovo: "Intentar de nuevo",
+    falhaSalvar: "No se pudo guardar. Inténtalo de nuevo.",
+  },
   erroBanco: {
     semCifraTitulo: "Protección de datos no disponible",
     semCifraTexto: "Esta versión de la app no tiene cifrado de la base de datos. Por seguridad, no se guardará nada.",
@@ -295,6 +303,8 @@ export const es: TextosApp = {
     confirmarPessoa: (a) => `Eliminar a ${a} definitivamente`,
     confirmarTudo: "Eliminar todo definitivamente",
     falhou: "No se pudo eliminar. No se cambió nada.",
+    falhouTudo: "No se pudo terminar de eliminar. Inténtalo de nuevo.",
+    apagadaSemAtualizar: "Los datos se eliminaron, pero la pantalla no se actualizó. Cierra y vuelve a abrir la app.",
   },
   backup: {
     titulo: "Copia de seguridad",
@@ -351,6 +361,7 @@ export const es: TextosApp = {
     confirmar: "Restaurar esta copia",
     restaurando: "Restaurando…",
     falhou: "No se pudo restaurar. Los datos del dispositivo siguen como estaban.",
+    restauradoSemAtualizar: "La copia se restauró, pero la pantalla no se actualizó. Cierra y vuelve a abrir la app.",
   },
   resumo: {
     titulo: "Resumen para la consulta",
