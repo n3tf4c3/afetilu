@@ -6,12 +6,12 @@ Relatório: `C:\Codes\relatorios\afetilu\auditoria-2026-10-21.md` (adendo de res
 
 | # | Título | Severidade | Status | Evidência |
 |---|---|---|---|---|
-| 1 | PDFs em claro sobrevivem à exclusão dos dados | Média | PARCIAL — limpeza implementada e testada (regra pura); falta conferir em aparelho | `apps/mobile/src/lib/exportacoes.ts`; `residuos.ts`; `estado.tsx` |
+| 1 | PDFs em claro sobrevivem à exclusão dos dados | Média | PARCIAL — conferido no Android (Galaxy A52s, 23/10/2026); falta conferir no iOS | `apps/mobile/src/lib/exportacoes.ts`; `residuos.ts`; `estado.tsx` |
 | 2 | Falha ao excluir SQLite é ignorada antes de destruir a chave | Média | RESOLVIDO — 23/10/2026, teste falsificado contra o código antigo | `apps/mobile/src/lib/exclusao.ts` (`apagarArquivoEChave`); `db.ts` |
 | 3 | Erros posteriores ao commit afirmam que os dados não mudaram | Média | RESOLVIDO — 23/10/2026 | `apps/mobile/src/app/restaurar.tsx`; `apagar.tsx`; `backup.tsx` |
 | 4 | Falhas de leitura e escrita nas telas escapam sem estado de erro | Média | RESOLVIDO — 23/10/2026; trava da restauração com teste falsificado | `apps/mobile/src/lib/usar-consulta.ts`; `tentar` em `estado.tsx`; `exclusao.ts` (`restauracaoLiberada`) |
 | 5 | Lockfile mantém quatro advisories transitivos | Baixa | ABERTO (aceito) — risco aceito pelo usuário em 23/10/2026; reabrir quando o Expo atualizar as cadeias (`query-string`/`decode-uri-component`, `xcode`/`uuid`) ou surgir versão corrigida de `node-forge`/`braces` | `pnpm-lock.yaml`; `apps/mobile/src/lib/links.ts:9` mitiga deep links |
-| 6 | Quatro pacotes Expo atrás do patch recomendado | Baixa | PARCIAL — versões alinhadas, `expo-doctor` 21/21; falta build nova de desenvolvimento | `apps/mobile/package.json`; `app.json` (plugin `expo-sharing` sem opções) |
+| 6 | Quatro pacotes Expo atrás do patch recomendado | Baixa | PARCIAL — build de desenvolvimento nova conferida no Android (Galaxy A52s, 23/10/2026); falta build iOS | `apps/mobile/package.json`; `app.json` (plugin `expo-sharing` sem opções) |
 
 ## Decisões verificadas
 
