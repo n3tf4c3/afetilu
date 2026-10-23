@@ -15,6 +15,7 @@ import {
 } from "../lib/backup";
 import { useApp, useTextos } from "../lib/estado";
 import { gravarPreferencia, lerConteudoParaBackup } from "../lib/repositorio";
+import { PREFIXO_BACKUP } from "../lib/residuos";
 import { cor, espaco, texto } from "../lib/tema";
 
 type Destino = "aparelho" | "app";
@@ -23,7 +24,7 @@ type Resultado = { tipo: "ok"; destino: Destino; ignorados: number } | { tipo: "
 /** Arquivos de backup antigos no cache (cifrados, mas sem motivo para ficar). */
 function limparCache(): void {
   for (const item of Paths.cache.list()) {
-    if (item instanceof File && item.name.startsWith("afetilu-backup-")) item.delete();
+    if (item instanceof File && item.name.startsWith(PREFIXO_BACKUP)) item.delete();
   }
 }
 

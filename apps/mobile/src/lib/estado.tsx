@@ -7,6 +7,7 @@ import type { Reacao } from "../components/slime/reacoes";
 import { textos, type Textos } from "../i18n";
 import { aparenciaDosValores, CHAVES_APARENCIA, type Aparencia } from "./aparencia";
 import { abrirBanco, apagarBancoDoAparelho, ErroBanco, type FalhaBanco } from "./db";
+import { limparExportacoes } from "./exportacoes";
 import { gravarPreferencia, lerPreferencia, listarPessoas } from "./repositorio";
 
 const PREF_PESSOA_ATIVA = "pessoa_ativa";
@@ -81,6 +82,8 @@ export function useTextos(): Textos {
 }
 
 async function abrir(): Promise<Abertura> {
+  // PDFs e backups compartilhados numa sessão anterior: o destino já teve tempo de ler.
+  limparExportacoes();
   try {
     const db = await abrirBanco();
     const pessoas = await listarPessoas(db);
@@ -143,6 +146,7 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
   const db = abertura.tipo === "pronto" ? abertura.db : null;
 
   const recomecar = useCallback(async () => {
+    limparExportacoes();
     await apagarBancoDoAparelho(db ?? undefined);
     setDesfazer(null);
     setAbertura({ tipo: "carregando" });

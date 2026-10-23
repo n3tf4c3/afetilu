@@ -8,6 +8,7 @@ import { Aviso, Botao, Campo, Secao } from "../components/ui";
 import { decifrarBackup, ErroBackup, lerArquivoDeBackup, nomeLegivel, PREF_ULTIMO_BACKUP, TAMANHO_MAX_BACKUP } from "../lib/backup";
 import { useApp, useTextos } from "../lib/estado";
 import { restauracaoLiberada } from "../lib/exclusao";
+import { limparExportacoes } from "../lib/exportacoes";
 import { contarTudo, gravarPreferencia, lerPreferencia, substituirPorBackup } from "../lib/repositorio";
 import { cor, espaco, texto } from "../lib/tema";
 import { useConsulta } from "../lib/usar-consulta";
@@ -82,6 +83,8 @@ export default function Restaurar() {
       return;
     }
     // Daqui em diante os dados já são os do backup: uma falha não pode dizer que nada mudou.
+    // PDFs e backups no cache eram dos dados substituídos.
+    limparExportacoes();
     notificarMudanca();
     try {
       // "Último backup" passa a contar a partir do restaurado, se for mais recente.

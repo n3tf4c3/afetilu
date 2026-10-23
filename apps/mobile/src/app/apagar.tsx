@@ -5,6 +5,7 @@ import { FalhaAoCarregar } from "../components/falha-ao-carregar";
 import { Aviso, Botao, Campo } from "../components/ui";
 import { useApp, useTextos } from "../lib/estado";
 import { confirmacaoConfere } from "../lib/exclusao";
+import { limparExportacoes } from "../lib/exportacoes";
 import { apagarPessoa, contarDadosDaPessoa } from "../lib/repositorio";
 import { espaco, texto } from "../lib/tema";
 import { useConsulta } from "../lib/usar-consulta";
@@ -52,6 +53,8 @@ export default function Apagar() {
       return;
     }
     // A pessoa já foi apagada: uma falha daqui em diante não pode dizer que nada mudou.
+    // PDFs de resumo no cache também saem (podem ser dela).
+    limparExportacoes();
     notificarMudanca();
     try {
       await recarregarPessoas();

@@ -11,7 +11,7 @@ import {
   type PerguntaConsulta,
   type Registro,
 } from "@afetilu/core";
-import { File, Paths } from "expo-file-system";
+import { File } from "expo-file-system";
 import * as Print from "expo-print";
 import { Stack } from "expo-router";
 import * as Sharing from "expo-sharing";
@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FalhaAoCarregar } from "../components/falha-ao-carregar";
 import { Aviso, Botao, Campo, Chip, Secao, estilos as ui } from "../components/ui";
 import { useApp, useTextos } from "../lib/estado";
+import { arquivoDoResumo } from "../lib/exportacoes";
 import {
   apagarPergunta,
   criarPergunta,
@@ -124,12 +125,12 @@ export default function Resumo() {
   // Abre a impressão do sistema, que mostra a prévia das páginas (e permite salvar como PDF).
   const preVisualizar = () => executar((h) => Print.printAsync({ html: h, ...PAGINA_A4 }));
 
-  // Gera o PDF no cache do app e abre a folha de compartilhamento. Nada é enviado sem a escolha do responsável.
+  // Gera o PDF no cache do app e abre a folha de compartilhamento. Nada é enviado sem a escolha do
+  // responsável. O nome legível é o que o destinatário vê; o PDF anterior sai antes do novo.
   const compartilhar = () =>
     executar(async (h) => {
       const { uri } = await Print.printToFileAsync({ html: h, ...PAGINA_A4 });
-      const destino = new File(Paths.cache, nomeDoArquivoDoResumo(tr.docTitulo, pessoaAtiva.apelido, hoje));
-      if (destino.exists) destino.delete();
+      const destino = arquivoDoResumo(nomeDoArquivoDoResumo(tr.docTitulo, pessoaAtiva.apelido, hoje));
       await new File(uri).move(destino);
       if (!(await Sharing.isAvailableAsync())) {
         setErro(tr.semCompartilhamento);

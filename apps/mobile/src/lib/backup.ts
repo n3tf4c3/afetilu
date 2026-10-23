@@ -12,6 +12,7 @@ import {
 } from "@afetilu/core";
 import { gcm } from "@noble/ciphers/aes.js";
 import { scryptAsync } from "@noble/hashes/scrypt.js";
+import { PREFIXO_BACKUP } from "./residuos";
 
 // Backup cifrado com senha (docs/viabilidade-e-escopo.md, 5.2): chave derivada por scrypt,
 // conteúdo em AES-256-GCM e o cabeçalho autenticado junto. Sem a senha o arquivo não abre,
@@ -56,7 +57,7 @@ export function problemaDaSenha(senha: string, confirmacao: string): "curta" | "
  */
 export function nomeDoArquivoDeBackup(agora: Date): string {
   const hhmm = `${String(agora.getHours()).padStart(2, "0")}${String(agora.getMinutes()).padStart(2, "0")}`;
-  return `afetilu-backup-${chaveDoDia(agora)}-${hhmm}.afetilu`;
+  return `${PREFIXO_BACKUP}${chaveDoDia(agora)}-${hhmm}.afetilu`;
 }
 
 /** Nome do arquivo escolhido, se for legível: o Drive, por exemplo, devolve o id interno do documento. */
