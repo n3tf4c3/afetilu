@@ -19,22 +19,14 @@ allowBuilds:
 
 # Exceções à trava de versões recém-publicadas (proteção contra supply chain).
 # Motivo: patches do Expo SDK 57 e do zod publicados dentro da janela mínima,
-# exigidos pela versão atual do SDK em 13/10/2026. Revisar a cada atualização.
+# exigidos pela versão atual do SDK em 13/10/2026 (revisado em 23/10/2026: saem as que deixaram o
+# lockfile). Revisar a cada atualização.
 minimumReleaseAgeExclude:
-  - '@expo/cli@57.0.29'
   - '@expo/fingerprint@0.20.14'
   - '@expo/inline-modules@0.1.8'
   - '@expo/local-build-cache-provider@57.0.9'
-  - '@expo/prebuild-config@57.0.18'
-  - babel-preset-expo@57.0.15
-  - expo-modules-autolinking@57.0.15
-  - expo-modules-core@57.0.22
-  - expo-modules-jsi@57.1.2
-  - expo@57.0.28
   - zod@4.6.7
-  - '@expo/ui@57.0.23'
   - expo-crypto@57.0.4
-  - expo-router@57.0.26
 
 # Peer automático escolhia a 0.87 (outra versão do React Native); o RN 0.86 do SDK 57 pede a 0.86.3.
 overrides:
