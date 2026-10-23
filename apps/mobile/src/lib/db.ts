@@ -1,6 +1,8 @@
 import * as Crypto from "expo-crypto";
+import { File, Paths } from "expo-file-system";
 import * as SecureStore from "expo-secure-store";
 import * as SQLite from "expo-sqlite";
+import { apagarArquivoEChave } from "./exclusao";
 import { MIGRACOES } from "./migracoes";
 
 const NOME_BANCO = "afetilu.db";
@@ -62,11 +64,20 @@ export async function abrirBanco(): Promise<SQLite.SQLiteDatabase> {
   }
 }
 
-/** Apaga o arquivo e a chave. Só por confirmação explícita do responsável. */
+/**
+ * Apaga o arquivo e a chave. Só por confirmação explícita do responsável. Falha se o arquivo
+ * continuar no aparelho, e aí a chave fica (ver `apagarArquivoEChave`).
+ */
 export async function apagarBancoDoAparelho(db?: SQLite.SQLiteDatabase): Promise<void> {
-  await db?.closeAsync().catch(() => undefined);
-  await SQLite.deleteDatabaseAsync(NOME_BANCO).catch(() => undefined);
-  await SecureStore.deleteItemAsync(CHAVE_SEGURA);
+  await apagarArquivoEChave({
+    fechar: db ? () => db.closeAsync() : undefined,
+    apagarArquivo: () => SQLite.deleteDatabaseAsync(NOME_BANCO),
+    // O expo-sqlite recusa com "Database ... not found" (Android e iOS). A conferência no disco
+    // usa o defaultDatabaseDirectory dele, <documentos>/SQLite; na dúvida, a chave fica.
+    arquivoAusente: (e) =>
+      /not found/i.test(e instanceof Error ? e.message : String(e)) && !new File(Paths.document, "SQLite", NOME_BANCO).exists,
+    apagarChave: () => SecureStore.deleteItemAsync(CHAVE_SEGURA),
+  });
 }
 
 export const novoId = () => Crypto.randomUUID();

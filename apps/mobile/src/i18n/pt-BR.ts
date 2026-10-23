@@ -12,6 +12,7 @@ export const ptBR: TextosApp = {
     comecarDoZero: "Começar do zero",
     confirmarTitulo: "Apagar os dados deste aparelho?",
     confirmarTexto: "Essa ação não pode ser desfeita.",
+    naoApagou: "Não foi possível apagar os dados. Tente de novo.",
   },
   abas: { inicio: "Início", linhaDoTempo: "Linha do tempo", ajustes: "Ajustes" },
   primeiroUso: {

@@ -11,3 +11,28 @@ export function confirmacaoConfere(digitado: string, esperado: string): boolean 
   const alvo = normalizar(esperado);
   return alvo.length > 0 && normalizar(digitado) === alvo;
 }
+
+/** Operações de "apagar tudo", separadas do Expo para teste. */
+export interface OperacoesApagarBanco {
+  fechar?: () => Promise<void>;
+  apagarArquivo: () => Promise<void>;
+  /** A falha de `apagarArquivo` foi só "o arquivo não existe"? */
+  arquivoAusente: (erro: unknown) => Promise<boolean> | boolean;
+  apagarChave: () => Promise<void>;
+}
+
+/**
+ * Apaga o arquivo do banco e só depois a chave. Se o arquivo continuar no aparelho, a falha sobe e a
+ * chave fica: apagar a chave de um arquivo que sobrou deixaria o app sem conseguir abri-lo.
+ * Arquivo já ausente (nova tentativa depois de uma falha na chave) conta como apagado.
+ */
+export async function apagarArquivoEChave(op: OperacoesApagarBanco): Promise<void> {
+  // Pode falhar por já estar fechado; se ainda estiver aberto, a exclusão do arquivo recusa.
+  await op.fechar?.().catch(() => undefined);
+  try {
+    await op.apagarArquivo();
+  } catch (e) {
+    if (!(await op.arquivoAusente(e))) throw e;
+  }
+  await op.apagarChave();
+}

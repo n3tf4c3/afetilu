@@ -12,6 +12,7 @@ function TelaErroBanco(props: { falha: "sem_cifra" | "nao_abriu"; causa?: string
   const { t } = useTextos();
   const e = t.erroBanco;
   const [apagando, setApagando] = useState(false);
+  const [naoApagou, setNaoApagou] = useState(false);
   if (props.falha === "sem_cifra") {
     return (
       <View style={{ flex: 1, padding: espaco.xl, justifyContent: "center", gap: espaco.l, backgroundColor: cor.fundo }}>
@@ -28,6 +29,7 @@ function TelaErroBanco(props: { falha: "sem_cifra" | "nao_abriu"; causa?: string
       <Text style={texto.corpo}>{e.naoAbriuTexto}</Text>
       {__DEV__ && props.causa ? <Text style={texto.suave}>{props.causa}</Text> : null}
       <Aviso tipo="alerta" texto={e.comecarDoZeroAviso} />
+      {naoApagou ? <Aviso tipo="alerta" texto={e.naoApagou} /> : null}
       <Botao
         variante="perigo"
         rotulo={e.comecarDoZero}
@@ -40,7 +42,14 @@ function TelaErroBanco(props: { falha: "sem_cifra" | "nao_abriu"; causa?: string
               style: "destructive",
               onPress: () => {
                 setApagando(true);
-                void props.recomecar().finally(() => setApagando(false));
+                setNaoApagou(false);
+                props.recomecar().then(
+                  () => setApagando(false),
+                  () => {
+                    setNaoApagou(true);
+                    setApagando(false);
+                  },
+                );
               },
             },
           ])

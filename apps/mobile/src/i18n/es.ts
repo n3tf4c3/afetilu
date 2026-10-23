@@ -14,6 +14,7 @@ export const es: TextosApp = {
     comecarDoZero: "Empezar de cero",
     confirmarTitulo: "¿Eliminar los datos de este dispositivo?",
     confirmarTexto: "Esta acción no se puede deshacer.",
+    naoApagou: "No se pudieron eliminar los datos. Inténtalo de nuevo.",
   },
   abas: { inicio: "Inicio", linhaDoTempo: "Línea de tiempo", ajustes: "Ajustes" },
   primeiroUso: {

@@ -13,6 +13,7 @@ export interface TextosApp {
     comecarDoZero: string;
     confirmarTitulo: string;
     confirmarTexto: string;
+    naoApagou: string;
   };
   abas: { inicio: string; linhaDoTempo: string; ajustes: string };
   primeiroUso: {

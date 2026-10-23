@@ -12,6 +12,7 @@ export const en: TextosApp = {
     comecarDoZero: "Start over",
     confirmarTitulo: "Delete the data on this device?",
     confirmarTexto: "This can't be undone.",
+    naoApagou: "Couldn't delete the data. Please try again.",
   },
   abas: { inicio: "Home", linhaDoTempo: "Timeline", ajustes: "Settings" },
   primeiroUso: {
