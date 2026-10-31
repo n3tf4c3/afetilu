@@ -2,7 +2,7 @@ import { chaveDoDia, previaDoBackup, type ConteudoBackup, type EnvelopeBackup } 
 import { File } from "expo-file-system";
 import { router, Stack } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
 import { FalhaAoCarregar } from "../components/falha-ao-carregar";
 import { Aviso, Botao, Campo, Secao } from "../components/ui";
 import { decifrarBackup, ErroBackup, lerArquivoDeBackup, nomeLegivel, PREF_ULTIMO_BACKUP, TAMANHO_MAX_BACKUP } from "../lib/backup";
@@ -84,7 +84,7 @@ export default function Restaurar() {
     }
     // Daqui em diante os dados já são os do backup: uma falha não pode dizer que nada mudou.
     // PDFs e backups no cache eram dos dados substituídos.
-    limparExportacoes();
+    if (!limparExportacoes()) Alert.alert(t.geral.copiasFicaramTitulo, t.geral.copiasFicaramTexto);
     notificarMudanca();
     try {
       // "Último backup" passa a contar a partir do restaurado, se for mais recente.

@@ -13,6 +13,9 @@ export interface TextosApp {
     tentarDeNovo: string;
     /** Gravação disparada por um toque (chip, botão) falhou. */
     falhaSalvar: string;
+    /** Dados apagados ou substituídos, mas PDFs/backups exportados não saíram do cache. */
+    copiasFicaramTitulo: string;
+    copiasFicaramTexto: string;
   };
   erroBanco: {
     semCifraTitulo: string;

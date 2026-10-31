@@ -11,6 +11,9 @@ export const es: TextosApp = {
     falhaCarregar: "No se pudieron cargar los datos.",
     tentarDeNovo: "Intentar de nuevo",
     falhaSalvar: "No se pudo guardar. Inténtalo de nuevo.",
+    copiasFicaramTitulo: "Copias exportadas aún en el dispositivo",
+    copiasFicaramTexto:
+      "Los datos anteriores ya salieron de la app, pero algún PDF o copia de seguridad exportada antes no salió del almacenamiento temporal de la app. La app lo intentará de nuevo la próxima vez que se abra. Las copias ya enviadas a otras apps no se pueden eliminar desde aquí.",
   },
   erroBanco: {
     semCifraTitulo: "Protección de datos no disponible",

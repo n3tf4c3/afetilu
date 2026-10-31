@@ -1,6 +1,6 @@
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { Alert, ScrollView, Text } from "react-native";
 import { FalhaAoCarregar } from "../components/falha-ao-carregar";
 import { Aviso, Botao, Campo } from "../components/ui";
 import { useApp, useTextos } from "../lib/estado";
@@ -54,7 +54,7 @@ export default function Apagar() {
     }
     // A pessoa já foi apagada: uma falha daqui em diante não pode dizer que nada mudou.
     // PDFs de resumo no cache também saem (podem ser dela).
-    limparExportacoes();
+    if (!limparExportacoes()) Alert.alert(t.geral.copiasFicaramTitulo, t.geral.copiasFicaramTexto);
     notificarMudanca();
     try {
       await recarregarPessoas();

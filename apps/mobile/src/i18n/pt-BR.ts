@@ -9,6 +9,9 @@ export const ptBR: TextosApp = {
     falhaCarregar: "Não foi possível carregar os dados.",
     tentarDeNovo: "Tentar de novo",
     falhaSalvar: "Não foi possível salvar. Tente de novo.",
+    copiasFicaramTitulo: "Cópias exportadas ainda no aparelho",
+    copiasFicaramTexto:
+      "Os dados antigos já saíram do app, mas algum PDF ou backup exportado antes não saiu da memória temporária do app. Ele tenta de novo na próxima vez que o app abrir. Cópias já enviadas a outros apps não podem ser apagadas por aqui.",
   },
   erroBanco: {
     semCifraTitulo: "Proteção dos dados indisponível",

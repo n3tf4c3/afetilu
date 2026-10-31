@@ -9,6 +9,9 @@ export const en: TextosApp = {
     falhaCarregar: "Couldn't load the data.",
     tentarDeNovo: "Try again",
     falhaSalvar: "Couldn't save. Please try again.",
+    copiasFicaramTitulo: "Exported copies still on this device",
+    copiasFicaramTexto:
+      "The old data is gone from the app, but a PDF or backup exported earlier didn't leave the app's temporary storage. The app will try again the next time it opens. Copies already sent to other apps can't be deleted from here.",
   },
   erroBanco: {
     semCifraTitulo: "Data protection unavailable",
