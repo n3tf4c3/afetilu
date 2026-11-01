@@ -13,5 +13,5 @@ Atualizado em 31/10/2026. Detalhes em `docs/auditoria-achados.md`.
 
 ## Achados ainda abertos
 
-- **#5** — advisories no tooling do Expo: node-forge 1.4.0 (há correção na 1.4.1), decode-uri-component 0.2.2 (correção 0.5.1 é ESM; não forçar no `query-string` CommonJS), uuid, zod 3 e deepmerge. Atualizar o que for compatível e registrar prazo do resto.
+- **#5** (PARCIAL em 31/10): node-forge 1.4.2 (dentro da faixa do `@expo/cli`). Restam só no tooling do SDK 57: zod 3, uuid 7, decode-uri-component 0.2.2, deepmerge 4.3.1, minimatch e glob. Sem correção compatível; saem com o Expo SDK 58, junto da próxima versão nas lojas.
 - **#6** — alinhamento das versões do Expo: sem novo `expo-doctor` nem build iOS desde a última conferência.
