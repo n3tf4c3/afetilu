@@ -6,7 +6,6 @@ import {
   LIMITES,
   LOCAIS,
   ORIGENS,
-  resolverQuando,
   somarDias,
   type Categoria,
   type Local,
@@ -23,7 +22,7 @@ import { SeletorDataHora } from "../../components/seletor-data";
 import { SeletorQuando } from "../../components/seletor-quando";
 import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos } from "../../components/ui";
 import { useApp, useTextos } from "../../lib/estado";
-import { formularioDoRegistro, formularioNovo, montarEntrada, TEM_TERMINO, type Formulario } from "../../lib/formulario";
+import { formularioDoRegistro, formularioNovo, montarEntrada, quandoDoFormulario, TEM_TERMINO, type Formulario } from "../../lib/formulario";
 import { apagarRegistro, criarRegistro, listarRegistros, obterRegistro, salvarCorrecao } from "../../lib/repositorio";
 import { cor, espaco, texto } from "../../lib/tema";
 
@@ -90,7 +89,7 @@ export default function TelaRegistro() {
 
   const contexto = useMemo(() => {
     if (!form || !pessoaAtiva || form.rascunho.categoria !== "dor_desconforto") return null;
-    const q = resolverQuando(form.quando, new Date());
+    const q = quandoDoFormulario(form, new Date());
     return contextoDaUltimaRefeicao({ pessoaId: pessoaAtiva.id, ...q, id: original?.id }, recentes, d);
   }, [form, pessoaAtiva, recentes, original, d]);
 

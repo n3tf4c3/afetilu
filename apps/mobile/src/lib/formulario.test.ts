@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { novoRegistro } from "@afetilu/core";
+import { chaveDoDia, novoRegistro, somarDias } from "@afetilu/core";
 import { formularioDoRegistro, formularioNovo, montarEntrada } from "./formulario";
 
 const AGORA = new Date(2026, 9, 13, 14, 30);
@@ -102,4 +102,62 @@ test("local do cenário vai para o registro e pode ser removido", () => {
   assert.ok(r.ok && r.entrada.local === "escola");
   const sem = montarEntrada({ ...f, local: undefined, rascunho: { categoria: "comportamento", observado: ["calmo"], ehEpisodio: false } }, "p1", AGORA);
   assert.ok(sem.ok && sem.entrada.local === undefined);
+});
+
+// Achado 8 (auditoria 06/11/2026): registro lançado em outro fuso. O dia salvo difere do dia que
+// o fuso atual calcularia para o mesmo instante; corrigir só o texto não pode mudar o dia.
+function lancadoEmOutroFuso(extra: Partial<Parameters<typeof novoRegistro>[0]> = {}) {
+  const instante = new Date(2026, 9, 12, 1, 0);
+  const diaDeOutroFuso = somarDias(chaveDoDia(instante), -1);
+  return novoRegistro(
+    {
+      pessoaId: "p1",
+      ocorreuEm: instante.toISOString(),
+      ocorreuDia: diaDeOutroFuso,
+      precisao: "exato",
+      emAberto: false,
+      origem: "vi",
+      detalhe: { categoria: "evacuacao", tipo: "xixi" },
+      ...extra,
+    },
+    "r1",
+    AGORA.toISOString(),
+  );
+}
+
+test("corrigir só a observação mantém instante, dia e precisão salvos, mesmo após troca de fuso", () => {
+  for (const precisao of ["exato", "aproximado"] as const) {
+    const r = lancadoEmOutroFuso({ precisao });
+    const f = { ...formularioDoRegistro(r, AGORA), observacao: "texto corrigido" };
+    const volta = montarEntrada(f, "p1", AGORA);
+    assert.ok(volta.ok);
+    assert.equal(volta.entrada.ocorreuDia, r.ocorreuDia, precisao);
+    assert.equal(volta.entrada.ocorreuEm, r.ocorreuEm, precisao);
+    assert.equal(volta.entrada.precisao, precisao);
+    assert.equal(volta.entrada.observacao, "texto corrigido");
+  }
+});
+
+test("período do dia sem alteração mantém o instante salvo", () => {
+  const r = lancadoEmOutroFuso({ precisao: "periodo_do_dia", periodoDoDia: "madrugada", ocorreuEm: "2026-10-11T07:00:00.000Z", ocorreuDia: "2026-10-11" });
+  const volta = montarEntrada({ ...formularioDoRegistro(r, AGORA), observacao: "x" }, "p1", AGORA);
+  assert.ok(volta.ok);
+  assert.equal(volta.entrada.ocorreuEm, "2026-10-11T07:00:00.000Z");
+  assert.equal(volta.entrada.periodoDoDia, "madrugada");
+});
+
+test("mudar o quando de propósito recalcula no fuso atual", () => {
+  const r = lancadoEmOutroFuso();
+  const nova = new Date(2026, 9, 13, 10, 0);
+  const f = { ...formularioDoRegistro(r, AGORA), quando: { tipo: "data_hora" as const, data: nova, aproximado: false } };
+  const volta = montarEntrada(f, "p1", AGORA);
+  assert.ok(volta.ok);
+  assert.equal(volta.entrada.ocorreuEm, nova.toISOString());
+  assert.equal(volta.entrada.ocorreuDia, chaveDoDia(nova));
+  // Voltar para "aproximado" no mesmo instante também é mudança: recalcula a precisão.
+  const g = { ...formularioDoRegistro(r, AGORA), quando: { tipo: "data_hora" as const, data: new Date(r.ocorreuEm), aproximado: true } };
+  const aprox = montarEntrada(g, "p1", AGORA);
+  assert.ok(aprox.ok);
+  assert.equal(aprox.entrada.precisao, "aproximado");
+  assert.equal(aprox.entrada.ocorreuDia, chaveDoDia(new Date(r.ocorreuEm)));
 });

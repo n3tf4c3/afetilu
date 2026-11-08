@@ -7,6 +7,7 @@ import {
   type EscolhaDeQuando,
   type Local,
   type Origem,
+  type Quando,
   type Registro,
 } from "@afetilu/core";
 
@@ -25,6 +26,12 @@ export interface Formulario {
   /** Onde a pessoa estava; vem do cenário da tela inicial e pode ser removido. */
   local?: Local;
   rascunho: Rascunho;
+  /**
+   * Na edição: a escolha de quando montada a partir do registro e o quando salvo. Enquanto a
+   * escolha não mudar, o registro mantém instante, dia e precisão originais, mesmo que o fuso do
+   * aparelho tenha mudado desde o lançamento.
+   */
+  original?: { escolha: EscolhaDeQuando; quando: Quando };
 }
 
 /** Categorias em que faz sentido registrar término ou deixar em aberto. */
@@ -72,7 +79,34 @@ export function formularioDoRegistro(r: Registro, agora: Date): Formulario {
     terminoEm: r.ocorreuFim ? new Date(r.ocorreuFim) : agora,
     local: r.local,
     rascunho: { ...r.detalhe } as Rascunho,
+    original: {
+      escolha: quando,
+      quando: { ocorreuEm: r.ocorreuEm, ocorreuDia: r.ocorreuDia, precisao: r.precisao, periodoDoDia: r.periodoDoDia },
+    },
   };
+}
+
+/** "agora" e "minutos atrás" dependem do momento: nunca contam como a mesma escolha. */
+function mesmaEscolha(a: EscolhaDeQuando, b: EscolhaDeQuando): boolean {
+  switch (a.tipo) {
+    case "data_hora":
+      return b.tipo === "data_hora" && a.data.getTime() === b.data.getTime() && a.aproximado === b.aproximado;
+    case "periodo":
+      return b.tipo === "periodo" && a.dia === b.dia && a.periodo === b.periodo;
+    case "so_data":
+      return b.tipo === "so_data" && a.dia === b.dia;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Quando do registro: o salvo, se a escolha não foi alterada na edição; senão, recalculado.
+ * Recalcular só porque o fuso mudou moveria o registro de dia sem intenção do responsável.
+ */
+export function quandoDoFormulario(f: Formulario, agora: Date): Quando {
+  if (f.original && mesmaEscolha(f.original.escolha, f.quando)) return { ...f.original.quando };
+  return resolverQuando(f.quando, agora);
 }
 
 /** Remove textos vazios e chaves indefinidas, inclusive dentro do episódio. */
@@ -108,7 +142,7 @@ const ERRO_POR_CAMPO: Record<string, ErroFormulario> = {
 export type ResultadoFormulario = { ok: true; entrada: EntradaRegistro } | { ok: false; erro: ErroFormulario };
 
 export function montarEntrada(f: Formulario, pessoaId: string, agora: Date): ResultadoFormulario {
-  const q = resolverQuando(f.quando, agora);
+  const q = quandoDoFormulario(f, agora);
   if (quandoNoFuturo(q, agora)) return { ok: false, erro: "futuro" };
 
   const categoria = f.rascunho.categoria;
