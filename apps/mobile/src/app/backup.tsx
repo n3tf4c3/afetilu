@@ -14,6 +14,7 @@ import {
   TIPO_ARQUIVO_BACKUP,
 } from "../lib/backup";
 import { useApp, useTextos } from "../lib/estado";
+import { criarGeracao } from "../lib/geracao-backup";
 import { gravarPreferencia, lerConteudoParaBackup } from "../lib/repositorio";
 import { PREFIXO_BACKUP } from "../lib/residuos";
 import { cor, espaco, texto } from "../lib/tema";
@@ -41,29 +42,30 @@ export default function FazerBackup() {
   const [tentou, setTentou] = useState(false);
   const [progresso, setProgresso] = useState<number | null>(null);
   const [resultado, setResultado] = useState<Resultado | null>(null);
-  // Texto do arquivo já cifrado com a senha atual; some quando a senha muda.
-  const [gerado, setGerado] = useState<{ texto: string; ignorados: number } | null>(null);
+  // Arquivo já cifrado com a senha atual; descartado quando a senha muda, inclusive durante a
+  // cifra (achado 7: o resultado tardio da senha anterior não é publicado).
+  const [geracao] = useState(() => criarGeracao<{ texto: string; ignorados: number }>());
 
   const problema = problemaDaSenha(senha, repetida);
   const ocupado = progresso !== null;
 
   const mudarSenha = (set: (v: string) => void) => (v: string) => {
+    geracao.invalidar();
     set(v);
-    setGerado(null);
     setResultado(null);
   };
 
-  const gerar = async () => {
-    if (gerado) return gerado;
-    setProgresso(0);
-    const { conteudo, ignorados } = await lerConteudoParaBackup(db, new Date().toISOString());
-    const texto = await cifrarBackup(conteudo, senha, {
-      aleatorio: (n) => Crypto.getRandomBytes(n),
-      aoProgredir: (f) => setProgresso(Math.round(f * 100)),
+  const gerar = () => {
+    const senhaUsada = senha;
+    return geracao.obter(async () => {
+      setProgresso(0);
+      const { conteudo, ignorados } = await lerConteudoParaBackup(db, new Date().toISOString());
+      const texto = await cifrarBackup(conteudo, senhaUsada, {
+        aleatorio: (n) => Crypto.getRandomBytes(n),
+        aoProgredir: (f) => setProgresso(Math.round(f * 100)),
+      });
+      return { texto, ignorados };
     });
-    const novo = { texto, ignorados };
-    setGerado(novo);
-    return novo;
   };
 
   const executar = async (destino: Destino) => {
@@ -116,9 +118,9 @@ export default function FazerBackup() {
       <Stack.Screen options={{ title: tb.titulo }} />
       <Text style={texto.corpo}>{tb.explicacao}</Text>
       <Aviso tipo="alerta" texto={tb.semRecuperacao} />
-      <Campo rotulo={tb.senha} valor={senha} onChange={mudarSenha(setSenha)} senha />
+      <Campo rotulo={tb.senha} valor={senha} onChange={mudarSenha(setSenha)} senha desabilitado={ocupado} />
       <Text style={texto.suave}>{tb.senhaAjuda(SENHA_MIN)}</Text>
-      <Campo rotulo={tb.repetirSenha} valor={repetida} onChange={mudarSenha(setRepetida)} senha />
+      <Campo rotulo={tb.repetirSenha} valor={repetida} onChange={mudarSenha(setRepetida)} senha desabilitado={ocupado} />
       {erroSenha ? <Aviso tipo="alerta" texto={erroSenha} /> : null}
       <Aviso texto={tb.arquivoSai} />
       <Botao rotulo={tb.salvarNoAparelho} desabilitado={ocupado} onPress={() => void executar("aparelho")} />

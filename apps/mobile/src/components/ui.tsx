@@ -119,6 +119,8 @@ export function Campo(props: {
   literal?: boolean;
   /** Texto oculto (senha do backup), também sem correção automática. */
   senha?: boolean;
+  /** Sem edição (ex.: enquanto o backup é cifrado com o valor atual). */
+  desabilitado?: boolean;
 }) {
   const literal = props.literal || props.senha;
   return (
@@ -131,6 +133,8 @@ export function Campo(props: {
         accessibilityLabelledBy={`rotulo-${props.rotulo}`}
         value={props.valor}
         onChangeText={props.onChange}
+        editable={!props.desabilitado}
+        accessibilityState={{ disabled: !!props.desabilitado }}
         multiline={props.multilinha}
         maxLength={props.max}
         placeholder={props.dica}
