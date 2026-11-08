@@ -45,3 +45,26 @@ Correção no working tree, sem commit, push ou build. Validação: `pnpm typech
 | 1 | RESOLVIDO (QA em aparelho pendente) | `apps/mobile/src/lib/residuos.ts` `limparResiduos` (puro) e `exportacoes.ts` `limparExportacoes(): boolean`: true só se o cache foi listado e todos os resíduos saíram; uma falha não interrompe as outras remoções. `apagar.tsx` (apagar uma pessoa) e `restaurar.tsx` mostram o aviso "Cópias exportadas ainda no aparelho" (pt-BR/en/es em `i18n`, chave `geral.copiasFicaram*`) quando algo ficou, e dizem que cópias já enviadas a outros apps não podem ser apagadas por ali. Abertura do app e "apagar tudo" (que reabre o app) seguem tentando de novo a cada abertura, sem aviso. Teste `residuos.test.ts` "limpeza informa resíduo que não saiu…" falhava sem a correção. |
 
 Pendências: novo build de desenvolvimento/release para chegar ao aparelho (sem OTA); traduções novas em en/es precisam da revisão nativa já prevista no AGENTS.md.
+
+## Rodada 2026-11-06 — auditoria técnica por ordem alfabética
+
+HEAD auditado: `56c4b1cf5d227535a500f13cc3fc94fd05c027cf`. Worktree limpa durante a coleta; somente este registro documental alterado ao final. Sem correção de código, instalação/atualização de dependências, commit, push, deploy ou acesso a dados reais.
+
+Relatório externo: `C:\Codes\relatorios\afetilu\auditoria-2026-11-06.md`.
+Evidências: `C:\Codes\relatorios\afetilu\evidencias-2026-11-06\`.
+
+| ID | Achado | Severidade | Status | Evidência |
+|---|---|---|---|---|
+| 5 | Advisories transitivos permanecem na árvore do Expo | Baixa | PARCIAL — aceites anteriores preservados, exploração no app não demonstrada | `pnpm audit --audit-level moderate --json`: metadata 2 altas, 4 moderadas, 1 baixa; seis advisories detalhados no nível solicitado. Node-forge não consta do retorno. Decoder mitigado por `links.ts:9`; Zod 3 é transitivo do CLI, core usa 4.6.7 |
+| 6 | Quatro dependências Expo abaixo dos patches recomendados | Baixa | PARCIAL — checagem atual diverge; sem nova build/QA | `apps/mobile/package.json:21,23,29,31`: expo ~57.0.32, constants ~57.0.23, router ~57.0.30 e sharing ~57.0.25 recomendados por `expo install --check` |
+| 7 | Backup reutiliza resultado cifrado com senha anterior após edição durante geração | Média | ABERTO — corrida reproduzida com corpos reais extraídos e KDF simulado; falta QA nativo | `apps/mobile/src/app/backup.tsx:50–66,119–125`; `components/ui.tsx:111–142` |
+| 8 | Corrigir observação após troca de fuso altera o dia histórico | Média | ABERTO — reproduzido com helper real e dados fictícios | `apps/mobile/src/lib/formulario.ts:59–65,110–112`; `packages/core/src/quando.ts:33–38`; `repositorio.ts:119–121` |
+| 9 | Comando de cobertura falha no próprio limite de funções | Baixa | ABERTO — exit 1; 99,15% ante 100% exigidos | `packages/core/package.json:15`; `.github/workflows/ci.yml:23–29`; anexo de cobertura |
+| 10 | CI usa referências mutáveis e não declara permissões mínimas | Baixa | ABERTO — higiene; comprometimento não demonstrado | `.github/workflows/ci.yml:5–29`: tags, expo-doctor@latest, ausência de permissions; gatilho manual preservado |
+| 11 | Gerador de ícones interpola caminho sem escape em PowerShell | Baixa | ABERTO — potencial, não executado; caminho atual não contém apóstrofo | `ferramentas/icone/gerar_icone.mjs:127–134` |
+
+Validações: typecheck e lint PASS; testes site 11, core 70, mobile 85 PASS. Cobertura core: linhas 98,91%, branches 97,92%, funções 99,15% (gate falha). Site gerado em cópia temporária: seis páginas. SQL das duas migrations exercitado só em SQLite `:memory:` com dados fictícios: FK/cascata/rollback OK, sem validar driver Expo/SQLCipher. Oito pares de contraste calculados ≥4,5:1. `expo-doctor` ausente localmente, não baixado/executado. Sem testes nativos ou validação de deployment.
+
+Reincidências: #1 mantém a correção e a pendência de QA já registradas; aviso existe ao apagar pessoa/restaurar, enquanto abertura/apagar tudo ignoram o booleano, limitação expressamente documentada em 31/10. Não houve mudança de contexto para criar novo ID/reabrir como descoberta inédita. #2–#4 mantidos nos caminhos históricos após inspeção direta. Decisão de adiar release permanece em `docs/pendencias-auditoria.md`.
+
+Candidatos rejeitados: ausência de autenticação/tenant em app local, projectId/owner como segredo, SQL injection por PRAGMA de chave gerada internamente, XSS em conteúdo escapado, índice pessoa/dia ausente (planner usa índice), CI manual como defeito e severidade alta inferida exclusivamente do scanner. Justificativas detalhadas no relatório; decisões anteriores preservadas, sem IDs duplicados.
