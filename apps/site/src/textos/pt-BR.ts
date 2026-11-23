@@ -3,10 +3,11 @@ import type { TextosSite } from "./tipo.ts";
 export const ptBR: TextosSite = {
   nomeDoIdioma: "Português",
   meta: {
-    titulo: "Afetilu — observações do dia a dia para levar à consulta",
+    titulo: "Afetilu — diário gratuito de autismo (TEA) com PDF para consultas",
     descricao:
-      "App gratuito para familiares e cuidadores de pessoas autistas registrarem alimentação, sono, desconfortos, comportamentos e momentos positivos, e levarem um resumo descritivo às consultas. Os dados ficam só no aparelho.",
+      "App gratuito para familiares e cuidadores de pessoas autistas ou em investigação registrarem rotina, alimentação, sono, crises e momentos positivos, e levarem um resumo em PDF às consultas. Dados só no aparelho.",
     tituloPolitica: "Política de Privacidade — Afetilu",
+    imagemAlt: "Afetilu — diário gratuito para autismo (TEA) com resumo em PDF para consultas",
   },
   nav: {
     inicio: "Início",
@@ -16,11 +17,12 @@ export const ptBR: TextosSite = {
     pularParaConteudo: "Pular para o conteúdo",
   },
   hero: {
-    selo: "Para famílias e cuidadores de pessoas autistas",
+    selo: "Para famílias e cuidadores de pessoas autistas ou em investigação",
     titulo: "O dia a dia registrado com calma, pronto para a consulta.",
     subtitulo:
-      "Anote alimentação, sono, desconfortos, comportamentos e momentos positivos em poucos toques. Na hora da consulta, leve um resumo descritivo para a terapeuta, a psicóloga ou o médico.",
+      "Anote alimentação, sono, desconfortos, crises e momentos positivos em poucos toques. Na hora da consulta, leve um resumo descritivo em PDF para a terapeuta, a psicóloga, a fonoaudióloga ou o médico.",
     gratuito: "Gratuito, sem conta e sem anúncios. Os dados ficam só no seu aparelho.",
+    verExemplo: "Ver um PDF de exemplo (dados fictícios)",
   },
   lojas: {
     emBreve: "Em breve para Android e iPhone.",
@@ -35,22 +37,34 @@ export const ptBR: TextosSite = {
       descricao: "Escolha a categoria e salve. Esqueceu na hora? Registre depois, com o horário aproximado.",
     },
     {
+      imagem: "pdf",
+      titulo: "PDF pronto para a consulta",
+      descricao: "Resumo descritivo sem interpretação: cobertura de dias, episódios, momentos positivos e perguntas para o profissional.",
+    },
+    {
       imagem: "linha",
       titulo: "Linha do tempo honesta",
       descricao: "Dia sem registro aparece como “sem informação”, nunca como “sem crises”. Só você marca um dia sem crises.",
     },
     {
       imagem: "resumo",
-      titulo: "Resumo para a consulta",
-      descricao: "Escolha o período e gere um PDF descritivo, com as perguntas que você quer fazer. Tudo no aparelho.",
-    },
-    {
-      imagem: "pdf",
-      titulo: "Só o que foi observado",
-      descricao: "O resumo descreve, sem interpretar: cada registro com horário, origem da informação e correções.",
+      titulo: "Escolha o período e as perguntas",
+      descricao: "Selecione últimos 7, 30 ou 90 dias (ou datas livres) e anote as dúvidas que quer levar. Tudo no aparelho.",
     },
   ],
   capturaAlt: (titulo) => `${titulo} (tela do app com dados fictícios)`,
+  profissionais: {
+    titulo: "Para terapeutas, médicos e escolas",
+    subtitulo:
+      "Se você acompanha pessoas autistas ou em investigação, pode indicar o Afetilu com tranquilidade para as famílias chegarem à consulta com um relato mais organizado.",
+    itens: [
+      "Relato descritivo e honesto: separa o que o cuidador viu, o que contaram e o que é suspeita, e nunca transforma falta de registro em ausência de crises.",
+      "Sem conclusões clínicas nem causalidade: não diagnostica, não recomenda dieta ou remédio e deixa claro que proximidade no tempo não indica causa.",
+      "Gratuito de verdade, sem anúncios e sem servidor: as famílias não precisam criar conta nem enviar dados de menores para terceiros.",
+    ],
+    verExemplo: "Abrir PDF de exemplo",
+    nota: "O exemplo acima usa apenas dados fictícios.",
+  },
   privacidade: {
     titulo: "Seus dados ficam com você",
     itens: [
@@ -83,14 +97,14 @@ export const ptBR: TextosSite = {
   },
   politica: {
     titulo: "Política de Privacidade",
-    atualizadaEm: "Atualizada em 14 de outubro de 2026.",
+    atualizadaEm: "Atualizada em 22 de novembro de 2026.",
     introducao:
       "O Afetilu não coleta, não recebe e não vende dados. Tudo o que você registra fica no seu aparelho. Esta página explica o que fica guardado, como é protegido e como apagar.",
     secoes: [
       {
         titulo: "O que fica no seu aparelho",
         paragrafos: [
-          "O apelido de cada pessoa acompanhada, os registros (com o histórico de correções), os dias marcados sem crises, as mudanças na rotina, as perguntas para a consulta e as preferências do app.",
+          "O apelido de cada pessoa acompanhada, os registros (com o histórico de correções), os dias marcados sem crises, as mudanças na rotina, as perguntas para a consulta e as preferências do app (incluindo lembrete noturno e bloqueio opcional).",
           "Esses dados ficam num banco de dados cifrado (SQLCipher). A chave é aleatória, fica no armazenamento seguro do sistema (Keystore no Android, Keychain no iPhone) e só funciona nesse aparelho.",
         ],
       },
@@ -98,7 +112,7 @@ export const ptBR: TextosSite = {
         titulo: "O que o Afetilu não faz",
         paragrafos: [
           "Não tem conta, servidor ou sincronização. Não usa anúncios, analytics nem serviços de terceiros para rastrear falhas. Não grava registros em logs.",
-          "Não pede acesso a câmera, microfone, contatos ou localização.",
+          "Não pede acesso a câmera, microfone, contatos ou localização. Se você ativar o lembrete noturno ou o bloqueio por biometria/código em Ajustes, ambos funcionam apenas no próprio aparelho, sem enviar dados nem mostrar nomes ou relatos na notificação.",
         ],
       },
       {

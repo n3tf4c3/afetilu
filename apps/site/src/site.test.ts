@@ -4,7 +4,7 @@ import { dirname, join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { CAMINHO_POLITICA, SITE } from "./config.ts";
-import { BANDEIRAS, esc, nomeDaCaptura, paginaInicial, paginaPolitica } from "./paginas.ts";
+import { BANDEIRAS, caminhoExemploPdf, caminhoOg, esc, nomeDaCaptura, paginaInicial, paginaPolitica } from "./paginas.ts";
 import { textosDoSite } from "./textos/index.ts";
 import { IDIOMAS_SITE } from "./textos/tipo.ts";
 
@@ -46,6 +46,17 @@ test("todas as capturas referenciadas existem em publico/", () => {
 
 test("ícones do site (os mesmos das lojas, de ferramentas/icone) existem em publico/", () => {
   for (const arquivo of ["favicon.svg", "apple-touch-icon.png"]) assert.ok(existsSync(join(PUBLICO, arquivo)), arquivo);
+});
+
+test("imagens de prévia (Open Graph) e PDFs de exemplo existem em publico/ e são referenciados", () => {
+  for (const idioma of IDIOMAS_SITE) {
+    assert.ok(existsSync(join(PUBLICO, caminhoOg(idioma))), `og ${idioma}`);
+    assert.ok(existsSync(join(PUBLICO, caminhoExemploPdf(idioma))), `pdf ${idioma}`);
+    const html = paginaInicial(idioma);
+    assert.ok(html.includes(`property="og:image" content="${SITE.url}${caminhoOg(idioma)}"`), `meta og ${idioma}`);
+    assert.ok(html.includes('name="twitter:card" content="summary_large_image"'), `twitter ${idioma}`);
+    assert.ok(html.includes(`href="${caminhoExemploPdf(idioma)}"`), `link pdf ${idioma}`);
+  }
 });
 
 test("a página inicial leva à política de privacidade do mesmo idioma", () => {

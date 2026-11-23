@@ -59,7 +59,8 @@ a:hover { text-decoration-thickness: 2px; }
 h1 { margin: 16px 0 0; font-size: clamp(32px, 5vw, 46px); line-height: 1.18; letter-spacing: -0.02em; color: var(--escuro); }
 .subtitulo { margin: 20px auto 0; max-width: 600px; color: var(--suave); font-size: 18px; }
 .baixar { margin-top: 32px; scroll-margin-top: 24px; }
-.gratuito { margin: 18px 0 0; color: var(--suave); font-size: 15px; }
+.exemplo-hero { margin: 16px 0 0; font-size: 16px; }
+.gratuito { margin: 14px 0 0; color: var(--suave); font-size: 15px; }
 .em-breve {
   display: inline-block; margin: 0; padding: 12px 22px;
   background: var(--primaria-clara); color: var(--escuro); border-radius: 999px; font-weight: 600;
@@ -92,6 +93,17 @@ h1 { margin: 16px 0 0; font-size: clamp(32px, 5vw, 46px); line-height: 1.18; let
 .recurso-doc img { border: 1px solid var(--borda); border-radius: 6px; box-shadow: 0 16px 32px rgba(27, 42, 64, 0.14); }
 .recurso figcaption { max-width: 270px; color: var(--suave); font-size: 15px; text-align: center; }
 .recurso figcaption strong { display: block; margin-bottom: 4px; color: var(--escuro); font-size: 17px; }
+
+/* Para profissionais */
+.profissionais { max-width: var(--largura); margin: 0 auto; padding: 0 24px 48px; }
+.profissionais-cartao {
+  padding: 36px; background: var(--superficie); border: 1px solid var(--borda);
+  border-left: 5px solid var(--primaria); border-radius: 16px;
+}
+.profissionais-cartao h2 { margin: 0 0 12px; font-size: 24px; letter-spacing: -0.01em; color: var(--escuro); }
+.profissionais-subtitulo { margin: 0 0 18px; max-width: 760px; color: var(--suave); }
+.profissionais-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin-top: 22px; }
+.profissionais-nota { color: var(--suave); font-size: 14px; }
 
 /* Privacidade, limites e código aberto */
 .faixa {

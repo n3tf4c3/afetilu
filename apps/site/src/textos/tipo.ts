@@ -18,9 +18,9 @@ export interface SecaoPolitica {
 export interface TextosSite {
   /** Nome do idioma nele mesmo, para o seletor. */
   nomeDoIdioma: string;
-  meta: { titulo: string; descricao: string; tituloPolitica: string };
+  meta: { titulo: string; descricao: string; tituloPolitica: string; imagemAlt: string };
   nav: { inicio: string; privacidade: string; baixar: string; idiomas: string; pularParaConteudo: string };
-  hero: { selo: string; titulo: string; subtitulo: string; gratuito: string };
+  hero: { selo: string; titulo: string; subtitulo: string; gratuito: string; verExemplo: string };
   lojas: {
     emBreve: string;
     googlePlayTopo: string;
@@ -30,6 +30,7 @@ export interface TextosSite {
   recursos: Recurso[];
   /** Texto alternativo das capturas, que mostram dados fictícios. */
   capturaAlt: (titulo: string) => string;
+  profissionais: { titulo: string; subtitulo: string; itens: string[]; verExemplo: string; nota: string };
   privacidade: { titulo: string; itens: string[]; link: string };
   limites: { titulo: string; texto: string; emergencia: string };
   codigoAberto: { titulo: string; texto: string; link: string };

@@ -3,10 +3,11 @@ import type { TextosSite } from "./tipo.ts";
 export const en: TextosSite = {
   nomeDoIdioma: "English",
   meta: {
-    titulo: "Afetilu — day-to-day notes to bring to appointments",
+    titulo: "Afetilu — free autism (ASD) journal with PDF summary for visits",
     descricao:
-      "Free app for family members and caregivers of autistic people to log meals, sleep, discomfort, behavior and positive moments, and bring a descriptive summary to appointments. Data stays only on the device.",
+      "Free app for family members and caregivers of autistic people or people being assessed to log routine, meals, sleep, episodes and positive moments, and bring a descriptive PDF summary to appointments. Data stays only on the device.",
     tituloPolitica: "Privacy Policy — Afetilu",
+    imagemAlt: "Afetilu — free autism (ASD) caregiver journal with PDF summary for appointments",
   },
   nav: {
     inicio: "Home",
@@ -16,11 +17,12 @@ export const en: TextosSite = {
     pularParaConteudo: "Skip to content",
   },
   hero: {
-    selo: "For families and caregivers of autistic people",
+    selo: "For families and caregivers of autistic people or people being assessed",
     titulo: "Day-to-day life, noted calmly and ready for the appointment.",
     subtitulo:
-      "Log meals, sleep, discomfort, behavior and positive moments in a few taps. When it is time for the appointment, bring a descriptive summary to the therapist, psychologist or doctor.",
+      "Log meals, sleep, discomfort, difficult episodes and positive moments in a few taps. When it is time for the appointment, bring a descriptive PDF summary to the therapist, psychologist, speech therapist or doctor.",
     gratuito: "Free, no account and no ads. Your data stays only on your device.",
+    verExemplo: "View a sample PDF (fictional data)",
   },
   lojas: {
     emBreve: "Coming soon for Android and iPhone.",
@@ -35,22 +37,34 @@ export const en: TextosSite = {
       descricao: "Pick the category and save. Forgot at the time? Log it later, with an approximate time.",
     },
     {
+      imagem: "pdf",
+      titulo: "PDF ready for appointments",
+      descricao: "A descriptive summary without interpretation: day coverage, episodes, positive moments and questions for the clinician.",
+    },
+    {
       imagem: "linha",
       titulo: "An honest timeline",
       descricao: "A day with no logs shows as “no information”, never as “no crises”. Only you mark a day as crisis-free.",
     },
     {
       imagem: "resumo",
-      titulo: "Summary for appointments",
-      descricao: "Choose the period and create a descriptive PDF, with the questions you want to ask. All on the device.",
-    },
-    {
-      imagem: "pdf",
-      titulo: "Only what was observed",
-      descricao: "The summary describes without interpreting: each log with its time, source of information and corrections.",
+      titulo: "Pick the period and questions",
+      descricao: "Choose the last 7, 30 or 90 days (or custom dates) and jot down questions to bring along. All on the device.",
     },
   ],
   capturaAlt: (titulo) => `${titulo} (app screen with fictional data)`,
+  profissionais: {
+    titulo: "For therapists, doctors and schools",
+    subtitulo:
+      "If you support autistic people or families going through assessment, you can recommend Afetilu knowing it helps caregivers arrive with clear, organized notes.",
+    itens: [
+      "Descriptive and honest records: separates what the caregiver saw, what someone reported and what is suspected, and never turns missing days into crisis-free days.",
+      "No clinical claims or causality: never diagnoses, never suggests diets or medication, and states clearly that proximity in time does not imply cause.",
+      "Truly free, with no ads and no server: families do not need an account and no minor's data is ever sent to third parties.",
+    ],
+    verExemplo: "Open sample PDF",
+    nota: "The sample above uses fictional data only.",
+  },
   privacidade: {
     titulo: "Your data stays with you",
     itens: [
@@ -83,14 +97,14 @@ export const en: TextosSite = {
   },
   politica: {
     titulo: "Privacy Policy",
-    atualizadaEm: "Updated on October 14, 2026.",
+    atualizadaEm: "Updated on November 22, 2026.",
     introducao:
       "Afetilu does not collect, receive or sell data. Everything you log stays on your device. This page explains what is stored, how it is protected and how to delete it.",
     secoes: [
       {
         titulo: "What stays on your device",
         paragrafos: [
-          "The nickname of each person you support, the logs (with their correction history), days marked as crisis-free, changes in routine, questions for appointments and app preferences.",
+          "The nickname of each person you support, the logs (with their correction history), days marked as crisis-free, changes in routine, questions for appointments and app preferences (including optional evening reminder and app lock).",
           "This data is kept in an encrypted database (SQLCipher). The key is random, stored in the system's secure storage (Keystore on Android, Keychain on iPhone), and only works on that device.",
         ],
       },
@@ -98,7 +112,7 @@ export const en: TextosSite = {
         titulo: "What Afetilu does not do",
         paragrafos: [
           "There is no account, server or sync. It uses no ads, no analytics and no third-party crash tracking. It does not write logs of what you record.",
-          "It does not ask for access to the camera, microphone, contacts or location.",
+          "It does not ask for access to the camera, microphone, contacts or location. If you turn on the evening reminder or biometric/passcode lock in Settings, both work strictly on the device, sending no data and never showing names or entries in notifications.",
         ],
       },
       {

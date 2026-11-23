@@ -3,10 +3,11 @@ import type { TextosSite } from "./tipo.ts";
 export const es: TextosSite = {
   nomeDoIdioma: "Español",
   meta: {
-    titulo: "Afetilu — observaciones del día a día para llevar a la consulta",
+    titulo: "Afetilu — diario gratuito de autismo (TEA) con PDF para consultas",
     descricao:
-      "App gratuita para familiares y cuidadores de personas autistas que quieren registrar alimentación, sueño, molestias, comportamientos y momentos positivos, y llevar un resumen descriptivo a las consultas. Los datos quedan solo en el dispositivo.",
+      "App gratuita para familiares y cuidadores de personas autistas o en evaluación que quieren registrar rutina, alimentación, sueño, crisis y momentos positivos, y llevar un resumen en PDF a las consultas. Los datos quedan solo en el dispositivo.",
     tituloPolitica: "Política de Privacidad — Afetilu",
+    imagemAlt: "Afetilu — diario gratuito de autismo (TEA) con resumen en PDF para consultas",
   },
   nav: {
     inicio: "Inicio",
@@ -16,11 +17,12 @@ export const es: TextosSite = {
     pularParaConteudo: "Saltar al contenido",
   },
   hero: {
-    selo: "Para familias y cuidadores de personas autistas",
+    selo: "Para familias y cuidadores de personas autistas o en evaluación",
     titulo: "El día a día registrado con calma, listo para la consulta.",
     subtitulo:
-      "Anota alimentación, sueño, molestias, comportamientos y momentos positivos en pocos toques. A la hora de la consulta, lleva un resumen descriptivo a la terapeuta, la psicóloga o el médico.",
+      "Anota alimentación, sueño, molestias, crisis y momentos positivos en pocos toques. A la hora de la consulta, lleva un resumen descriptivo en PDF a la terapeuta, la psicóloga, la fonoaudióloga o el médico.",
     gratuito: "Gratuita, sin cuenta y sin anuncios. Los datos quedan solo en tu dispositivo.",
+    verExemplo: "Ver un PDF de ejemplo (datos ficticios)",
   },
   lojas: {
     emBreve: "Pronto para Android y iPhone.",
@@ -35,22 +37,34 @@ export const es: TextosSite = {
       descricao: "Elige la categoría y guarda. ¿Se te olvidó en el momento? Regístralo después, con la hora aproximada.",
     },
     {
+      imagem: "pdf",
+      titulo: "PDF listo para la consulta",
+      descricao: "Resumen descriptivo sin interpretaciones: cobertura de días, episodios, momentos positivos y preguntas para el profesional.",
+    },
+    {
       imagem: "linha",
       titulo: "Una línea de tiempo honesta",
       descricao: "Un día sin registros aparece como “sin información”, nunca como “sin crisis”. Solo tú marcas un día sin crisis.",
     },
     {
       imagem: "resumo",
-      titulo: "Resumen para la consulta",
-      descricao: "Elige el período y genera un PDF descriptivo, con las preguntas que quieres hacer. Todo en el dispositivo.",
-    },
-    {
-      imagem: "pdf",
-      titulo: "Solo lo que se observó",
-      descricao: "El resumen describe sin interpretar: cada registro con su hora, el origen de la información y las correcciones.",
+      titulo: "Elige el período y las preguntas",
+      descricao: "Selecciona últimos 7, 30 o 90 días (o fechas libres) y anota las dudas que quieres llevar. Todo en el dispositivo.",
     },
   ],
   capturaAlt: (titulo) => `${titulo} (pantalla de la app con datos ficticios)`,
+  profissionais: {
+    titulo: "Para terapeutas, médicos y escuelas",
+    subtitulo:
+      "Si acompañas a personas autistas o en evaluación, puedes recomendar Afetilu con tranquilidad para que las familias lleguen a consulta con un relato más claro.",
+    itens: [
+      "Relato descriptivo y honesto: separa lo que vio el cuidador, lo que le contaron y lo que sospecha, y nunca convierte días sin registro en días sin crisis.",
+      "Sin afirmaciones clínicas ni causalidad: no diagnostica, no sugiere dietas ni medicamentos y aclara que la cercanía en el tiempo no indica causa.",
+      "Gratuita de verdad, sin anuncios y sin servidor: las familias no necesitan cuenta ni envían datos de menores a terceros.",
+    ],
+    verExemplo: "Abrir PDF de ejemplo",
+    nota: "El ejemplo anterior usa solo datos ficticios.",
+  },
   privacidade: {
     titulo: "Tus datos se quedan contigo",
     itens: [
@@ -83,14 +97,14 @@ export const es: TextosSite = {
   },
   politica: {
     titulo: "Política de Privacidad",
-    atualizadaEm: "Actualizada el 14 de octubre de 2026.",
+    atualizadaEm: "Actualizada el 22 de noviembre de 2026.",
     introducao:
       "Afetilu no recopila, no recibe y no vende datos. Todo lo que registras queda en tu dispositivo. Esta página explica qué se guarda, cómo se protege y cómo eliminarlo.",
     secoes: [
       {
         titulo: "Qué queda en tu dispositivo",
         paragrafos: [
-          "El apodo de cada persona que acompañas, los registros (con el historial de correcciones), los días marcados sin crisis, los cambios en la rutina, las preguntas para la consulta y las preferencias de la app.",
+          "El apodo de cada persona que acompañas, los registros (con el historial de correcciones), los días marcados sin crisis, los cambios en la rutina, las preguntas para la consulta y las preferencias de la app (incluidos el recordatorio nocturno y el bloqueo opcional).",
           "Estos datos se guardan en una base de datos cifrada (SQLCipher). La clave es aleatoria, se guarda en el almacenamiento seguro del sistema (Keystore en Android, Keychain en iPhone) y solo funciona en ese dispositivo.",
         ],
       },
@@ -98,7 +112,7 @@ export const es: TextosSite = {
         titulo: "Lo que Afetilu no hace",
         paragrafos: [
           "No tiene cuenta, servidor ni sincronización. No usa anuncios, analíticas ni servicios de terceros para rastrear fallos. No escribe tus registros en logs.",
-          "No pide acceso a la cámara, el micrófono, los contactos ni la ubicación.",
+          "No pide acceso a la cámara, el micrófono, los contactos ni la ubicación. Si activas el recordatorio nocturno o el bloqueo por biometría/código en Ajustes, ambos funcionan solo en el dispositivo, sin enviar datos ni mostrar nombres o registros en la notificación.",
         ],
       },
       {

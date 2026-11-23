@@ -59,6 +59,8 @@ function lojas(t: TextosSite, claro = false): string {
 }
 
 export const nomeDaCaptura = (imagem: string, idioma: IdiomaSite) => `/telas/${imagem}-${idioma}.jpg`;
+export const caminhoOg = (idioma: IdiomaSite) => `/og-${idioma}.png`;
+export const caminhoExemploPdf = (idioma: IdiomaSite) => `/exemplos/resumo-${idioma}.pdf`;
 /**
  * Tamanho das capturas em publico/telas: telas do app sem as barras do sistema (1080 × 2178 reduzido à
  * metade) e a primeira página do PDF, em proporção A4.
@@ -95,6 +97,14 @@ ${alternativas}
 <meta property="og:title" content="${esc(o.titulo)}">
 <meta property="og:description" content="${esc(o.descricao)}">
 <meta property="og:url" content="${SITE.url}${caminhoDe(o.pagina, o.idioma)}">
+<meta property="og:image" content="${SITE.url}${caminhoOg(o.idioma)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(t.meta.imagemAlt)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(o.titulo)}">
+<meta name="twitter:description" content="${esc(o.descricao)}">
+<meta name="twitter:image" content="${SITE.url}${caminhoOg(o.idioma)}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/estilo.css">
@@ -153,12 +163,24 @@ export function paginaInicial(idioma: IdiomaSite): string {
   <h1>${esc(t.hero.titulo)}</h1>
   <p class="subtitulo">${esc(t.hero.subtitulo)}</p>
   <div id="baixar" class="baixar">${lojas(t)}</div>
+  <p class="exemplo-hero"><a href="${caminhoExemploPdf(idioma)}">${esc(t.hero.verExemplo)}</a></p>
   <p class="gratuito">${esc(t.hero.gratuito)}</p>
 </section>
 <section class="recursos" aria-labelledby="titulo-recursos">
   <h2 id="titulo-recursos">${esc(t.recursosTitulo)}</h2>
   <div class="grade">
 ${recursos}
+  </div>
+</section>
+<section class="profissionais" aria-labelledby="titulo-profissionais">
+  <div class="profissionais-cartao">
+    <h2 id="titulo-profissionais">${esc(t.profissionais.titulo)}</h2>
+    <p class="profissionais-subtitulo">${esc(t.profissionais.subtitulo)}</p>
+    <ul class="lista">${t.profissionais.itens.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>
+    <div class="profissionais-acoes">
+      <a class="botao" href="${caminhoExemploPdf(idioma)}">${esc(t.profissionais.verExemplo)}</a>
+      <span class="profissionais-nota">${esc(t.profissionais.nota)}</span>
+    </div>
   </div>
 </section>
 <section class="faixa">
