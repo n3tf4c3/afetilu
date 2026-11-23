@@ -66,11 +66,11 @@ export function SeletorDataHora(props: { valor: Date; onChange: (d: Date) => voi
   );
 }
 
-export function SeletorDia(props: { dia: string; onChange: (dia: string) => void; maximo?: Date }) {
+export function SeletorDia(props: { dia: string; onChange: (dia: string) => void; maximo?: Date; rotulo?: string }) {
   const { t } = useTextos();
   return (
     <SeletorNativo
-      rotulo={t.quando.dia}
+      rotulo={props.rotulo ?? t.quando.dia}
       modo="date"
       valor={dataDaChave(props.dia)}
       maximo={props.maximo}

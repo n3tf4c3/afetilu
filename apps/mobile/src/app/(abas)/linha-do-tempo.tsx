@@ -15,7 +15,7 @@ import { useMemo, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, Pressable, ScrollView, Text, View } from "react-native";
 import { FalhaAoCarregar } from "../../components/falha-ao-carregar";
 import { ItemRegistro } from "../../components/item-registro";
-import { Aviso, Botao, Chip, estilos as ui } from "../../components/ui";
+import { Aviso, Botao, Campo, Chip, estilos as ui } from "../../components/ui";
 import { useApp, useTextos } from "../../lib/estado";
 import { montarLinhaDoTempo, resumoDoDia, type DiaDaLinha, type FiltroCategoria } from "../../lib/linha-do-tempo";
 import {
@@ -30,7 +30,7 @@ import { ALVO_MINIMO, cor, espaco, raio, texto } from "../../lib/tema";
 import { useConsulta } from "../../lib/usar-consulta";
 import type { TextosApp } from "../../i18n";
 
-const PERIODOS = [7, 30] as const;
+const PERIODOS = [7, 30, 90] as const;
 
 function tituloDoDia(dia: string, hoje: string, d: DicionarioDominio, t: TextosApp["linha"]): string {
   const relativo = rotuloDoDia(dia, hoje, d);
@@ -44,6 +44,7 @@ export default function LinhaDoTempo() {
   const tl = t.linha;
   const [dias, setDias] = useState<(typeof PERIODOS)[number]>(7);
   const [filtro, setFiltro] = useState<FiltroCategoria>("todas");
+  const [busca, setBusca] = useState("");
   const hoje = chaveDoDia(new Date());
   const inicio = somarDias(hoje, -(dias - 1));
 
@@ -64,8 +65,11 @@ export default function LinhaDoTempo() {
 
   // Sem os dados (carregando ou falha), nenhum dia aparece: ausência de leitura não é "sem informação".
   const linha = useMemo(
-    () => (dados ? montarLinhaDoTempo({ inicio, fim: hoje, registros: dados.registros, diasAnotados: dados.anotados, filtro }) : []),
-    [inicio, hoje, dados, filtro],
+    () =>
+      dados
+        ? montarLinhaDoTempo({ inicio, fim: hoje, registros: dados.registros, diasAnotados: dados.anotados, filtro, busca, d })
+        : [],
+    [inicio, hoje, dados, filtro, busca, d],
   );
 
   const mudancasDoDia = useMemo(() => {
@@ -92,10 +96,14 @@ export default function LinhaDoTempo() {
     notificarMudanca();
   };
 
+  const temBusca = busca.trim().length > 0;
   const cabecalho = (
     <View style={{ gap: espaco.m, paddingBottom: espaco.s }}>
-      <Botao variante="secundaria" icone="file-document-outline" rotulo={t.resumo.abrir} onPress={() => router.push("/resumo")} />
       <Botao variante="secundaria" icone="calendar-edit" rotulo={tl.anotarMudanca} onPress={() => router.push("/mudanca")} />
+      <View style={{ gap: espaco.xs }}>
+        <Campo rotulo={tl.buscar} valor={busca} onChange={setBusca} dica={tl.buscarDica} />
+        {temBusca ? <Botao variante="texto" icone="close-circle-outline" rotulo={tl.limparBusca} onPress={() => setBusca("")} /> : null}
+      </View>
       <View style={ui.linhaChips} accessibilityRole="radiogroup" accessibilityLabel={tl.periodo}>
         {PERIODOS.map((p) => (
           <Chip key={p} rotulo={tl.ultimosDias(p)} selecionado={dias === p} onPress={() => setDias(p)} />
@@ -115,9 +123,12 @@ export default function LinhaDoTempo() {
       data={linha}
       keyExtractor={(dia) => dia.situacao.dia}
       ListHeaderComponent={cabecalho}
+      keyboardShouldPersistTaps="handled"
       ListEmptyComponent={
         consulta.falhou ? (
           <FalhaAoCarregar tentarDeNovo={consulta.tentarDeNovo} />
+        ) : dados && temBusca ? (
+          <Text style={[texto.suave, { textAlign: "center", paddingVertical: espaco.xl }]}>{tl.nadaNaBusca}</Text>
         ) : (
           <ActivityIndicator color={cor.primaria} accessibilityLabel={t.geral.abrindoDados} />
         )

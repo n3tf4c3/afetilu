@@ -36,6 +36,15 @@ export default function Abas() {
         }}
       />
       <Tabs.Screen
+        name="resumo"
+        options={{
+          title: t.abas.resumo,
+          headerTitle: t.resumo.titulo,
+          tabBarAccessibilityLabel: t.resumo.titulo,
+          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="file-document-outline" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
         name="ajustes"
         options={{
           title: t.abas.ajustes,

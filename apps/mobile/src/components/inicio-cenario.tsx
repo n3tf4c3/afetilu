@@ -71,7 +71,7 @@ function Pilula(props: {
 
 /** Tela inicial com cenário: o lugar onde a pessoa está, as ações daquele momento e o slime. */
 export function InicioCenario() {
-  const { pessoaAtiva, aparencia, definirAparencia, reacaoSlime, reagir, tentar } = useApp();
+  const { pessoas, pessoaAtiva, escolherPessoa, aparencia, definirAparencia, reacaoSlime, reagir, tentar } = useApp();
   const { t, d } = useTextos();
   const ti = t.inicio;
   const { hoje, hojeRegistros, emAberto, anotacaoHoje, carregado, falhou, tentarDeNovo, abrirRegistro, alternarSemCrises } = useHoje();
@@ -81,6 +81,7 @@ export function InicioCenario() {
   const insets = useSafeAreaInsets();
   const lista = useRef<FlatList<Cenario>>(null);
   const [todasAbertas, setTodasAbertas] = useState(false);
+  const [pessoasAbertas, setPessoasAbertas] = useState(false);
 
   const indiceInicial = Math.max(0, CENARIOS.findIndex((c) => c.local === aparencia.local));
   const [indice, setIndice] = useState(indiceInicial);
@@ -208,12 +209,27 @@ export function InicioCenario() {
         <Pressable accessibilityRole="button" accessibilityLabel={ti.cenarioAnterior} onPress={() => irPara(indice - 1)} style={estilos.seta}>
           <MaterialCommunityIcons name="chevron-left" size={28} color={cor.texto} />
         </Pressable>
-        <View style={estilos.cartaoTopo} accessible accessibilityLabel={`${pessoaAtiva.apelido}. ${ti.hoje(diaPorExtenso(hoje, d))}. ${ti.cenarioAtual(d.local[local], indice + 1, CENARIOS.length)}`}>
-          <Text style={estilos.nome} numberOfLines={1}>
-            {pessoaAtiva.apelido} · {d.local[local]}
-          </Text>
-          <Text style={estilos.data}>{ti.hoje(diaPorExtenso(hoje, d))}</Text>
-        </View>
+        {pessoas.length > 1 ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`${pessoaAtiva.apelido}. ${ti.hoje(diaPorExtenso(hoje, d))}. ${ti.cenarioAtual(d.local[local], indice + 1, CENARIOS.length)}`}
+            accessibilityHint={ti.trocarPessoa}
+            onPress={() => setPessoasAbertas(true)}
+            style={({ pressed }) => [estilos.cartaoTopo, pressed && { opacity: 0.85 }]}
+          >
+            <Text style={estilos.nome} numberOfLines={1}>
+              {pessoaAtiva.apelido} ▾ · {d.local[local]}
+            </Text>
+            <Text style={estilos.data}>{ti.hoje(diaPorExtenso(hoje, d))}</Text>
+          </Pressable>
+        ) : (
+          <View style={estilos.cartaoTopo} accessible accessibilityLabel={`${pessoaAtiva.apelido}. ${ti.hoje(diaPorExtenso(hoje, d))}. ${ti.cenarioAtual(d.local[local], indice + 1, CENARIOS.length)}`}>
+            <Text style={estilos.nome} numberOfLines={1}>
+              {pessoaAtiva.apelido} · {d.local[local]}
+            </Text>
+            <Text style={estilos.data}>{ti.hoje(diaPorExtenso(hoje, d))}</Text>
+          </View>
+        )}
         <Pressable accessibilityRole="button" accessibilityLabel={ti.proximoCenario} onPress={() => irPara(indice + 1)} style={estilos.seta}>
           <MaterialCommunityIcons name="chevron-right" size={28} color={cor.texto} />
         </Pressable>
@@ -229,7 +245,15 @@ export function InicioCenario() {
           </Pressable>
         ) : null}
         {emAberto.length > 0 ? (
-          <Pressable accessibilityRole="button" onPress={() => router.push("/linha-do-tempo")} style={estilos.resumoBotao}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() =>
+              emAberto.length === 1
+                ? router.push({ pathname: "/registro/[categoria]", params: { categoria: emAberto[0]!.detalhe.categoria, id: emAberto[0]!.id } })
+                : router.push("/linha-do-tempo")
+            }
+            style={estilos.resumoBotao}
+          >
             <Text style={estilos.resumoTexto}>{ti.emAbertoResumo(emAberto.length)}</Text>
           </Pressable>
         ) : null}
@@ -284,6 +308,34 @@ export function InicioCenario() {
               ))}
             </View>
             <Pressable accessibilityRole="button" onPress={() => setTodasAbertas(false)} style={estilos.fechar}>
+              <Text style={estilos.fecharTexto}>{ti.fechar}</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={pessoasAbertas} transparent animationType={movimento === "completo" ? "fade" : "none"} onRequestClose={() => setPessoasAbertas(false)}>
+        <View style={estilos.modalFundo}>
+          <View style={estilos.modalCartao}>
+            <Text style={estilos.modalTitulo} accessibilityRole="header">
+              {ti.pessoaAcompanhada}
+            </Text>
+            <View style={estilos.modalGrade}>
+              {pessoas.map((p) => (
+                <Pilula
+                  key={p.id}
+                  alinhar="esquerda"
+                  rotulo={p.apelido}
+                  icone="account-outline"
+                  marcado={p.id === pessoaAtiva.id}
+                  onPress={() => {
+                    setPessoasAbertas(false);
+                    if (p.id !== pessoaAtiva.id) tentar(() => escolherPessoa(p.id));
+                  }}
+                />
+              ))}
+            </View>
+            <Pressable accessibilityRole="button" onPress={() => setPessoasAbertas(false)} style={estilos.fechar}>
               <Text style={estilos.fecharTexto}>{ti.fechar}</Text>
             </Pressable>
           </View>

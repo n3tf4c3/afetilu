@@ -24,6 +24,7 @@ import { Aviso, Botao, Campo, Chip, Escolha, Secao, estilos } from "../../compon
 import { useApp, useTextos } from "../../lib/estado";
 import { formularioDoRegistro, formularioNovo, montarEntrada, quandoDoFormulario, TEM_TERMINO, type Formulario } from "../../lib/formulario";
 import { apagarRegistro, criarRegistro, listarRegistros, obterRegistro, salvarCorrecao } from "../../lib/repositorio";
+import { sugestoesDeAjudou, sugestoesDeAlimentos } from "../../lib/sugestoes";
 import { cor, espaco, texto } from "../../lib/tema";
 
 /** Dias de episódios anteriores consultados para sugerir "o que ajudou". */
@@ -82,10 +83,10 @@ export default function TelaRegistro() {
     setTentativa((n) => n + 1);
   };
 
-  const sugestoesAjudou = useMemo(() => {
-    const todas = recentes.flatMap((r) => (r.detalhe.categoria === "comportamento" ? (r.detalhe.episodio?.ajudou ?? []) : []));
-    return [...new Set(todas)].slice(0, 12);
-  }, [recentes]);
+  const sugestoesAjudou = useMemo(() => sugestoesDeAjudou(recentes), [recentes]);
+
+  const tipoAlimento = form?.rascunho.categoria === "alimentacao" && form.rascunho.tipo === "bebida" ? "bebida" : "comida";
+  const sugestoesAlimentos = useMemo(() => sugestoesDeAlimentos(recentes, tipoAlimento), [recentes, tipoAlimento]);
 
   const contexto = useMemo(() => {
     if (!form || !pessoaAtiva || form.rascunho.categoria !== "dor_desconforto") return null;
@@ -147,7 +148,12 @@ export default function TelaRegistro() {
         </Secao>
 
         <Secao>
-          <CamposCategoria rascunho={form.rascunho} alterar={(rascunho) => atualizar({ rascunho })} sugestoesAjudou={sugestoesAjudou} />
+          <CamposCategoria
+            rascunho={form.rascunho}
+            alterar={(rascunho) => atualizar({ rascunho })}
+            sugestoesAjudou={sugestoesAjudou}
+            sugestoesAlimentos={sugestoesAlimentos}
+          />
           {contexto ? <Aviso texto={tr.contexto(contexto)} /> : null}
           {falhouCarregar ? <FalhaAoCarregar tentarDeNovo={tentarDeNovo} /> : null}
         </Secao>

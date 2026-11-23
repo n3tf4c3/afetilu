@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AvisoDesfazer } from "../components/aviso-desfazer";
+import { ProtecaoBloqueio } from "../components/tela-bloqueio";
 import { Aviso, Botao } from "../components/ui";
 import { ProvedorApp, useTextos } from "../lib/estado";
 import { cor, espaco, texto } from "../lib/tema";
@@ -94,6 +95,7 @@ function Navegacao() {
         <Stack.Screen name="restaurar" />
       </Stack>
       <AvisoDesfazer />
+      <ProtecaoBloqueio />
     </View>
   );
 }

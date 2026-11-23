@@ -12,14 +12,24 @@ export default function PrimeiroUso() {
   const { db, pessoas, recarregarPessoas, escolherPessoa } = useApp();
   const { t } = useTextos();
   const p = t.primeiroUso;
+  const [passo, setPasso] = useState<1 | 2>(1);
   const [apelido, setApelido] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
 
   if (pessoas.length > 0) return <Redirect href="/" />;
 
-  const continuar = async () => {
+  const avancar = () => {
     if (!apelido.trim()) return setErro(p.erroApelido);
+    setErro(null);
+    setPasso(2);
+  };
+
+  const concluir = async () => {
+    if (!apelido.trim()) {
+      setPasso(1);
+      return setErro(p.erroApelido);
+    }
     setSalvando(true);
     try {
       const nova = await criarPessoa(db, apelido);
@@ -36,43 +46,60 @@ export default function PrimeiroUso() {
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <ScrollView contentContainerStyle={{ padding: espaco.xl, gap: espaco.l }} keyboardShouldPersistTaps="handled">
-          <Text style={texto.titulo} accessibilityRole="header">
-            {p.titulo}
-          </Text>
-          <Text style={texto.corpo}>{p.introducao}</Text>
-          <Secao titulo={p.fazTitulo}>
-            {p.faz.map((item) => (
-              <Text key={item} style={texto.corpo}>
-                • {item}
+          <Text style={texto.suave}>{p.passo(passo, 2)}</Text>
+
+          {passo === 1 ? (
+            <>
+              <Text style={texto.titulo} accessibilityRole="header">
+                {p.titulo}
               </Text>
-            ))}
-          </Secao>
-          <Secao titulo={p.naoFazTitulo}>
-            {p.naoFaz.map((item) => (
-              <Text key={item} style={texto.corpo}>
-                • {item}
+              <Text style={texto.corpo}>{p.introducao}</Text>
+              <Aviso texto={p.dadosNoAparelho} />
+              <Secao titulo={p.quemTitulo}>
+                <Campo
+                  rotulo={p.apelido}
+                  valor={apelido}
+                  onChange={(v) => {
+                    setApelido(v);
+                    setErro(null);
+                  }}
+                  max={LIMITES.apelido}
+                  dica={p.apelidoDica}
+                />
+                <Text style={texto.suave}>{p.apelidoAjuda}</Text>
+                {erro ? <Aviso tipo="alerta" texto={erro} /> : null}
+                <View>
+                  <Botao rotulo={p.continuar} onPress={avancar} />
+                </View>
+                <Botao variante="texto" rotulo={p.jaTenhoBackup} onPress={() => router.push("/restaurar")} />
+              </Secao>
+            </>
+          ) : (
+            <>
+              <Text style={texto.titulo} accessibilityRole="header">
+                {p.limitesTitulo}
               </Text>
-            ))}
-          </Secao>
-          <Aviso texto={p.dadosNoAparelho} />
-          <Secao titulo={p.quemTitulo}>
-            <Campo
-              rotulo={p.apelido}
-              valor={apelido}
-              onChange={(v) => {
-                setApelido(v);
-                setErro(null);
-              }}
-              max={LIMITES.apelido}
-              dica={p.apelidoDica}
-            />
-            <Text style={texto.suave}>{p.apelidoAjuda}</Text>
-            {erro ? <Aviso tipo="alerta" texto={erro} /> : null}
-            <View>
-              <Botao rotulo={p.comecar} onPress={() => void continuar()} desabilitado={salvando} />
-            </View>
-            <Botao variante="texto" rotulo={p.jaTenhoBackup} onPress={() => router.push("/restaurar")} />
-          </Secao>
+              <Secao titulo={p.fazTitulo}>
+                {p.faz.map((item) => (
+                  <Text key={item} style={texto.corpo}>
+                    • {item}
+                  </Text>
+                ))}
+              </Secao>
+              <Secao titulo={p.naoFazTitulo}>
+                {p.naoFaz.map((item) => (
+                  <Text key={item} style={texto.corpo}>
+                    • {item}
+                  </Text>
+                ))}
+              </Secao>
+              {erro ? <Aviso tipo="alerta" texto={erro} /> : null}
+              <View style={{ gap: espaco.s }}>
+                <Botao rotulo={p.comecar} onPress={() => void concluir()} desabilitado={salvando} />
+                <Botao variante="texto" rotulo={p.voltar} onPress={() => setPasso(1)} desabilitado={salvando} />
+              </View>
+            </>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

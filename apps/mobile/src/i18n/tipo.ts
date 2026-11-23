@@ -28,10 +28,20 @@ export interface TextosApp {
     confirmarTexto: string;
     naoApagou: string;
   };
-  abas: { inicio: string; linhaDoTempo: string; ajustes: string };
+  bloqueio: {
+    titulo: string;
+    texto: string;
+    desbloquear: string;
+    prompt: string;
+    usarCodigo: string;
+    indisponivel: string;
+  };
+  abas: { inicio: string; linhaDoTempo: string; resumo: string; ajustes: string };
   primeiroUso: {
     titulo: string;
     introducao: string;
+    passo: (atual: number, total: number) => string;
+    limitesTitulo: string;
     fazTitulo: string;
     faz: string[];
     naoFazTitulo: string;
@@ -43,6 +53,8 @@ export interface TextosApp {
     apelidoAjuda: string;
     erroApelido: string;
     erroSalvar: string;
+    continuar: string;
+    voltar: string;
     comecar: string;
     jaTenhoBackup: string;
   };
@@ -72,6 +84,7 @@ export interface TextosApp {
     cenarioAtual: (local: string, posicao: number, total: number) => string;
     hojeResumo: (n: number) => string;
     emAbertoResumo: (n: number) => string;
+    trocarPessoa: string;
   };
   item: { abreDetalhes: string; emAberto: string; corrigido: string };
   desfazer: { botao: string; rotulo: string };
@@ -123,6 +136,7 @@ export interface TextosApp {
     comidaOuBebida: string;
     oQue: string;
     oQueAlimentoDica: string;
+    recentesAlimentos: string;
     maisDetalhes: string;
     quantidade: string;
     comoFicouDepois: string;
@@ -201,6 +215,10 @@ export interface TextosApp {
     periodo: string;
     ultimosDias: (n: number) => string;
     todas: string;
+    buscar: string;
+    buscarDica: string;
+    limparBusca: string;
+    nadaNaBusca: string;
     semInformacao: string;
     registros: (n: number) => string;
     marcadoSemCrises: string;
@@ -254,6 +272,19 @@ export interface TextosApp {
     comemorativas: string;
     comemorativasAjuda: string;
     datasComemorativas: Record<DataComemorativa, string>;
+    lembreteTitulo: string;
+    lembreteLigado: string;
+    lembreteDesligado: string;
+    lembreteHorario: string;
+    lembreteAjuda: string;
+    lembreteSemPermissao: string;
+    lembreteNotifTitulo: string;
+    lembreteNotifCorpo: string;
+    lembreteCanal: string;
+    bloqueioTitulo: string;
+    bloqueioLigado: string;
+    bloqueioDesligado: string;
+    bloqueioAjuda: string;
     seusDados: string;
     /** Rodapé dos Ajustes, para o suporte saber qual versão está instalada. */
     versao: (versao: string) => string;
@@ -340,6 +371,11 @@ export interface TextosApp {
     abrir: string;
     periodo: string;
     ultimosDias: (n: number) => string;
+    outroPeriodo: string;
+    dataInicio: string;
+    dataFim: string;
+    periodoInvalido: string;
+    periodoLongo: (max: number) => string;
     categorias: string;
     todas: string;
     previa: (comRegistro: number, totalDias: number, registros: number, episodios: number) => string;

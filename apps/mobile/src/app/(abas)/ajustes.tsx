@@ -7,9 +7,11 @@ import { Aviso, Botao, Campo, Chip, Escolha, EscolhaMultipla, Secao, estilos as 
 import { CORES_SLIME } from "../../components/slime/reacoes";
 import { MODOS_VISUAIS, PREFERENCIAS_MOVIMENTO } from "../../lib/aparencia";
 import { diasDesde, PREF_ULTIMO_BACKUP } from "../../lib/backup";
+import { autenticarAparelho, bloqueioDisponivel } from "../../lib/bloqueio";
 import { NOME_DO_IDIOMA } from "../../i18n";
 import { gerarDadosFicticios } from "../../lib/dados-ficticios";
 import { useApp, useTextos } from "../../lib/estado";
+import { formatarHoraLembrete, HORAS_LEMBRETE, type HoraLembrete } from "../../lib/lembrete-dados";
 import { criarMudanca, criarPergunta, criarPessoa, criarRegistro, lerPreferencia, marcarSemCrises, renomearPessoa } from "../../lib/repositorio";
 import { espaco, texto } from "../../lib/tema";
 
@@ -46,11 +48,17 @@ export default function Ajustes() {
     definirIdioma,
     aparencia,
     definirAparencia,
+    lembrete,
+    definirLembrete,
+    bloqueioAtivo,
+    definirBloqueio,
     tentar,
   } = useApp();
   const { t, idioma } = useTextos();
   const a = t.ajustes;
   const [novo, setNovo] = useState("");
+  const [avisoLembrete, setAvisoLembrete] = useState(false);
+  const [avisoBloqueio, setAvisoBloqueio] = useState(false);
   // `null` enquanto lê; "falhou" não pode virar "nunca fez backup".
   const [ultimoBackup, setUltimoBackup] = useState<{ valor: string | null } | "falhou" | null>(null);
 
@@ -78,6 +86,30 @@ export default function Ajustes() {
     setNovo("");
     await recarregarPessoas();
     await escolherPessoa(p.id);
+  };
+
+  const alterarLembrete = async (ativo: boolean, hora: HoraLembrete) => {
+    setAvisoLembrete(false);
+    const res = await definirLembrete({ ativo, hora });
+    if (res === "sem_permissao") setAvisoLembrete(true);
+  };
+
+  const alterarBloqueio = async (ativar: boolean) => {
+    setAvisoBloqueio(false);
+    if (!ativar) {
+      await definirBloqueio(false);
+      return;
+    }
+    if (!(await bloqueioDisponivel())) {
+      setAvisoBloqueio(true);
+      return;
+    }
+    const ok = await autenticarAparelho({
+      mensagem: t.bloqueio.prompt,
+      cancelar: t.geral.cancelar,
+      usarCodigo: t.bloqueio.usarCodigo,
+    });
+    if (ok) await definirBloqueio(true);
   };
 
   const gerarFicticios = async () => {
@@ -141,6 +173,43 @@ export default function Ajustes() {
           onChange={(v) => v && tentar(() => definirAparencia({ som: v }))}
         />
         <Text style={texto.suave}>{a.sonsAjuda}</Text>
+      </Secao>
+
+      <Secao titulo={a.lembreteTitulo}>
+        <Escolha
+          opcoes={OPCOES_SOM}
+          rotulos={{ ligado: a.lembreteLigado, desligado: a.lembreteDesligado }}
+          valor={lembrete.ativo ? "ligado" : "desligado"}
+          onChange={(v) => v && tentar(() => alterarLembrete(v === "ligado", lembrete.hora))}
+        />
+        {lembrete.ativo ? (
+          <View style={{ gap: espaco.s }} accessibilityRole="radiogroup" accessibilityLabel={a.lembreteHorario}>
+            <Text style={texto.subtitulo}>{a.lembreteHorario}</Text>
+            <View style={ui.linhaChips}>
+              {HORAS_LEMBRETE.map((h) => (
+                <Chip
+                  key={h}
+                  rotulo={formatarHoraLembrete(h, idioma)}
+                  selecionado={lembrete.hora === h}
+                  onPress={() => tentar(() => alterarLembrete(true, h))}
+                />
+              ))}
+            </View>
+          </View>
+        ) : null}
+        {avisoLembrete ? <Aviso tipo="alerta" texto={a.lembreteSemPermissao} /> : null}
+        <Text style={texto.suave}>{a.lembreteAjuda}</Text>
+      </Secao>
+
+      <Secao titulo={a.bloqueioTitulo}>
+        <Escolha
+          opcoes={OPCOES_SOM}
+          rotulos={{ ligado: a.bloqueioLigado, desligado: a.bloqueioDesligado }}
+          valor={bloqueioAtivo ? "ligado" : "desligado"}
+          onChange={(v) => v && tentar(() => alterarBloqueio(v === "ligado"))}
+        />
+        {avisoBloqueio ? <Aviso tipo="alerta" texto={t.bloqueio.indisponivel} /> : null}
+        <Text style={texto.suave}>{a.bloqueioAjuda}</Text>
       </Secao>
 
       <Secao titulo={a.idioma}>

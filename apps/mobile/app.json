@@ -3,13 +3,22 @@
     "name": "Afetilu",
     "slug": "afetilu",
     "scheme": "afetilu",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.afetilu.app"
+      "bundleIdentifier": "com.afetilu.app",
+      "infoPlist": {
+        "CFBundleDevelopmentRegion": "pt-BR",
+        "CFBundleAllowMixedLocalizations": true
+      }
+    },
+    "locales": {
+      "pt-BR": "./locales/pt-BR.json",
+      "en": "./locales/en.json",
+      "es": "./locales/es.json"
     },
     "android": {
       "package": "com.afetilu.app",
@@ -24,9 +33,7 @@
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.USE_BIOMETRIC",
-        "android.permission.USE_FINGERPRINT"
+        "android.permission.SYSTEM_ALERT_WINDOW"
       ],
       "permissions": [
         "android.permission.MODIFY_AUDIO_SETTINGS"
@@ -51,7 +58,19 @@
           "enableBackgroundPlayback": false
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Usar o Face ID para desbloquear o Afetilu quando o bloqueio estiver ativado."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#2F5F96"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

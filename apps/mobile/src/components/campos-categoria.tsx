@@ -18,7 +18,12 @@ import type { Rascunho } from "../lib/formulario";
 import { espaco, texto } from "../lib/tema";
 import { Botao, Campo, Chip, Escolha, EscolhaMultipla, Recolhivel, estilos } from "./ui";
 
-type Props = { rascunho: Rascunho; alterar: (r: Rascunho) => void; sugestoesAjudou: string[] };
+type Props = {
+  rascunho: Rascunho;
+  alterar: (r: Rascunho) => void;
+  sugestoesAjudou: string[];
+  sugestoesAlimentos: string[];
+};
 
 // Leitura e escrita de campos do rascunho com tipo explícito no ponto de uso.
 const ler = <T,>(r: Record<string, unknown>, k: string) => r[k] as T | undefined;
@@ -36,11 +41,12 @@ function EscolhaIntensidade(props: { rotulo: string; valor: Intensidade | undefi
 }
 
 /** Campos essenciais visíveis; detalhes opcionais recolhidos. */
-export function CamposCategoria({ rascunho: r, alterar, sugestoesAjudou }: Props) {
+export function CamposCategoria({ rascunho: r, alterar, sugestoesAjudou, sugestoesAlimentos }: Props) {
   const { t, d } = useTextos();
   const c = t.campos;
   switch (r.categoria) {
-    case "alimentacao":
+    case "alimentacao": {
+      const itemAtual = ler<string>(r, "item") ?? "";
       return (
         <View style={{ gap: espaco.l }}>
           <Escolha
@@ -50,13 +56,29 @@ export function CamposCategoria({ rascunho: r, alterar, sugestoesAjudou }: Props
             valor={ler(r, "tipo")}
             onChange={(v) => v && alterar(com(r, "tipo", v))}
           />
-          <Campo rotulo={c.oQue} valor={ler<string>(r, "item") ?? ""} onChange={(v) => alterar(com(r, "item", v))} max={LIMITES.textoCurto} dica={c.oQueAlimentoDica} />
+          <Campo rotulo={c.oQue} valor={itemAtual} onChange={(v) => alterar(com(r, "item", v))} max={LIMITES.textoCurto} dica={c.oQueAlimentoDica} />
+          {sugestoesAlimentos.length > 0 ? (
+            <View style={{ gap: espaco.s }}>
+              <Text style={estilos.rotulo}>{c.recentesAlimentos}</Text>
+              <View style={estilos.linhaChips}>
+                {sugestoesAlimentos.map((alimento) => (
+                  <Chip
+                    key={alimento}
+                    rotulo={alimento}
+                    selecionado={itemAtual.trim().toLowerCase() === alimento.toLowerCase()}
+                    onPress={() => alterar(com(r, "item", alimento))}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
           <Recolhivel titulo={c.maisDetalhes}>
             <Escolha opcional rotulo={c.quantidade} opcoes={QUANTIDADES} rotulos={d.quantidade} valor={ler(r, "quantidade")} onChange={(v) => alterar(com(r, "quantidade", v))} />
             <Campo rotulo={c.comoFicouDepois} multilinha valor={ler<string>(r, "comoFicouDepois") ?? ""} onChange={(v) => alterar(com(r, "comoFicouDepois", v))} max={LIMITES.observacao} />
           </Recolhivel>
         </View>
       );
+    }
 
     case "dor_desconforto":
       return (
@@ -143,7 +165,7 @@ export function CamposCategoria({ rascunho: r, alterar, sugestoesAjudou }: Props
 
 const DURACOES = [5, 15, 30, 60] as const;
 
-function CamposComportamento({ rascunho: r, alterar, sugestoesAjudou }: Props) {
+function CamposComportamento({ rascunho: r, alterar, sugestoesAjudou }: Omit<Props, "sugestoesAlimentos">) {
   const { t, d } = useTextos();
   const c = t.campos;
   const episodio = ler<Record<string, unknown>>(r, "episodio") ?? {};

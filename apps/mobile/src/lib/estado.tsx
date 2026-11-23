@@ -6,8 +6,11 @@ import type { ExtrasDaReacao } from "../components/slime/reacao-do-registro";
 import type { Reacao } from "../components/slime/reacoes";
 import { textos, type Textos } from "../i18n";
 import { aparenciaDosValores, CHAVES_APARENCIA, type Aparencia } from "./aparencia";
+import { bloqueioDoValor, CHAVE_BLOQUEIO } from "./bloqueio-dados";
 import { abrirBanco, apagarBancoDoAparelho, ErroBanco, type FalhaBanco } from "./db";
 import { limparExportacoes } from "./exportacoes";
+import { cancelarLembretes, sincronizarLembrete } from "./lembrete";
+import { CHAVES_LEMBRETE, lembreteDosValores, type PreferenciaLembrete } from "./lembrete-dados";
 import { gravarPreferencia, lerPreferencia, listarPessoas } from "./repositorio";
 
 const PREF_PESSOA_ATIVA = "pessoa_ativa";
@@ -42,6 +45,10 @@ interface EstadoApp {
   definirIdioma: (p: PreferenciaIdioma) => Promise<void>;
   aparencia: Aparencia;
   definirAparencia: (parcial: Partial<Aparencia>) => Promise<void>;
+  lembrete: PreferenciaLembrete;
+  definirLembrete: (proximo: PreferenciaLembrete) => Promise<"ok" | "sem_permissao">;
+  bloqueioAtivo: boolean;
+  definirBloqueio: (ativo: boolean) => Promise<void>;
   /** Última reação pedida ao mascote; `disparo` muda a cada pedido. */
   reacaoSlime: ReacaoSlime;
   reagir: (reacao: Reacao | null, extras?: ExtrasDaReacao) => void;
@@ -65,6 +72,8 @@ type Abertura =
       ativaId: string | null;
       idioma: PreferenciaIdioma;
       aparencia: Aparencia;
+      lembrete: PreferenciaLembrete;
+      bloqueioAtivo: boolean;
     };
 
 const Contexto = createContext<EstadoApp | null>(null);
@@ -98,7 +107,12 @@ async function abrir(): Promise<Abertura> {
       corSlime: await lerPreferencia(db, CHAVES_APARENCIA.corSlime),
       comemorativas: await lerPreferencia(db, CHAVES_APARENCIA.comemorativas),
     });
-    return { tipo: "pronto", db, pessoas, ativaId, idioma: ehIdioma(idioma) ? idioma : "auto", aparencia };
+    const lembrete = lembreteDosValores({
+      ativo: await lerPreferencia(db, CHAVES_LEMBRETE.ativo),
+      hora: await lerPreferencia(db, CHAVES_LEMBRETE.hora),
+    });
+    const bloqueioAtivo = bloqueioDoValor(await lerPreferencia(db, CHAVE_BLOQUEIO));
+    return { tipo: "pronto", db, pessoas, ativaId, idioma: ehIdioma(idioma) ? idioma : "auto", aparencia, lembrete, bloqueioAtivo };
   } catch (e) {
     return e instanceof ErroBanco ? { tipo: "erro", falha: e.tipo, causa: e.causa } : { tipo: "erro", falha: "nao_abriu" };
   }
@@ -147,15 +161,23 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
 
   const recomecar = useCallback(async () => {
     limparExportacoes();
+    await cancelarLembretes();
     await apagarBancoDoAparelho(db ?? undefined);
     setDesfazer(null);
     setAbertura({ tipo: "carregando" });
     setTentativa((t) => t + 1);
   }, [db]);
 
+  const idioma = abertura.tipo === "pronto" && abertura.idioma !== "auto" ? abertura.idioma : idiomaAparelho;
+  const valorTextos = useMemo(() => textos(idioma), [idioma]);
+
   const estado = useMemo<EstadoApp | null>(() => {
     if (abertura.tipo !== "pronto") return null;
     const { db: banco, pessoas, ativaId } = abertura;
+    const textosDoLembrete = (i: Idioma) => {
+      const a = textos(i).t.ajustes;
+      return { titulo: a.lembreteNotifTitulo, corpo: a.lembreteNotifCorpo, canal: a.lembreteCanal };
+    };
     return {
       db: banco,
       pessoas,
@@ -192,6 +214,10 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
       definirIdioma: async (p) => {
         await gravarPreferencia(banco, PREF_IDIOMA, p);
         setAbertura((a) => (a.tipo === "pronto" ? { ...a, idioma: p } : a));
+        if (abertura.lembrete.ativo) {
+          const proximoIdioma = p === "auto" ? idiomaAparelho : p;
+          await sincronizarLembrete(abertura.lembrete, textosDoLembrete(proximoIdioma));
+        }
       },
       aparencia: abertura.aparencia,
       definirAparencia: async (parcial) => {
@@ -200,13 +226,24 @@ export function ProvedorApp({ children }: { children: (s: Situacao, recomecar: (
         }
         setAbertura((a) => (a.tipo === "pronto" ? { ...a, aparencia: { ...a.aparencia, ...parcial } } : a));
       },
+      lembrete: abertura.lembrete,
+      definirLembrete: async (proximo) => {
+        const resultado = await sincronizarLembrete(proximo, textosDoLembrete(idioma));
+        const salvo: PreferenciaLembrete = resultado === "ok" ? proximo : { ...proximo, ativo: false };
+        await gravarPreferencia(banco, CHAVES_LEMBRETE.ativo, salvo.ativo ? "1" : "0");
+        await gravarPreferencia(banco, CHAVES_LEMBRETE.hora, String(salvo.hora));
+        setAbertura((a) => (a.tipo === "pronto" ? { ...a, lembrete: salvo } : a));
+        return resultado;
+      },
+      bloqueioAtivo: abertura.bloqueioAtivo,
+      definirBloqueio: async (ativo) => {
+        await gravarPreferencia(banco, CHAVE_BLOQUEIO, ativo ? "1" : "0");
+        setAbertura((a) => (a.tipo === "pronto" ? { ...a, bloqueioAtivo: ativo } : a));
+      },
       reacaoSlime,
       reagir: (reacao, extras) => setReacaoSlime((r) => ({ reacao, disparo: r.disparo + 1, suspeita: false, ...extras })),
     };
-  }, [abertura, versaoDados, desfazer, falhaAoSalvar, tentar, recomecar, reacaoSlime]);
-
-  const idioma = abertura.tipo === "pronto" && abertura.idioma !== "auto" ? abertura.idioma : idiomaAparelho;
-  const valorTextos = useMemo(() => textos(idioma), [idioma]);
+  }, [abertura, versaoDados, desfazer, falhaAoSalvar, tentar, recomecar, reacaoSlime, idioma, idiomaAparelho]);
 
   const situacao: Situacao =
     abertura.tipo === "erro"

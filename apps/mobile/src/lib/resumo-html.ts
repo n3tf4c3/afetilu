@@ -304,7 +304,7 @@ function documento(o: OpcoesResumoHtml, conteudo: string): string {
 <body>
 <table class="estrutura"><tbody><tr><td><div class="conteudo">${conteudo}</div></td></tr></tbody>
 <tfoot><tr><td><div class="reserva"></div></td></tr></tfoot></table>
-<footer class="rodape"><p>${esc(tr.rodape)}</p><span>${esc(o.apelido)} · ${esc(tr.marca)}</span></footer>
+<footer class="rodape"><p>${esc(tr.rodape)}</p><span>${esc(o.apelido)} · ${esc(tr.marca)} (afetilu.vercel.app)</span></footer>
 </body>
 </html>`;
 }

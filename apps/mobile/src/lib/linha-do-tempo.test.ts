@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { entradaRegistro, novoRegistro, type Registro } from "@afetilu/core";
+import { dominio, entradaRegistro, novoRegistro, type Registro } from "@afetilu/core";
 import { gerarDadosFicticios } from "./dados-ficticios";
 import { textos } from "../i18n";
-import { montarLinhaDoTempo, resumoDoDia } from "./linha-do-tempo";
+import { montarLinhaDoTempo, registroCombinaComBusca, resumoDoDia } from "./linha-do-tempo";
 
 const pt = textos("pt-BR").t.linha;
 
@@ -65,4 +65,33 @@ test("resumo do dia distingue sem informação, registros e sem crises", () => {
     resumoDoDia({ ...base, registros: 0, semCrisesAnotado: true, semInformacao: false }, pt),
     "marcado como dia sem crises",
   );
+});
+
+test("busca por texto ignora acentos e maiúsculas e filtra apenas dias com resultado", () => {
+  const d = dominio("pt-BR");
+  const { registros } = registrosFicticios();
+  const comMacarrao = montarLinhaDoTempo({
+    inicio: "2026-09-30",
+    fim: "2026-10-13",
+    registros,
+    diasAnotados: [],
+    filtro: "todas",
+    busca: "macarrao",
+    d,
+  });
+  assert.ok(comMacarrao.length > 0);
+  for (const dia of comMacarrao) {
+    assert.ok(dia.registros.length > 0);
+    for (const r of dia.registros) assert.equal(registroCombinaComBusca(r, "macarrao", d), true);
+  }
+  const semResultado = montarLinhaDoTempo({
+    inicio: "2026-09-30",
+    fim: "2026-10-13",
+    registros,
+    diasAnotados: [],
+    filtro: "todas",
+    busca: "termo-inexistente-xyz",
+    d,
+  });
+  assert.equal(semResultado.length, 0);
 });
