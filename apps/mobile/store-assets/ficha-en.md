@@ -2,18 +2,18 @@
 
 ## Title (up to 30)
 
-Afetilu: caregiver journal
+Afetilu: Autism & ASD Journal
 
 ## Short description (up to 80)
 
-Log day-to-day life of the person you care for and bring a summary to visits.
+Autism (ASD) routine, sleep, meltdowns & wins journal. Free PDF for visits.
 
 ## Full description (up to 4000)
 
-Afetilu is a journal for family members and caregivers of autistic people. In a few taps, you note what you observed day to day and, when it is time for the appointment, bring a descriptive summary to the therapist, psychologist or doctor who supports the person.
+Afetilu is a free journal for family members and caregivers of autistic people or people being assessed. In a few taps, you note what you observed day to day and, when it is time for the appointment, bring a descriptive PDF summary to the therapist, psychologist, speech therapist or doctor who supports the person.
 
 WHAT YOU CAN LOG
-• Meals and drinks
+• Meals and drinks (with quick shortcuts for recent foods)
 • Sleep and naps
 • Perceived pain and discomfort
 • Feelings and behavior, including difficult episodes, with duration, intensity and what helped
@@ -25,14 +25,15 @@ WHAT YOU CAN LOG
 Each log keeps the time it happened (exact, approximate or just the time of day) and the source of the information: what you saw, what someone told you or what you suspect.
 
 AN HONEST TIMELINE
-A day with no logs shows as “no information”, never as “no crises”. Only you mark a day as crisis-free. Corrections are kept in the history.
+A day with no logs shows as “no information”, never as “no crises”. Only you mark a day as crisis-free. Corrections are kept in the history, and you can search your notes anytime.
 
-SUMMARY FOR APPOINTMENTS
-Choose the period and categories and create a PDF on the device itself, with the day-by-day view, episodes, positive moments and the questions you want to ask. The summary only describes what was logged, without interpreting it.
+PDF SUMMARY FOR APPOINTMENTS
+Choose the period (last 7, 30 or 90 days, or a custom date range) and categories and create a PDF on the device itself, with the day-by-day view, episodes, positive moments and the questions you want to ask. The summary only describes what was logged, without interpreting it.
 
 YOUR DATA STAYS WITH YOU
 • No account, no server and no sync: everything stays on the device, in an encrypted database.
 • No ads, no analytics and no tracking.
+• Optional biometric/passcode app lock and silent local evening reminder (all on device).
 • Backups only when you want them, encrypted with your own password.
 • Deleting is for real: one person or everything, at any time.
 

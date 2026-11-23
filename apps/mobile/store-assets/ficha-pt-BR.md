@@ -2,21 +2,21 @@
 
 ## Título (até 30)
 
-Afetilu: diário de cuidados
+Afetilu: Diário Autismo e TEA
 
 ## Descrição curta (até 80)
 
-Registre o dia a dia de quem você cuida e leve um resumo às consultas.
+Diário de rotina, sono, crises e conquistas no autismo (TEA). Gera PDF grátis.
 
 ## Descrição completa (até 4000)
 
-O Afetilu é um diário para familiares e cuidadores de pessoas autistas. Em poucos toques, você anota o que observou no dia a dia e, na hora da consulta, leva um resumo descritivo para a terapeuta, a psicóloga ou o médico que acompanha a pessoa.
+O Afetilu é um diário gratuito para familiares e cuidadores de pessoas autistas ou em investigação. Em poucos toques, você anota o que observou no dia a dia e, na hora da consulta, leva um resumo descritivo em PDF para a terapeuta, a psicóloga, a fonoaudióloga ou o médico que acompanha a pessoa.
 
 O QUE DÁ PARA REGISTRAR
-• Alimentação e bebidas
+• Alimentação e bebidas (com atalhos dos alimentos recentes)
 • Sono e cochilos
 • Dor e desconforto percebidos
-• Emoções e comportamentos, incluindo episódios difíceis, com duração, intensidade e o que ajudou
+• Emoções e comportamentos, incluindo episódios difíceis (crises), com duração, intensidade e o que ajudou
 • Banho e higiene
 • Xixi e cocô
 • Atividades, conquistas e momentos positivos
@@ -25,14 +25,15 @@ O QUE DÁ PARA REGISTRAR
 Cada registro guarda o horário do acontecimento (exato, aproximado ou só o período do dia) e a origem da informação: o que você viu, o que alguém contou ou o que é uma suspeita sua.
 
 LINHA DO TEMPO HONESTA
-Um dia sem registro aparece como “sem informação”, nunca como “sem crises”. Só você marca um dia sem crises. Correções ficam no histórico.
+Um dia sem registro aparece como “sem informação”, nunca como “sem crises”. Só você marca um dia sem crises. Correções ficam no histórico, e você pode buscar qualquer anotação.
 
-RESUMO PARA A CONSULTA
-Escolha o período e as categorias e gere um PDF no próprio aparelho, com o dia a dia, os episódios, os momentos positivos e as perguntas que você quer fazer. O resumo só descreve o que foi registrado, sem interpretar.
+RESUMO EM PDF PARA A CONSULTA
+Escolha o período (últimos 7, 30 ou 90 dias, ou um intervalo personalizado) e as categorias e gere um PDF no próprio aparelho, com o dia a dia, os episódios, os momentos positivos e as perguntas que você quer fazer. O resumo só descreve o que foi registrado, sem interpretar.
 
 SEUS DADOS FICAM COM VOCÊ
 • Sem conta, sem servidor e sem sincronização: tudo fica no aparelho, em banco de dados cifrado.
 • Sem anúncios, sem analytics e sem rastreamento.
+• Bloqueio opcional por biometria ou código do aparelho e lembrete noturno silencioso (tudo local).
 • Backup só quando você quiser, cifrado com uma senha sua.
 • Apagar é de verdade: uma pessoa ou tudo, a qualquer momento.
 
