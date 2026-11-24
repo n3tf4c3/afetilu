@@ -30,3 +30,4 @@ overrides:
 
 patchedDependencies:
   react-native-filament@1.11.0: patches/react-native-filament@1.11.0.patch
+  react-native-worklets-core@1.6.3: patches/react-native-worklets-core@1.6.3.patch

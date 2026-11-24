@@ -1,0 +1,66 @@
+diff --git a/ios/Worklets.mm b/ios/Worklets.mm
+index 403d88bf7d89f57ac18fdffe4b7aa839a62234b0..b3f5fc1c6567badbfafdd1ff8b63f526c4551067 100644
+--- a/ios/Worklets.mm
++++ b/ios/Worklets.mm
+@@ -5,6 +5,12 @@
+ #import <React/RCTUtils.h>
+ #import <ReactCommon/RCTTurboModule.h>
+
++// In bridgeless React Native these selectors are implemented by RCTBridgeProxy.
++@interface RCTBridge (WorkletsRuntime)
++- (void *)runtime;
++- (std::shared_ptr<facebook::react::CallInvoker>)jsCallInvoker;
++@end
++
+ @implementation Worklets
+
+ @synthesize bridge = _bridge;
+@@ -37,30 +43,31 @@ void installApi(std::shared_ptr<facebook::react::CallInvoker> callInvoker,
+   RNWorklet::JsiWorkletApi::installApi(*runtime);
+ }
+
+-RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
+-  RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
+-  if (cxxBridge.runtime != nullptr) {
+-    auto callInvoker = cxxBridge.jsCallInvoker;
+-    facebook::jsi::Runtime *jsRuntime =
+-        (facebook::jsi::Runtime *)cxxBridge.runtime;
+-
+-    installApi(callInvoker, jsRuntime);
+-    return @true;
++static bool installApiFromBridge(RCTBridge *bridge) {
++  if (![bridge respondsToSelector:@selector(runtime)] ||
++      ![bridge respondsToSelector:@selector(jsCallInvoker)]) {
++    return false;
++  }
++
++  auto *runtime = static_cast<facebook::jsi::Runtime *>([bridge runtime]);
++  auto callInvoker = [bridge jsCallInvoker];
++  if (!runtime || !callInvoker) {
++    return false;
+   }
+-  return @false;
++
++  installApi(callInvoker, runtime);
++  return true;
++}
++
++RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(install) {
++  return installApiFromBridge(_bridge) ? @true : @false;
+ }
+
+ // Don't compile this code when we build for the old architecture.
+ #ifdef RCT_NEW_ARCH_ENABLED
+ - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+     (const facebook::react::ObjCTurboModule::InitParams &)params {
+-  // Call installApi with c++ brigde or something similar.
+-  RCTCxxBridge *cxxBridge = (RCTCxxBridge *)_bridge;
+-  auto callInvoker = cxxBridge.jsCallInvoker;
+-  facebook::jsi::Runtime *jsRuntime =
+-      (facebook::jsi::Runtime *)cxxBridge.runtime;
+-
+-  installApi(callInvoker, jsRuntime);
++  installApiFromBridge(_bridge);
+
+   return std::make_shared<facebook::react::NativeWorkletsSpecJSI>(params);
+ }

@@ -98,3 +98,48 @@ index 20ec04e4a14b5a6aea36ddce86c747cd122ebf5c..5c28555234549503a78200fe2ed046d0
        // Cleanup in worklets context, as cleanup functions might also use the worklet context
        // and we want to queue our cleanup after all other worklets have run
        setTimeout(() => {
+diff --git a/ios/src/RNFFilamentInstaller.mm b/ios/src/RNFFilamentInstaller.mm
+index af9f54826458c10e0bb3bfc5a5fd8a12372e0c1f..c7c7d49e1aef2ebb7f4513763d0d60a41340da84 100644
+--- a/ios/src/RNFFilamentInstaller.mm
++++ b/ios/src/RNFFilamentInstaller.mm
+@@ -20,11 +20,6 @@
+ using namespace facebook;
+ using namespace margelo;
+
+-// This is defined in RCTCxxBridge.mm, and we are technically using a private API here.
+-@interface RCTCxxBridge (CallInvoker)
+-- (std::shared_ptr<react::CallInvoker>)jsCallInvoker;
+-@end
+-
+ @implementation FilamentInstaller
+
+ #ifdef RCT_NEW_ARCH_ENABLED
+diff --git a/ios/src/RNFFilamentModule.mm b/ios/src/RNFFilamentModule.mm
+index 6078080afdb4d4bba61cdd840ab8ee498d50a481..2c80ac594d8204694d2b3ec193e52deb4d2f4306 100644
+--- a/ios/src/RNFFilamentModule.mm
++++ b/ios/src/RNFFilamentModule.mm
+@@ -45,17 +45,13 @@ RCT_EXPORT_MODULE()
+ }
+
+ - (NSNumber*)install {
+-  jsi::Runtime* jsiRuntime = nullptr;
+-  std::shared_ptr<react::CallInvoker> jsCallInvoker = nullptr;
+-  if (_isBridgeless) {
+-    // If we are in bridgless mode we can cast directly to RCTCxxBridge to get our properties:
+-    RCTCxxBridge* cxxBridge = (RCTCxxBridge*)self.bridge;
+-    jsiRuntime = (jsi::Runtime*)cxxBridge.runtime;
+-    jsCallInvoker = cxxBridge.jsCallInvoker;
+-  } else {
+-    jsiRuntime = [self.bridge respondsToSelector:@selector(runtime)] ? reinterpret_cast<jsi::Runtime*>(self.bridge.runtime) : nullptr;
+-    jsCallInvoker = self.bridge.jsCallInvoker;
+-    _surfacePresenter = self.bridge.surfacePresenter;
++  RCTBridge* bridge = self.bridge;
++  jsi::Runtime* jsiRuntime = [bridge respondsToSelector:@selector(runtime)]
++      ? static_cast<jsi::Runtime*>([bridge runtime]) : nullptr;
++  std::shared_ptr<react::CallInvoker> jsCallInvoker = [bridge respondsToSelector:@selector(jsCallInvoker)]
++      ? [bridge jsCallInvoker] : nullptr;
++  if (!_isBridgeless) {
++    _surfacePresenter = (RCTSurfacePresenter*)[bridge surfacePresenter];
+   }
+
+   if (jsiRuntime == nullptr) {
