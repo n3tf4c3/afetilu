@@ -2,10 +2,10 @@ packages:
   - apps/*
   - packages/*
 
-# Versões que precisam ser únicas na árvore (par React do Expo SDK 57).
+# Versões que precisam ser únicas na árvore (par React do Expo SDK 58).
 catalog:
-  react: 19.2.3
-  react-dom: 19.2.3
+  react: 19.3.0
+  react-dom: 19.3.0
 
 # Convenção da casa para apps Expo em monorepo.
 nodeLinker: hoisted
@@ -17,20 +17,16 @@ allowBuilds:
   # o binário nativo já vem por dependência opcional; o postinstall é só fallback de download
   unrs-resolver: false
 
-# Exceções à trava de versões recém-publicadas (proteção contra supply chain).
-# Motivo: patches do Expo SDK 57 e do zod publicados dentro da janela mínima,
-# exigidos pela versão atual do SDK em 13/10/2026 (revisado em 23/10/2026: saem as que deixaram o
-# lockfile). Revisar a cada atualização.
+# Exceção de zod à trava de versões recém-publicadas. Revisar a cada atualização.
 minimumReleaseAgeExclude:
-  - '@expo/fingerprint@0.20.14'
-  - '@expo/inline-modules@0.1.8'
-  - '@expo/local-build-cache-provider@57.0.9'
   - zod@4.6.7
-  - expo-crypto@57.0.4
 
-# Peer automático escolhia a 0.87 (outra versão do React Native); o RN 0.86 do SDK 57 pede a 0.86.3.
 overrides:
-  '@react-native/metro-config': 0.86.3
+  # A configuração do Metro acompanha a versão do React Native usada pelo Expo.
+  '@react-native/metro-config': 0.88.1
+  # GHSA-g3hv-75wg-m249. Remover quando os consumidores aceitarem minimatch 11.
+  '@expo/fingerprint>minimatch@10': 11.0.9
+  '@typescript-eslint/typescript-estree>minimatch@10': 11.0.9
 
 patchedDependencies:
   react-native-filament@1.11.0: patches/react-native-filament@1.11.0.patch
