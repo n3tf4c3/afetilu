@@ -1,5 +1,9 @@
 {
-  "CFBundleDisplayName": "Afetilu",
-  "app_name": "Afetilu",
-  "NSFaceIDUsageDescription": "Usar o Face ID para desbloquear o Afetilu quando o bloqueio estiver ativado."
+  "ios": {
+    "CFBundleDisplayName": "Afetilu",
+    "NSFaceIDUsageDescription": "Usar o Face ID para desbloquear o Afetilu quando o bloqueio estiver ativado."
+  },
+  "android": {
+    "app_name": "Afetilu"
+  }
 }
