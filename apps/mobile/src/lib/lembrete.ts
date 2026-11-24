@@ -1,4 +1,12 @@
-import * as Notifications from "expo-notifications";
+import {
+  AndroidImportance,
+  cancelAllScheduledNotificationsAsync,
+  getPermissionsAsync,
+  requestPermissionsAsync,
+  SchedulableTriggerInputTypes,
+  scheduleNotificationAsync,
+  setNotificationChannelAsync,
+} from "expo-notifications";
 import { Platform } from "react-native";
 import type { PreferenciaLembrete } from "./lembrete-dados";
 
@@ -12,28 +20,28 @@ export async function sincronizarLembrete(
   pref: PreferenciaLembrete,
   textos: { titulo: string; corpo: string; canal: string },
 ): Promise<"ok" | "sem_permissao"> {
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  await cancelAllScheduledNotificationsAsync();
   if (!pref.ativo) return "ok";
 
-  const atual = await Notifications.getPermissionsAsync();
-  const status = atual.status === "granted" ? atual.status : (await Notifications.requestPermissionsAsync()).status;
+  const atual = await getPermissionsAsync();
+  const status = atual.status === "granted" ? atual.status : (await requestPermissionsAsync()).status;
   if (status !== "granted") return "sem_permissao";
 
   if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync(CANAL_ANDROID, {
+    await setNotificationChannelAsync(CANAL_ANDROID, {
       name: textos.canal,
-      importance: Notifications.AndroidImportance.DEFAULT,
+      importance: AndroidImportance.DEFAULT,
     });
   }
 
-  await Notifications.scheduleNotificationAsync({
+  await scheduleNotificationAsync({
     content: {
       title: textos.titulo,
       body: textos.corpo,
       sound: false,
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      type: SchedulableTriggerInputTypes.DAILY,
       hour: pref.hora,
       minute: 0,
       ...(Platform.OS === "android" ? { channelId: CANAL_ANDROID } : {}),
@@ -45,7 +53,7 @@ export async function sincronizarLembrete(
 /** Cancela qualquer lembrete agendado (ex.: ao apagar todos os dados do aparelho). */
 export async function cancelarLembretes(): Promise<void> {
   try {
-    await Notifications.cancelAllScheduledNotificationsAsync();
+    await cancelAllScheduledNotificationsAsync();
   } catch {
     // Em aparelhos/ambientes sem serviço de notificação, não bloqueia a limpeza.
   }

@@ -1,7 +1,14 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
+import type { ComponentProps } from "react";
 import { useApp, useTextos } from "../../lib/estado";
 import { cor } from "../../lib/tema";
+
+function iconeDaAba(nome: ComponentProps<typeof MaterialCommunityIcons>["name"]) {
+  return function IconeDaAba({ focused, size }: { focused: boolean; size: number }) {
+    return <MaterialCommunityIcons name={nome} color={focused ? cor.primaria : cor.textoSuave} size={size} />;
+  };
+}
 
 export default function Abas() {
   const { pessoaAtiva } = useApp();
@@ -24,7 +31,7 @@ export default function Abas() {
           title: t.abas.inicio,
           tabBarAccessibilityLabel: t.abas.inicio,
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="home-outline" color={color} size={size} />,
+          tabBarIcon: iconeDaAba("home-outline"),
         }}
       />
       <Tabs.Screen
@@ -32,7 +39,7 @@ export default function Abas() {
         options={{
           title: t.abas.linhaDoTempo,
           tabBarAccessibilityLabel: t.abas.linhaDoTempo,
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="timeline-text-outline" color={color} size={size} />,
+          tabBarIcon: iconeDaAba("timeline-text-outline"),
         }}
       />
       <Tabs.Screen
@@ -41,7 +48,7 @@ export default function Abas() {
           title: t.abas.resumo,
           headerTitle: t.resumo.titulo,
           tabBarAccessibilityLabel: t.resumo.titulo,
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="file-document-outline" color={color} size={size} />,
+          tabBarIcon: iconeDaAba("file-document-outline"),
         }}
       />
       <Tabs.Screen
@@ -49,7 +56,7 @@ export default function Abas() {
         options={{
           title: t.abas.ajustes,
           tabBarAccessibilityLabel: t.abas.ajustes,
-          tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="cog-outline" color={color} size={size} />,
+          tabBarIcon: iconeDaAba("cog-outline"),
         }}
       />
     </Tabs>
