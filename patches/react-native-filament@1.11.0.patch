@@ -1,5 +1,49 @@
+diff --git a/lib/commonjs/utilities/withCleanupScope.js b/lib/commonjs/utilities/withCleanupScope.js
+index 25c667ae9f0f6a25c2cfd0aac7801b8af590b476..70c5a76246b17373258440fddf21c6a4f68869f1 100644
+--- a/lib/commonjs/utilities/withCleanupScope.js
++++ b/lib/commonjs/utilities/withCleanupScope.js
+@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ exports.withCleanupScope = withCleanupScope;
+-var _reactNative = require("react-native");
+ /**
+  * Operations that are releasing memory from JS should be executed after cleanup functions
+  * that are still operating on the resource.
+@@ -27,8 +26,8 @@ var _reactNative = require("react-native");
+  */
+ function withCleanupScope(cleanupFunction) {
+   return () => {
+-    // runAfterInteractions to make sure its called after all children have run their cleanup and all interactions are done
+-    _reactNative.InteractionManager.runAfterInteractions(() => {
++    // Let child cleanup handlers finish before queueing the resource release.
++    setImmediate(() => {
+       // Cleanup in worklets context, as cleanup functions might also use the worklet context
+       // and we want to queue our cleanup after all other worklets have run
+       setTimeout(() => {
+diff --git a/lib/module/utilities/withCleanupScope.js b/lib/module/utilities/withCleanupScope.js
+index 67eceeeec711583358c473e1317f0cdc2c6d6968..69c69e4b5eee27cd68b5d8691a8fe8c26ecc66c5 100644
+--- a/lib/module/utilities/withCleanupScope.js
++++ b/lib/module/utilities/withCleanupScope.js
+@@ -3,5 +3,3 @@
+-import { InteractionManager } from 'react-native';
+-
+ /**
+  * Operations that are releasing memory from JS should be executed after cleanup functions
+  * that are still operating on the resource.
+@@ -24,8 +22,8 @@ import { InteractionManager } from 'react-native';
+  */
+ export function withCleanupScope(cleanupFunction) {
+   return () => {
+-    // runAfterInteractions to make sure its called after all children have run their cleanup and all interactions are done
+-    InteractionManager.runAfterInteractions(() => {
++    // Let child cleanup handlers finish before queueing the resource release.
++    setImmediate(() => {
+       // Cleanup in worklets context, as cleanup functions might also use the worklet context
+       // and we want to queue our cleanup after all other worklets have run
+       setTimeout(() => {
 diff --git a/src/react/FilamentView.tsx b/src/react/FilamentView.tsx
-index 69e85f3c362fdde8f477b0c9a4c24a6ef2e5469d..13f35774aa1490f6335f30dd216d4b2613a7c5c6 100644
+index 69e85f3c362fdde8f477b0c9a4c24a6ef2e5469d..808b89e0cb3ae8c155bc1ae6d0cce2ba3b466181 100644
 --- a/src/react/FilamentView.tsx
 +++ b/src/react/FilamentView.tsx
 @@ -41,6 +41,8 @@ export class FilamentView extends React.PureComponent<FilamentProps> {
@@ -33,3 +77,24 @@ index 69e85f3c362fdde8f477b0c9a4c24a6ef2e5469d..13f35774aa1490f6335f30dd216d4b26
            try {
              callback(frameInfo)
  
+diff --git a/src/utilities/withCleanupScope.ts b/src/utilities/withCleanupScope.ts
+index 20ec04e4a14b5a6aea36ddce86c747cd122ebf5c..5c28555234549503a78200fe2ed046d0906fad22 100644
+--- a/src/utilities/withCleanupScope.ts
++++ b/src/utilities/withCleanupScope.ts
+@@ -1,5 +1,3 @@
+-import { InteractionManager } from 'react-native'
+-
+ /**
+  * Operations that are releasing memory from JS should be executed after cleanup functions
+  * that are still operating on the resource.
+@@ -22,8 +20,8 @@ import { InteractionManager } from 'react-native'
+  */
+ export function withCleanupScope(cleanupFunction: Function) {
+   return () => {
+-    // runAfterInteractions to make sure its called after all children have run their cleanup and all interactions are done
+-    InteractionManager.runAfterInteractions(() => {
++    // Let child cleanup handlers finish before queueing the resource release.
++    setImmediate(() => {
+       // Cleanup in worklets context, as cleanup functions might also use the worklet context
+       // and we want to queue our cleanup after all other worklets have run
+       setTimeout(() => {

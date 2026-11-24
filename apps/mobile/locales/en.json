@@ -1,5 +1,9 @@
 {
-  "CFBundleDisplayName": "Afetilu",
-  "app_name": "Afetilu",
-  "NSFaceIDUsageDescription": "Use Face ID to unlock Afetilu when app lock is enabled."
+  "ios": {
+    "CFBundleDisplayName": "Afetilu",
+    "NSFaceIDUsageDescription": "Use Face ID to unlock Afetilu when app lock is enabled."
+  },
+  "android": {
+    "app_name": "Afetilu"
+  }
 }
